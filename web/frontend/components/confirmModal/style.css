@@ -1,0 +1,42 @@
+.confirm-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.confirm-header {
+    font-size: 24px;
+    font-size: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 20px 0px 20px;
+}
+
+.success-tex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.confirm-btn {
+    display: flex;
+    width: 50%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.confirm-btn .submit-btn {
+    width: 40% !important;
+    margin-left: 10px;
+}
+.confirm-btn .cancel-btn {
+    width: 40%;
+    margin-right: 10px;
+}

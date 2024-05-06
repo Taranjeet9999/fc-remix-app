@@ -1,0 +1,22 @@
+.hold-orders {
+    width: 100%;
+    padding: 0px 10px;
+}
+
+.hold-orders .order-action-buttons {
+    display: flex;
+    width: 25%;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 100%;
+}
+
+.order-actions .svg-inline--fa {
+    height: 20px;
+    cursor: pointer;
+}

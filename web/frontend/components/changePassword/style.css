@@ -1,0 +1,25 @@
+.change-password {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.change-password .heading1 {
+    display: flex;
+    justify-content: flex-start;
+    width: calc(100% - 20px);   
+    padding: 20px 10px;
+}
+
+.change-password .input-lebel {
+    color: #555;
+    font-size: 16px;
+    font-family: 700;
+    margin-top: 20px;
+}
+
+.change-password .inner-container {
+    width: 60%;
+}

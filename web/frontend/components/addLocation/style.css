@@ -1,0 +1,90 @@
+.add-location-modal {
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+.header-text {
+    color: #181c32;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 10px 10px 20px 10px;
+}
+
+.add-location-modal .input-row {
+    margin-top: 10px;
+}
+
+.add-location-modal .input-field {
+    margin-top: unset;
+}
+
+.add-location-modal .input-field-text1 {
+    height: 35px;
+}
+
+.input-field-text1::placeholder {
+    font-size: 14px;
+    color: #c2c3c7;
+    font-family: "Poppins";
+}
+
+.add-location-modal .input-lebel1 {
+    font-size: 14px;
+}
+
+.add-location-modal .input-container1 {
+    width: calc(50% - 10px);
+}
+
+.choose-file-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 20px;
+}
+
+.choose-file-row .input-field {
+    width: unset;
+}
+
+.choose-file {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sample-download {
+    display: flex;
+    align-items: center;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    border-top: 1px solid rgba(0, 0, 0, .2);
+    padding: 20px 0;
+}
+
+.modal-footer button {
+    width: 20%;
+    margin-right: 20px;
+    margin-top: unset;
+}
+
+@media screen and (max-width: 1500px) {
+    .modal-body {
+        padding: 10px 10px 20px 10px;
+        overflow-y: scroll;
+        height: calc(100vh - 200px);
+    }
+}

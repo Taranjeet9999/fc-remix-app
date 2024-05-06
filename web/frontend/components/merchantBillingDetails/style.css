@@ -1,0 +1,131 @@
+.merchant-main {
+    background-color: white;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.merchant-heading1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.input-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.input-container1 {
+    width: 45%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.input-lebel1 {
+    font-size: 16px;
+    font-weight: 400;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+.input-field-text1 {
+    height: 40px;
+    width: 100%;
+    border-radius: 8px;
+    padding-left: 10px;
+    border: 1px solid #b5b5c3
+}
+
+.conditional-price .input-field-text1 {
+    height: 35px;
+    width: 50px;
+    border-radius: 8px;
+    padding-left: 10px;
+    border: 1px solid #b5b5c3;
+    background-color: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5e6278;
+}
+
+.input-field-text1:focus {
+    outline: none;
+}
+
+.shipping-config {
+    display: flex;
+    flex-direction: row;
+    background-color: #f5f8fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+.shipping-left {
+    width: 45%;
+}
+
+.shipping-label {
+    font-size: 16px;
+    font-weight: 400;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.shipping-right {
+    width: 55%;
+    margin-top: 20px;
+}
+
+.shipping-label1 {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.courier-preference {
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.insurance-preferences {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f8fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 30px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.input-checkbox {
+    margin-top: 10px;
+}
+
+.input-radio {
+    margin-top: 10px;
+}
+
+.settings {
+    margin-top: 20px;
+}
+
+.submit {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.merchant-main .submit-btn {
+    width: 100px;
+}

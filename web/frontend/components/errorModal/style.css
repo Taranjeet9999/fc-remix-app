@@ -1,0 +1,29 @@
+.error-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 10px 20px 10px;
+}
+
+.error-header {
+    font-size: 24px;
+    font-size: 700;
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 20px 0px 20px;
+}
+
+.success-tex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.success-btn {
+    width: 50px;
+}

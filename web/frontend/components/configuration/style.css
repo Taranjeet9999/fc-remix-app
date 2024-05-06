@@ -1,0 +1,83 @@
+.configuration {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-bar {
+    margin: 30px 10px;
+    height: 20px;
+    background-color: #eaebeb;
+    border-radius: 4px;
+    overflow: hidden;
+    color: white;
+}
+
+.progress {
+    width: 50%;
+    background-color: #ff6900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    height: 100%;
+}
+.top-nav-bar {
+    display: flex;
+    background-color: #eaebeb;
+    justify-content: space-evenly;
+    border: 2px solid #eaebeb;
+    border-radius: 8px;
+    margin: 0 10px;
+
+}
+
+.top-nav-bar .nav-bar-item {
+    width: 25%;
+    height: 40px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.top-nav-bar .nav-bar-item:hover {
+    background-color: white;
+    color: #ff6900;
+    transition: 0.5s;
+    border-radius: 8px;
+}
+
+.top-nav-bar .nav-bar-item-active {
+    width: 25%;
+    height: 40px;
+    background-color: white;
+    color: #ff6900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.nav-bar-item-active span{
+    display: flex;
+    align-items: center;
+}
+
+.nav-bar-item span{
+    display: flex;
+    align-items: center;
+}
+
+.configuration-steps {
+    padding-top: 10px;
+}

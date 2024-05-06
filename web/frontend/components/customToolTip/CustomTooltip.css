@@ -1,0 +1,30 @@
+.custom-tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip-text {
+    visibility: visible;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    opacity: 0.9;
+    word-wrap: break-word;
+  }
+  
+  .custom-tooltip:hover .tooltip-text {
+    visibility: visible;
+  }
+  
+  .custom-tooltip:hover {
+    cursor: pointer;
+  }
+  

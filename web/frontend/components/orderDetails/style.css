@@ -1,0 +1,107 @@
+.order-details-main {
+    padding: 20px;
+    width: 100%;
+}
+
+.order-details-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-detail-heading {
+    color: #181c32;
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.order-details {
+    padding: 20px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+}
+
+.order-details-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.order-details-name {
+    width: 50%;
+}
+
+.order-details-value {
+    width: 50%;
+    text-align: left;
+}
+
+.delivery-address {
+    width: 33%;
+}
+
+.delivery-heading {
+    color: #181c32;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.shipment-details {
+    width: 100%;
+    border: 1px solid #ccc9c9;
+}
+
+.order-details-head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}   
+
+.shipment-heading {
+    color: #181c32;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.back-btn {
+    width: 60px;
+    height: 40px;
+    background-color: #ff6900;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.shipment-table {
+    width: 100%;
+    text-align: left;
+}
+
+.shipment-table table {
+    width: 100%;
+    color: #212529;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.shipment-table .table-head {
+    height: 50px;
+}
+
+.shipment-table .table-body td{
+    padding-left: 5px;
+    height: 50px;
+    background-color: white;
+}

@@ -1,0 +1,248 @@
+.product-mapping {
+    background-color: white;
+    padding: 0px 10px;
+}
+
+.product-header {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.product-map-filters {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.product-map-filters .input-container {
+    width: 25%;
+}
+
+.product-map-filters .filter-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: 20%;
+}
+
+.filter-buttons button {
+    height: 38px;
+    margin-right: 20px;
+    border: 1px solid #ff6900;
+    background: transparent;
+    border-radius: 4px;
+    color: #ff6900;
+    padding: 0 10px;
+}
+
+.product-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.product-actions button {
+    width: unset;
+}
+
+.payment-heading {
+    width: 80%;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.product-actions .submit-btn {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: "Poppins";
+    padding: 10px;
+}
+
+.product-mapping .locations td {
+    text-align: center;
+    height: 40px;
+}
+
+
+.pickup-locations-table {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+.pickup-locations-table table {
+    width: 100%;
+    color: #212529;
+    text-align: left;
+}
+
+.table-head {
+    background-color: #F5F8FA;
+    height: 80px;
+    text-align: left;
+}
+
+.table-head th {
+    padding-left: 5px;
+}
+
+.assign-location {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.assign-location .modal-header {
+    font-size: 14px;
+    color: #181c32;
+    font-weight: 600;
+}
+
+.assign-location .modal-body {
+    overflow: unset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: unset;
+}
+
+.select-all {
+    text-align: center;
+}
+
+.products-row {
+    height: 80px;
+}
+
+.products-row td {
+    text-align: left;
+    padding-left: 5px;
+}
+
+.dimension-container .input-row {
+    width: 100%;
+}
+
+.dimension-container .input-row .input-container1 {
+    width: 30%;
+}
+
+.dimension-container .input-field {
+    justify-content: flex-start;
+}
+
+.add-more-dimension {
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: blue;
+    padding: 10px;
+    text-decoration-line: underline;
+    cursor: pointer;
+}
+
+.dimension-container {
+    width: 100%;
+}
+
+.shipping-boxes .modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    /* border-bottom: 1px solid rgba(0, 0, 0, .2); */
+}
+
+.shipping-heading {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.shipping-boxes .submit-btn {
+    width: unset;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: unset;
+
+}
+
+.shipping-boxes .modal-body {
+    overflow: scroll;
+}
+
+.shipping-boxes .modal-body table{
+    width: 100%;
+}
+
+.shipping-boxes .table-head{
+    height: 50px;
+}
+
+.shipping-boxes .modal-footer {
+    padding-right: 20px;
+}
+
+.shipping-boxes .cancel-btn {
+    width: unset;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: unset;
+}
+
+.add-shipping-box .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.add-shipping-box .input-container {
+    width: 100%;
+}
+
+.add-shipping-box .input-row {
+    width: 100%;
+}
+
+.add-shipping-box .input-container1 {
+    width: 30%;
+}
+
+.import-dimesions .modal-body{
+    overflow: unset;
+    height: unset;
+}
+
+.import-dimesions .submit-btn {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    margin-top: unset;
+}
+
+.import-dimesions .cancel-btn {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+    margin-top: unset;
+}

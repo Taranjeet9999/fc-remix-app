@@ -1,0 +1,60 @@
+.pickup-locations {
+    background-color: white;
+    padding: 0px 20px;
+}
+
+.pickup-head {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.pickup-head button {
+    width: unset;
+}
+.payment-heading {
+    width: 80%;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.pickup-locations  .submit-btn {
+    font-size: 12px;
+    font-weight: 500;
+    font-family: "Poppins";
+    padding: 10px;
+}
+
+.pickup-locations-table {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 14px;
+}
+.pickup-locations-table table{
+    width: 100%;
+    color: #212529;
+}
+.locations {
+    height: 80px;
+    text-align: left;
+
+}
+.locations td{
+   padding-left: 5px;   
+}
+
+.location-actions {
+    display: flex;
+    font-size: 18px;
+    height: 80px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.location-actions .svg-inline--fa {
+    height: 20px;
+    cursor: pointer;
+}

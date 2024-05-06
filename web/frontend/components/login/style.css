@@ -1,0 +1,146 @@
+.main-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.inner-container {
+    margin-top: 20px;
+    background-color: white;
+    padding: 50px 20px;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.05);
+    margin-bottom: 50px;
+}
+
+.heading1 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.heading2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+.text-button {
+    color: #ff6900;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+
+
+.input-container {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.heading-continer {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.heading-text1 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.heading-text2 {
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-lebel {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.input-field {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.input-field-text {
+    height: 40px;
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    background-color: #F5F8FA;
+    padding-left: 10px;
+}
+
+.input-field-text:focus {
+    outline: none;
+}
+
+.btn-section {
+    display: flex;
+    width: 50%;
+}
+
+.submit-btn {
+    background-color: #ff6900;
+    height: 40px;
+    width: 100%;
+    color: white !important;
+    border-radius: 8px;
+    border: none;
+    margin-top: 30px;
+    margin-right: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fc-yellow-btn{
+    background-color: #ff6900 !important;
+    height: 40px;
+    color: white !important;
+    border-radius: 8px;
+    border: none !important;
+}
+.pointer{
+    cursor: pointer;
+
+}
+.cancel-btn {
+    background-color: #fff3ea;
+    height: 40px;
+    width: 100%;
+    color: #ff6900;
+    border-radius: 8px;
+    border: none;
+    margin-top: 30px;
+    margin-left: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
