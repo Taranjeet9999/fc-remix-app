@@ -78,7 +78,7 @@ const STATIC_PATH =
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
-export const app = express();
+const app = express();
 app.use(bodyParser.json());
 
 // Set up Shopify authentication and webhook handling
@@ -93,6 +93,10 @@ app.post(
   shopify.processWebhooks({ webhookHandlers: PrivacyWebhookHandlers })
 );
 
+console.log([
+  shopify,
+  STATIC_PATH
+]);
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 app.use(express.json());
@@ -636,6 +640,28 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     console.log("carrier-create=", error);
   }
 });
+
+app.post("/api/carrier-service/update", async (_req, res) => {
+  try {
+    const carrier_service = new shopify.api.rest.CarrierService({
+      session: res.locals.shopify.session,
+    });
+    carrier_service.id = 68550426843;
+    carrier_service.name = "Fast Courier";
+    carrier_service.callback_url =
+      "https://destroyed-hostel-everywhere-cnn.trycloudflare.com/api/shipping-rates";
+    await carrier_service.save({
+      update: true,
+    }); 
+    res.status(200).send(carrier_service);
+  } catch (error) {
+    console.log("carrier-update=", error);
+  }
+
+    
+});
+
+
 
 app.get("/api/orders", async (_req, res) => {
   try {
