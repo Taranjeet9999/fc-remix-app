@@ -79,59 +79,21 @@ const STATIC_PATH =
     : `${process.cwd()}/frontend/`;
 
 const app = express();
-app.use(bodyParser.json());
-
-// Set up Shopify authentication and webhook handling
-app.get(shopify.config.auth.path, shopify.auth.begin());
-app.get(
-  shopify.config.auth.callbackPath,
-  shopify.auth.callback(),
-  shopify.redirectToShopifyOrAppRoot()
-);
-app.post(
-  shopify.config.webhooks.path,
-  shopify.processWebhooks({ webhookHandlers: PrivacyWebhookHandlers })
-);
-
-console.log([
-  shopify,
-  STATIC_PATH
-]);
-// If you are adding routes outside of the /api path, remember to
-// also add a proxy rule for them in web/frontend/vite.config.js
-app.use(express.json());
-
-app.use("/api/*", shopify.validateAuthenticatedSession());
-
-
-app.get("/api/orders/count", async (_req, res) => {
-  const countData = await shopify.api.rest.Order.all({
-    session: res.locals.shopify.session,
-  });
-  console.log(countData);
-  res.status(200).send(countData);
-});
-
-const getValueByKey = (data, key) => {
-  const item = data.find((obj) => obj.key === key);
-  return item ? item.value : null;
-
-};
-
-
-
  
 
 
-app.post("/api/shipping-rates", async (_req, res) => {
+
+app.post("/api/shipping-rates",bodyParser.json() ,async (_req, res) => {
   try {
 
-    
-    logger.info("shipping ratessssssssssssssssssss");
-logger.info("shipping ratessssssssssssssssssss");
-logger.info("shipping ratessssssssssssssssssss");
-logger.info("shipping ratessssssssssssssssssss");
-logger.info("shipping ratessssssssssssssssssss");
+  
+ console.log(_req.body.rate.items, "iiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+ logger.info("Cheese is Comté.");
+ logger.info(_req);
+ logger.info("Body ===============================");
+ logger.info(_req.body);
+ logger.info("Rate ===============https://fc-app.vuwork.com/================");
+ logger.info(_req.body.rate.items);
 
     res.status(200).json({
       rates: [
@@ -146,7 +108,6 @@ logger.info("shipping ratessssssssssssssssssss");
     });
 
     console.log("888888888888888888888888")
-    logger.info("Cheese is Comté.");
 logger.info("Cheese is Comté.");
 logger.info("Cheese is Comté.");
 logger.info("Cheese is Comté.");
@@ -337,6 +298,58 @@ logger.info("Cheese is Comté.");
     console.log("shipping-rates==", error);
   }
 });
+
+
+
+
+
+
+
+
+// Set up Shopify authentication and webhook handling
+app.get(shopify.config.auth.path, shopify.auth.begin());
+app.get(
+  shopify.config.auth.callbackPath,
+  shopify.auth.callback(),
+  shopify.redirectToShopifyOrAppRoot()
+);
+app.post(
+  shopify.config.webhooks.path,
+  shopify.processWebhooks({ webhookHandlers: PrivacyWebhookHandlers })
+);
+
+console.log([
+  shopify,
+  STATIC_PATH
+]);
+// If you are adding routes outside of the /api path, remember to
+// also add a proxy rule for them in web/frontend/vite.config.js
+
+app.use("/api/*", shopify.validateAuthenticatedSession());
+
+app.use(express.json());
+app.use(bodyParser.json());
+
+app.get("/api/orders/count", async (_req, res) => {
+  const countData = await shopify.api.rest.Order.all({
+    session: res.locals.shopify.session,
+  });
+  console.log(countData);
+  res.status(200).send(countData);
+});
+
+const getValueByKey = (data, key) => {
+  const item = data.find((obj) => obj.key === key);
+  return item ? item.value : null;
+
+};
+
+
+
+ 
+
+
+
 app.get("/api/get-merchant", async (_req, res) => {
   try {
     const db = await getConnection();
@@ -646,10 +659,10 @@ app.post("/api/carrier-service/update", async (_req, res) => {
     const carrier_service = new shopify.api.rest.CarrierService({
       session: res.locals.shopify.session,
     });
-    carrier_service.id = 68550426843;
+    carrier_service.id = 68618911963;
     carrier_service.name = "Fast Courier";
     carrier_service.callback_url =
-      "https://destroyed-hostel-everywhere-cnn.trycloudflare.com/api/shipping-rates";
+      "https://fc-app.vuwork.com/api/shipping-rates";
     await carrier_service.save({
       update: true,
     }); 

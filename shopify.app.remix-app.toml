@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://companion-conducted-assistant-doe.trycloudflare.com"
+application_url = "https://audio-aware-recover-leads.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://companion-conducted-assistant-doe.trycloudflare.com/auth/callback",
-  "https://companion-conducted-assistant-doe.trycloudflare.com/auth/shopify/callback",
-  "https://companion-conducted-assistant-doe.trycloudflare.com/api/auth/callback"
+  "https://audio-aware-recover-leads.trycloudflare.com/auth/callback",
+  "https://audio-aware-recover-leads.trycloudflare.com/auth/shopify/callback",
+  "https://audio-aware-recover-leads.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
