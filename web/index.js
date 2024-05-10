@@ -12,28 +12,27 @@ import PrivacyWebhookHandlers from "./privacy.js";
 import bodyParser from "body-parser";
 import sqlite3 from "sqlite3";
 import log4js from "log4js";
- 
-// Create a logger object 
+
+// Create a logger object
 // const logger = log4js.getLogger();
 
-log4js.configure({ 
-  appenders: {  
-      file: {  
-          type: "file",  
-          filename: "logs.log" 
-      }  
-  }, 
-  categories: { 
-      default: { 
-          appenders: 
-              ["file"], level: "info"
-      } 
-  }, 
-}); 
+log4js.configure({
+  appenders: {
+    file: {
+      type: "file",
+      filename: "logs.log",
+    },
+  },
+  categories: {
+    default: {
+      appenders: ["file"],
+      level: "info",
+    },
+  },
+});
 
-// Create a logger object 
- const logger = log4js.getLogger(); 
- 
+// Create a logger object
+const logger = log4js.getLogger();
 
 const db = new sqlite3.Database(
   "./database.sqlite",
@@ -79,40 +78,13 @@ const STATIC_PATH =
     : `${process.cwd()}/frontend/`;
 
 const app = express();
- 
 
-
-
-app.post("/api/shipping-rates",bodyParser.json() ,async (_req, res) => {
+app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
-
-  
- console.log(_req.body.rate.items, "iiiiiiiiiiiiiiiiiiiiiiiiiiiii");
- logger.info("Cheese is Comté.");
- logger.info(_req);
- logger.info("Body ===============================");
- logger.info(_req.body);
- logger.info("Rate ===============https://fc-app.vuwork.com/================");
- logger.info(_req.body.rate.items);
-
-    res.status(200).json({
-      rates: [
-        {
-          service_name: "Fast Courier",
-          description: "Free Shipping",
-          service_code: "YFC",
-          currency: "EUR",
-          total_price: 500000,
-        },
-      ],
-    });
-
-    console.log("888888888888888888888888")
-logger.info("Cheese is Comté.");
-logger.info("Cheese is Comté.");
-logger.info("Cheese is Comté.");
-logger.info("Cheese is Comté.");
+    console.log("888888888888888888888888");
+    
     const session = await getSession();
+    console.log(session,"sessiona")
     var items = [];
     var totalPrice = 0;
     var isFreeShipping = false;
@@ -121,11 +93,12 @@ logger.info("Cheese is Comté.");
 
       const variantId = element.variant_id;
       const productId = element.product_id;
-      
+
       const productMetafields = await shopify.api.rest.Metafield.all({
-        session: session[1],
+        session: session[0],
         metafield: { owner_id: productId, owner_resource: "product" },
       });
+      console.log("productMetafields",productMetafields);
       console.log("element==", element);
       const metaData = productMetafields.data;
 
@@ -168,9 +141,69 @@ logger.info("Cheese is Comté.");
 
     console.log("items===", items);
 
-    const db = await getConnection();
-    let collection = db.collection("merchant_details");
-    const merchant = await collection.find({}).toArray();
+    // const db = await getConnection();
+    // let collection = db.collection("merchant_details");
+    // const merchant = await collection.find({}).toArray();
+    const merchant = [{
+      "id": 215,
+      "user_id": 470,
+      "domain_name": "https://medal-constitution-reactions-peas.trycloudflare.com",
+      "access_token": "708|y7X5KhXE8yuf2dcOE69HKm7bhKGJl6V5OQOcymIL",
+      "pickup_first_name": null,
+      "pickup_last_name": null,
+      "pickup_company_name": null,
+      "pickup_email": null,
+      "pickup_address_1": null,
+      "pickup_address_2": null,
+      "pickup_phone": null,
+      "pickup_building_type": null,
+      "pickup_suburb": null,
+      "pickup_state": null,
+      "pickup_postcode": null,
+      "pickup_time_window": null,
+      "billing_first_name": "Steve",
+      "billing_last_name": "Smith",
+      "billing_company_name": "Steve S company",
+      "billing_email": "stevesmith@gmail.com",
+      "billing_address_1": "12, Down street",
+      "billing_address_2": null,
+      "billing_phone": "9988998899",
+      "billing_suburb": "ADELAIDE",
+      "billing_state": "SA",
+      "billing_postcode": "5000",
+      "package_type": "box",
+      "weight": null,
+      "height": null,
+      "width": null,
+      "length": null,
+      "payment_method": "pm_1Op6EqCodfiDzZhkP7QOQnfR",
+      "booking_preference": "shipping_cost_passed_on_to_customer",
+      "shopping_preference": "show_shipping_price_with_carrier_name",
+      "conditional_price": 500,
+      "courier_preferences": "[\"1\",\"4\",\"6\",\"7\",\"9\",\"15\",\"16\",\"19\"]",
+      "categories_of_goods": "[{\"value\":2,\"label\":\"Apparel & Clothing\"},{\"value\":6,\"label\":\"Beauty Products\"}]",
+      "warehouse": null,
+      "abn": "123 456 789",
+      "insurance_type": 1,
+      "insurance_amount": null,
+      "is_insurance_paid_by_customer": 1,
+      "fallback_amount": "500",
+      "is_authority_to_leave": 0,
+      "is_drop_off_tail_lift": 1,
+      "is_approved": 1,
+      "is_disabled": 0,
+      "request_status": "Approved",
+      "reject_reason": null,
+      "disable_reason": null,
+      "requested_at": "2023-11-07 07:06:59",
+      "approved_at": "2023-11-07 07:06:59",
+      "rejected_at": null,
+      "disabled_at": null,
+      "created_at": "2023-11-07T07:06:59.000000Z",
+      "updated_at": "2024-05-02T19:03:34.000000Z",
+      "deleted_at": null
+    }]
+
 
     console.log("total===", totalPrice);
     const headers = {
@@ -230,7 +263,7 @@ logger.info("Cheese is Comté.");
       parcelContent: "Order from Main Hub",
       valueOfContent: `${totalPrice}`,
       items: JSON.stringify(items),
-      isDropOffTailLift: merchant[0]?.is_drop_off_tail_lift,
+      // isDropOffTailLift: merchant[0]?.is_drop_off_tail_lift,
     };
 
     console.log("payload===", payload);
@@ -271,7 +304,7 @@ logger.info("Cheese is Comté.");
         {
           service_name: `Fast Courier [${data?.data?.courierName}]`,
           service_code: `${serviceCode}`,
-          total_price: amount,
+          total_price: `${Number(Number(amount)*10*10)}`,
           description: description,
           currency: "AUD",
         },
@@ -299,13 +332,6 @@ logger.info("Cheese is Comté.");
   }
 });
 
-
-
-
-
-
-
-
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
@@ -318,10 +344,7 @@ app.post(
   shopify.processWebhooks({ webhookHandlers: PrivacyWebhookHandlers })
 );
 
-console.log([
-  shopify,
-  STATIC_PATH
-]);
+console.log([shopify, STATIC_PATH]);
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
@@ -341,14 +364,7 @@ app.get("/api/orders/count", async (_req, res) => {
 const getValueByKey = (data, key) => {
   const item = data.find((obj) => obj.key === key);
   return item ? item.value : null;
-
 };
-
-
-
- 
-
-
 
 app.get("/api/get-merchant", async (_req, res) => {
   try {
@@ -641,7 +657,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     });
 
     carrier_service.name = "Fast Courier";
-    
+
     carrier_service.callback_url =
       "https://fc-app.vuwork.com/api/shipping-rates";
     carrier_service.service_discovery = true;
@@ -665,16 +681,12 @@ app.post("/api/carrier-service/update", async (_req, res) => {
       "https://fc-app.vuwork.com/api/shipping-rates";
     await carrier_service.save({
       update: true,
-    }); 
+    });
     res.status(200).send(carrier_service);
   } catch (error) {
     console.log("carrier-update=", error);
   }
-
-    
 });
-
-
 
 app.get("/api/orders", async (_req, res) => {
   try {
@@ -754,25 +766,21 @@ app.post("/api/book-orders", async (_req, res) => {
     console.log("locals===", res.locals);
     console.log("shopify===", res.locals.shopify);
     var orders = [];
-    let metaFields_list = [
-      "Booked for collection",
-      collectionDate
-    ];
+    let metaFields_list = ["Booked for collection", collectionDate];
     const metafields_Item = [
       {
         key: "fc_order_status",
-        
+
         type: "single_line_text_field",
         namespace: "Order",
       },
       {
         key: "collection_date",
-        
+
         type: "single_line_text_field",
         namespace: "Order",
       },
     ];
-
 
     if (orderIds.length > 0) {
       for (const productId of orderIds) {
@@ -794,7 +802,6 @@ app.post("/api/book-orders", async (_req, res) => {
     }
     res.status(200).send(orders);
 
-    
     orderIds.forEach(async (id) => {
       const order = new shopify.api.rest.Order({ session: session });
       order.id = parseInt(id);
