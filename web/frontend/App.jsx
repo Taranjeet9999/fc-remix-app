@@ -17,6 +17,7 @@ import { OrderDetails } from "./components/orderDetails/OrderDetails";
 import { ForgotPassword } from "./components/forgotPassword";
 import { MerchantBillingDetails } from "./components/merchantBillingDetails";
 import "./App.css";
+import ExitIframe from "./pages/ExitIframe";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
@@ -69,6 +70,9 @@ export default function App() {
               {/* <BrowserRouter> */}
               <Routes>
                 <Route index element={<Navigate to="/login" />} />
+                <Route path="/exitiframe" element={
+                  <ExitIframe/>
+                } />
                 <Route path="/login" element={<Login setUserDetails={setUserDetails} />} />
                 <Route path="/homepage" element={<HomePage userDetails={userDetails} isStaging={isStaging} />} />
                 <Route path="/orderDetails" element={<OrderDetails />} />
