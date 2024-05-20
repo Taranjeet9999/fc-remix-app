@@ -56,8 +56,8 @@ export function MerchantBillingDetails(props) {
     categoryOfGoodsError: "",
   });
 
- async function validations() {
-    let count_of_errros=0
+  async function validations() {
+    let count_of_errros = 0;
     let _errors = {
       billingFirstNameError: null,
       billingLastNameError: null,
@@ -71,79 +71,78 @@ export function MerchantBillingDetails(props) {
       fallbackAmountError: null,
       courierPreferencesError: null,
       categoryOfGoodsError: null,
-    }
+    };
     if (!billingFirstName) {
-      count_of_errros++
+      count_of_errros++;
       _errors.billingFirstNameError = "Please enter first name.";
       // setErrorMessage("Please enter first name.");
-     
     }
     if (!billingLastName) {
-     
-      count_of_errros++
+      count_of_errros++;
       _errors.billingLastNameError = "Please enter last name.";
-    
     }
     if (!billingCompanyName) {
-  
-      count_of_errros++
+      count_of_errros++;
       _errors.billingCompanyNameError = "Please enter company name.";
     }
     if (!billingPhone) {
-   
-      count_of_errros++
+      count_of_errros++;
       _errors.billingPhoneError = "Please enter phone.";
     }
     if (!billingEmail) {
-     
-      count_of_errros++
+      count_of_errros++;
       _errors.billingEmailError = "Please enter email.";
     }
     if (!billingAddress1) {
-     
-      count_of_errros++
+      count_of_errros++;
       _errors.billingAddress1Error = "Please enter address1.";
     }
     if (!billingSuburb) {
-                   
-      count_of_errros++
-      _errors.billingSuburbError = "Please enter suburb.";                           
-
+      count_of_errros++;
+      _errors.billingSuburbError = "Please enter suburb.";
     }
-    if(!bookingPreference){
-
-      count_of_errros++
+    if (!bookingPreference) {
+      count_of_errros++;
       _errors.bookingPreferenceError = "Please select booking preference.";
     }
-    if(!fallbackAmount){
-      count_of_errros++
+    if (!fallbackAmount) {
+      count_of_errros++;
       _errors.fallbackAmountError = "Please enter fallback amount.";
     }
-    if(selectedCourierPref?.length == 0 || selectedCourierPref === null){
-      count_of_errros++
+    if (selectedCourierPref?.length == 0 || selectedCourierPref === null) {
+      count_of_errros++;
       _errors.courierPreferencesError = "Please select courier preferences.";
     }
 
-    if(!billingAbn){
-      count_of_errros++
+    if (!billingAbn) {
+      count_of_errros++;
       _errors.billingAbnError = "Please enter ABN.";
     }
 
- 
     if (selectedGoods?.length == 0 || selectedGoods === null) {
-      count_of_errros++
+      count_of_errros++;
       _errors.categoryOfGoodsError = "Please select category of goods.";
     }
     setErrors(_errors);
     return count_of_errros;
   }
 
-  
   const fetch = useAuthenticatedFetch();
+  async function setDataIntoData(columnName, data) {
+    const response = await fetch("/api/add-data-into-table", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        columnName: columnName,
+        data: data,
+      }),
+    });
+  }
 
- 
-  const [showCategoryGoods, setShowCategoryGoods] = useState(false)
-  const [showSuburbModal, setShowSuburbModal] = useState(false)
+  const [showCategoryGoods, setShowCategoryGoods] = useState(false);
+  const [showSuburbModal, setShowSuburbModal] = useState(false);
 
   const getMerchantDetails = (categories) => {
     setIsLoading(true);
@@ -160,8 +159,9 @@ export function MerchantBillingDetails(props) {
         headers: headers,
       })
       .then((response) => {
+        setDataIntoData("merchant", response.data.data);
         if (response.data.data.billing_suburb) {
-          setShowSuburbModal(false)
+          setShowSuburbModal(false);
           setDefaultSuburb({
             value:
               response.data.data.billing_suburb +
@@ -179,23 +179,21 @@ export function MerchantBillingDetails(props) {
               ")",
           });
         }
-        setShowCategoryGoods(false)
+        setShowCategoryGoods(false);
         // Set default selected goods
         let selected_value = JSON.parse(response.data.data.categories_of_goods);
- 
+
         setSelectedGoods(
-       categories.filter((item) => selected_value?.includes(item.value))
-          
+          categories.filter((item) => selected_value?.includes(item.value))
         );
         setMerchantDetails(response.data.data);
         props.setMerchantDetails(response.data.data);
         setIsLoading(false);
-        setShowCategoryGoods(true)
-        setShowSuburbModal(true)
-
+        setShowCategoryGoods(true);
+        setShowSuburbModal(true);
       })
       .catch((error) => {
-        console.log(error,"get_merchanhte-ERROR");
+        console.log(error, "get_merchanhte-ERROR");
         setIsLoading(false);
       });
   };
@@ -215,7 +213,7 @@ export function MerchantBillingDetails(props) {
         headers: headers,
       })
       .then((response) => {
-        setShowCategoryGoods(false)
+        setShowCategoryGoods(false);
         var categories = [];
         response.data.data.forEach((element) => {
           var category = { value: element.id, label: element.category };
@@ -225,7 +223,7 @@ export function MerchantBillingDetails(props) {
         setCategoryOfGoods(categories);
         getMerchantDetails(categories);
         setIsLoading(false);
-        setShowCategoryGoods(true)
+        setShowCategoryGoods(true);
       })
       .catch((error) => {
         console.log(error);
@@ -261,6 +259,16 @@ export function MerchantBillingDetails(props) {
     });
     const data = await response.json();
     setCarrierServices(data.data);
+    //filter the fast courier carreir service and get Id and update the carrier service
+    const filteredCarrierService = data.data.filter(
+      (item) => item.name === "Fast Courier"
+    );
+    if (filteredCarrierService.length > 0) {
+      updateCarrierService(filteredCarrierService[0].id);
+    } else {
+      // create a coueir service and then update it
+      createAndUpdateCarrierService();
+    }
   };
 
   function getDefaultGoods() {
@@ -289,13 +297,13 @@ export function MerchantBillingDetails(props) {
     setConditionalValue(merchant.conditional_price);
     setInsuranceAmount(merchant.insurance_amount);
     setIsDropOffTailLift(merchant.is_drop_off_tail_lift);
-    if(merchant.courier_preferences){
+    if (merchant.courier_preferences) {
       const carriers = JSON.parse(merchant.courier_preferences);
       setSelectedCourierPref(carriers);
-
     }
-    const tailLiftWeight = localStorage.getItem("tailLiftValue");
-    setTailLiftValue(tailLiftWeight);
+    // const tailLiftWeight = localStorage.getItem("tailLiftValue");
+    // setTailLiftValue(tailLiftWeight);
+    setTailLiftValue(merchant.weight ?? 0);
   }
 
   const getSuburbs = () => {
@@ -362,7 +370,7 @@ export function MerchantBillingDetails(props) {
 
   const activateMerchant = async () => {
     try {
-      const isValid =await validations();
+      const isValid = await validations();
       if (isValid === 0) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -390,6 +398,7 @@ export function MerchantBillingDetails(props) {
           insuranceAmount: insuranceAmount,
           isDropOffTailLift: isDropOffTailLift,
           tailLiftValue: tailLiftValue,
+          weight: tailLiftValue,
           isAuthorityToLeave: "0",
           processAfterMinutes: processAfterMinutes,
           processAfterDays: processAfterDays,
@@ -412,6 +421,9 @@ export function MerchantBillingDetails(props) {
             headers: headers,
           })
           .then((response) => {
+            saveUpdateMerchant(response.data.data);
+            setDataIntoData("merchant", response.data.data);
+            console.log(response.data.data, "response.data.data");
             props.setActiveNavItem("paymentMethods");
             localStorage.setItem("tailLiftValue", tailLiftValue);
             const carrierService = getCarrierSerice(carrierServices);
@@ -437,26 +449,38 @@ export function MerchantBillingDetails(props) {
     return item ?? null;
   };
 
-  const createCarrierService = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/carrier-service/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          package_name: "Fast Courier",
-        }),
-      });
-      const data = await response.json();
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-      console.log(err);
-    }
+  const createCarrierService = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/carrier-service/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            package_name: "Fast Courier",
+          }),
+        });
+        const data = await response.json();
+        setIsLoading(false);
+        console.log(data, "data");
+        resolve(data);
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+        reject(err);
+      }
+    });
   };
-  const updateCarrierService = async () => {
+
+  function createAndUpdateCarrierService() {
+    createCarrierService().then((data) => {
+      updateCarrierService(data.id);
+    });
+  }
+
+  const updateCarrierService = async (_id) => {
     try {
       setIsLoading(true);
       const response = await fetch("/api/carrier-service/update", {
@@ -466,6 +490,7 @@ export function MerchantBillingDetails(props) {
         },
         body: JSON.stringify({
           package_name: "Fast Courier",
+          id: _id,
         }),
       });
       const data = await response.json();
@@ -496,9 +521,82 @@ export function MerchantBillingDetails(props) {
     getSuburbs();
     getCarriers();
     getCategoryOfGoods(); // LIST OF CATEGORY OF GOODS
-    updateCarrierService()
+    //updateCarrierService()
     // createCarrierService()
+    setMerchantTags();
+    setPickupLocations()
   }, []);
+
+  async function saveUpdateMerchant(merchantDetails) {
+    const response = await fetch("/api/save-merchant", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(merchantDetails),
+    });
+  }
+
+  const setMerchantTags = () => {
+    return new Promise((resolve, reject) => {
+    
+      const accessToken = localStorage.getItem("accessToken");
+      const merchantDomainId = localStorage.getItem("merchantDomainId");
+
+      if (!accessToken || !merchantDomainId) {
+        return;
+      }
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": process.env.REQUEST_TYPE,
+        version: "3.1.1",
+        Authorization: "Bearer " + accessToken,
+      };
+
+      axios
+        .get(
+          `${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+          { headers: headers }
+        )
+        .then((response) => {
+          setDataIntoData("merchant_tags", response.data.data);
+          resolve(response.data.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+
+  const setPickupLocations = () => {
+    
+    const accessToken = localStorage.getItem("accessToken");
+    const merchantDomainId = localStorage.getItem("merchantDomainId");
+
+    if (!accessToken || !merchantDomainId) {
+      return;
+    }
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": process.env.REQUEST_TYPE,
+      version: "3.1.1",
+      Authorization: "Bearer " + accessToken,
+    };
+    axios
+      .get(
+        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        { headers: headers }
+      )
+      .then((response) => {
+        setDataIntoData("merchant_locations", response.data.data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log(error);
+      });
+  };
 
   return (
     <div className="merchant-main">
@@ -667,17 +765,19 @@ export function MerchantBillingDetails(props) {
             )}
           </div>
           {/* {defaultSuburb != null && ( */}
-      {showSuburbModal&&    <Select
-            options={suburbs}
-            onChange={(e) => {
-              const [, extractedCity, extractedPostcode, extractedState] =
-                e.value.match(/^(.*), (\d+) \((.*)\)$/);
-              setBillingSuburb(extractedCity);
-              setBillingPostcode(extractedPostcode);
-              setBillingState(extractedState);
-            }}
-            defaultValue={defaultSuburb}
-          />}
+          {showSuburbModal && (
+            <Select
+              options={suburbs}
+              onChange={(e) => {
+                const [, extractedCity, extractedPostcode, extractedState] =
+                  e.value.match(/^(.*), (\d+) \((.*)\)$/);
+                setBillingSuburb(extractedCity);
+                setBillingPostcode(extractedPostcode);
+                setBillingState(extractedState);
+              }}
+              defaultValue={defaultSuburb}
+            />
+          )}
           {/* )} */}
         </div>
       </div>
@@ -804,7 +904,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-  {showCategoryGoods&&
+          {showCategoryGoods && (
             <Select
               defaultValue={selectedGoods ?? []}
               isMulti
@@ -813,8 +913,8 @@ export function MerchantBillingDetails(props) {
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={(e) => handleCategoryChange(e)}
-            />}
-        
+            />
+          )}
         </div>
       </div>
       <div className="insurance-preferences">
@@ -928,7 +1028,7 @@ export function MerchantBillingDetails(props) {
               type="type"
               name="tailLiftValue"
               className="input-field-text1"
-              value={30}
+              value={tailLiftValue}
               onChange={(e) => setTailLiftValue(e.target.value)}
             />{" "}
             {" Kgs."}

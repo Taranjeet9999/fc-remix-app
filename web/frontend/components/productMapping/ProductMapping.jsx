@@ -10,6 +10,7 @@ import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import Papa from "papaparse";
 import { csv } from "csvtojson";
+import { locationMetafields } from "../../globals";
 
 export function ProductMapping() {
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
@@ -67,14 +68,17 @@ export function ProductMapping() {
       },
     });
 
-    const data = await response.json();
-    console.log("products", data.body.data.products);
+    const data = await response.json(); 
 
-    const formattedProducts = formatProductData(data.body.data.products);
-    console.log("formattedproducts", formattedProducts);
+    if(data){
 
-    setProducts(formattedProducts);
-    setIsLoading(false);
+      const formattedProducts = formatProductData(data.body.data.products);
+      console.log("formattedproducts", formattedProducts);
+  
+      setProducts(formattedProducts);
+      setIsLoading(false);
+
+    }
   };
   function getProductIdFromGID(gid) {
     const parts = gid.split("/"); // Split the URL by '/'
@@ -141,26 +145,28 @@ export function ProductMapping() {
     // getVariantMeta();
   }, []);
 
-  const uniqueTags = new Set();
-  const uniqueCategories = new Set();
+  // const uniqueTags = new Set();
+  // const uniqueCategories = new Set();
 
   // Iterate over the products and add tags to the Set
-  products?.forEach((product) => {
-    if (product.tags) {
-      product.tags.split(",").forEach((tag) => {
-        uniqueTags.add(tag.trim());
-      });
-    }
-    if (product.product_type) {
-      product.product_type.split(",").forEach((tag) => {
-        uniqueCategories.add(tag.trim());
-      });
-    }
-  });
+  
+
+  // products?.forEach((product) => {
+  //   if (product.tags) {
+  //     // product.tags.split(",").forEach((tag) => {
+  //       uniqueTags.add(getLocationtagName(product.tags ));
+  //     // });
+  //   }
+  //   if (product.product_type) {
+  //     product.product_type.split(",").forEach((tag) => {
+  //       uniqueCategories.add(tag.trim());
+  //     });
+  //   }
+  // });
 
   // Convert Set to an array for rendering
-  const uniqueTagsArray = Array.from(uniqueTags);
-  const uniqueCategoriesArray = Array.from(uniqueCategories);
+  // const uniqueTagsArray = Array.from(uniqueTags);
+  // const uniqueCategoriesArray = Array.from(uniqueCategories);
 
   // const getProducts = products?.map(item1 => {
   //     const matchingItem2 = data?.body?.data?.products?.edges.find(item2 => item2.node.id.includes(item1.id));
@@ -195,44 +201,65 @@ export function ProductMapping() {
     setCsvData(e.target.files[0]);
   };
 
+  const [importDimensionError, setImportDimensionError] = useState('')
+  useEffect(() => {
+    setImportDimensionError("")
+  }, [showImportDimensionsModal])
+  
+
   const importDimensions = async () => {
     setIsLoading(true);
-    Papa.parse(csvData, {
-      header: true,
-      skipEmptyLines: false,
-      complete: async (result) => {
-        setDataArray(result.data);
-        const importData = result.data;
-        const productIds = importData.map((element) => {
-          const product = products?.data?.data.find((element1) => {
-            return element.SKU == element1.variants[0].sku;
-          });
-          return product.id;
-        });
-        const element = importData[0];
-        // importData.map(async (element) => {
-        const response = await fetch("/api/product/add-dimensions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            package_type: element["Package Type"],
-            height: element.Height,
-            width: element.Width,
-            length: element.Length,
-            weight: element.Weight,
-            isIndividual: element.Individual,
-            product_ids: productIds,
-          }),
-        });
+    try {
+      Papa.parse(csvData, {
+        header: true,
+        skipEmptyLines: false,
+        complete: async (result) => {
+          setDataArray(result.data);
+          const importData = result.data; 
+          const productIds = importData.map((element) => {
+            const product = products?.find((element1) => {
+              return element?.SKU == element1?.variants?.[0]?.sku;
+            });
+            if(product?.id){
 
-        // })
-        getAllProducts();
-        setIsLoading(false);
-        setShowImportDimensionsModal(false);
-      },
-    });
+              return product?.id;
+            }
+          });
+          if(productIds?.length > 0){
+            const element = importData[0];
+            // importData.map(async (element) => {
+            const response = await fetch("/api/product/add-dimensions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                package_type: element["Package Type"],
+                height: element.Height,
+                width: element.Width,
+                length: element.Length,
+                weight: element.Weight,
+                isIndividual: element.Individual,
+                product_ids:  productIds,
+              }),
+            });
+    
+            // })
+            getAllProducts();
+            setIsLoading(false);
+            setShowImportDimensionsModal(false);
+
+          }else{
+
+            setImportDimensionError('No Products found')
+            setIsLoading(false);
+          }
+        },
+      });
+      
+    } catch (error) {
+      console.log("import dmensions error",error)
+    }
   };
 
   const getPickupLocations = () => {
@@ -317,6 +344,7 @@ export function ProductMapping() {
       ? selectedProducts.filter((item) => item !== e.target.value)
       : [...selectedProducts, e.target.value];
     setSelectedProducts(productIds);
+
   };
 
   const selectVariant = (e) => {
@@ -327,10 +355,18 @@ export function ProductMapping() {
   };
 
   const handleSelectAll = (e) => {
-    var selectedIds = e.target.checked
-      ? products.data.data.map((element) => element.id.toString())
+     
+    var selectedProductIds = e.target.checked
+      ? products.map((element) => element.id.toString())
       : [];
-    setSelectedProducts(selectedIds);
+    setSelectedProducts(selectedProductIds);
+
+
+    var selectedVariantIds = e.target.checked
+      ? products.map((element) => element.variants.map((variant) => variant.id))
+      : [];
+    setSelectedVariants(selectedVariantIds.flat());
+     
   };
 
   const assignLocation = async () => {
@@ -432,7 +468,11 @@ console.log(response,"responseeeeeee")
   };
 
   const handleLocationChange = (e) => {
-    setLocationName(e.target.value);
+    let locationJson= {...locationMetafields}
+    locationJson.type = locationBy;
+    locationJson.value = JSON.parse(e.target.value);
+
+    setLocationName(locationJson);
   };
 
   function closeAddShippingBoxModal() {
@@ -579,12 +619,61 @@ console.log(response,"responseeeeeee")
     }
   }, [showAddShippingBoxModal])
   
-  
+  const handleDownloadCSV = () => {
+    // Define the filename of the CSV file to be downloaded
+    const filename = 'dimensions-sample.csv';
+    // Construct the URL to the CSV file in the public folder
+    const fileUrl =  '/' + filename;
+    // Trigger the download by creating a temporary link element
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
+
+  function getLocationtagName(tagData){
+    
+    
+    try {
+      let _tagData = JSON.parse(tagData)
+    
+      if (typeof _tagData == 'string') {
+        return ''
+        
+      }
+      
+      if(_tagData.type == 'name'){
+        let IsLocationExistForLoginUser = locations.find((element) => element.id == _tagData.value.id)
+        if(!IsLocationExistForLoginUser){
+          return ""
+        }
+        return _tagData.value.location_name
+      
+      }
+      if(_tagData.type == 'tag'){
+
+        let IsTagExistForLoginUser = merchantTags.find((element) => element.id == _tagData.value.id)
+        if(!IsTagExistForLoginUser){
+          return ""
+        }
+        return _tagData.value.name
+      }
+    } catch (error) {
+      console.log(error,"error")
+      return""
+    }
+
+  }
   return (
     <div className="product-mapping">
+
+       
       {isLoading && <Loader />}
       <div className="product-header">
+        
         <div className="product-map-filters">
           {/* <div className="input-container">
                         <div className="input-lebel">
@@ -606,9 +695,9 @@ console.log(response,"responseeeeeee")
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
                 <option value="all">All</option>
-                {uniqueCategoriesArray.map((element, i) => {
+                {/* {uniqueCategoriesArray.map((element, i) => {
                   return <option value={element}>{element}</option>;
-                })}
+                })} */}
               </select>
             </div>
           </div>
@@ -624,9 +713,9 @@ console.log(response,"responseeeeeee")
                 onChange={(e) => setSelectedTag(e.target.value)}
               >
                 <option value="all">All</option>
-                {uniqueTagsArray.map((element, i) => {
+                {/* {uniqueTagsArray.map((element, i) => {
                   return <option value={element}>{element}</option>;
-                })}
+                })} */}
               </select>
             </div>
           </div>
@@ -683,7 +772,12 @@ console.log(response,"responseeeeeee")
           </button>
           <button
             className="submit-btn"
-            onClick={() => setShowImportDimensionsModal(true)}
+             
+            onClick={() =>
+            
+               setShowImportDimensionsModal(true)
+                
+            }
           >
             Import Dimensions
           </button>
@@ -706,9 +800,14 @@ console.log(response,"responseeeeeee")
                   onChange={(e) => handleCsvInputChange(e)}
                 />
               </div>
-              <div className="sample-download">
+              <div className="sample-download"
+              onClick={()=>{
+                handleDownloadCSV()
+              }}
+              
+              >
                 <a
-                  href="http://fc-new.vuwork.com/wp-content/plugins/fast-courier-shipping-freight/views/sample/dimensions-sample.csv"
+                  href="#"
                   download={true}
                 >
                   {" "}
@@ -716,6 +815,16 @@ console.log(response,"responseeeeeee")
                 </a>
               </div>
             </div>
+
+            {importDimensionError&&
+            <div className="error-message">
+              {importDimensionError}
+            </div>
+            
+            
+            
+            
+            }
           </div>
           <div className="modal-footer">
             <div
@@ -998,7 +1107,7 @@ console.log(response,"responseeeeeee")
                   onChange={(e) => setLocationBy(e.target.value)}
                 >
                   <option value={"name"}>Name</option>
-                  <option value={"tags"}>Tags</option>
+                  <option value={"tag"}>Tags</option>
                 </select>
               </div>
             </div>
@@ -1010,23 +1119,33 @@ console.log(response,"responseeeeeee")
                 <select
                   className="input-field-text"
                   type="text"
-                  onChange={(e) => handleLocationChange(e)}
+                  onChange={(e) =>{ 
+                     
+                    handleLocationChange(e)}}
                 >
                   <option>Select option</option>
                   {locationBy == "name" &&
                     locations.length > 0 &&
                     locations.map((element, i) => {
                       return (
-                        <option value={element.location_name}>
+                        <option value={JSON.stringify(element)}
+                        
+                        onChange={(e) =>{
+                          
+                          
+                          console.log(e.target.value,"dd")
+                          setLocationName(e.target.value)}}
+                        
+                        >
                           {element.location_name}
                         </option>
                       );
                     })}
-                  {locationBy == "tags" &&
+                  {locationBy == "tag" &&
                     merchantTags.length > 0 &&
                     merchantTags.map((element, i) => {
                       return (
-                        <option value={element.name}>{element.name}</option>
+                        <option value={JSON.stringify(element)}>{element.name}</option>
                       );
                     })}
                 </select>
@@ -1227,7 +1346,11 @@ console.log(response,"responseeeeeee")
         <table>
           <tr className="table-head">
             <th className="select-all">
-              <input type="checkbox" onChange={(e) => handleSelectAll(e)} />
+              <input type="checkbox"
+              
+              checked={selectedProducts?.length === products?.length}
+              
+              onChange={(e) => handleSelectAll(e)} />
             </th>
             <th>Name</th>
             <th>SKU</th>
@@ -1308,7 +1431,7 @@ console.log(response,"responseeeeeee")
                   </td>
                   <td width="10%">
           
-                    {getProductMetaField(element.metafields, "location")}
+                    {getLocationtagName(getProductMetaField(element.metafields, "location"))}
                   </td>
                 </tr>
               ) : (
@@ -1335,7 +1458,7 @@ console.log(response,"responseeeeeee")
                     <td width="10%">{element.variants[0].sku}</td>
                     <td width="10%">{"$" + element.variants[0].price}</td>
                     <td width="10%">{element.product_type}</td>
-                    <td width="20%">{element.tags}</td>
+                    <td width="20%">{getLocationtagName(element.tags)}</td>
                     <td width="10%">{"-- --"}</td>
                     <td width="20%">{"-- --"}</td>
                     <td width="10%">{"-- --"}</td>
@@ -1364,7 +1487,7 @@ console.log(response,"responseeeeeee")
                       </label>
                     </td>
                     <td width="10%">
-                      {getProductMetaField(element.metafields, "location")}
+                      {getLocationtagName(getProductMetaField(element.metafields, "location"))}
                     </td>
                   </tr>
                   {openProductIds.includes(element.id) &&
@@ -1424,7 +1547,9 @@ console.log(response,"responseeeeeee")
                                         </label></td> */}
                           <td></td>
                           <td width="10%">
-                            {getProductMetaField(value.metafields, "location")}
+                             
+                    {getLocationtagName(getProductMetaField(value.metafields, "location"))}
+
                           </td>
                         </tr>
                       );

@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://garmin-irs-doll-experts.trycloudflare.com"
+application_url = "https://status-columbia-shell-draw.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://garmin-irs-doll-experts.trycloudflare.com/auth/callback",
-  "https://garmin-irs-doll-experts.trycloudflare.com/auth/shopify/callback",
-  "https://garmin-irs-doll-experts.trycloudflare.com/api/auth/callback"
+  "https://status-columbia-shell-draw.trycloudflare.com/auth/callback",
+  "https://status-columbia-shell-draw.trycloudflare.com/auth/shopify/callback",
+  "https://status-columbia-shell-draw.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

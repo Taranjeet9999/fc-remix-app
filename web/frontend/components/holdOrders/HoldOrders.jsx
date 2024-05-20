@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
+import { getAddress, getCurrentDate, getNextSixDays } from "../newOrders/NewOrders";
 
 export function HoldOrders() {
   const fetch = useAuthenticatedFetch();
@@ -255,7 +256,10 @@ export function HoldOrders() {
                 <span> Collection Date&nbsp;</span>
               </div>
               <div className="input-field1">
-                <input className="input-field-text" type="date" value={collectionDate} onChange={(e) => handleDateChange(e)} />
+                <input className="input-field-text" 
+                min={getCurrentDate()}
+                max={getNextSixDays()} 
+                type="date" value={collectionDate} onChange={(e) => handleDateChange(e)} />
               </div>
             </div>
           </div>
@@ -432,24 +436,23 @@ export function HoldOrders() {
                         element?.shipping_address?.last_name ?? ""}
                     </td>
                     <td width="15%">
-                      {element?.shipping_address?.address1 ?? "" +
-                        ", " +
-                        element?.shipping_address?.address2 ?? "" +
-                        " " +
-                        element.shipping_address?.city ?? ""}
+                    {element?.shipping_address != null
+    ? getAddress(element.shipping_address)
+    : getAddress(element.billing_address)}
                     </td>
                     <td width="8%">{"Hold"}</td>
                     <td width="8%">{"NA"}</td>
-                    <td width={"8%"}>{element.subtotal_price}</td>
+                    <td width={"8%"}>A${element.subtotal_price}</td>
                     <td width="7%">
                       {element.line_items[0].fulfillable_quantity}
                     </td>
                     <td width="15%">{"NA"}</td>
                     <td width="10%" className="order-actions">
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         icon="fa-solid fa-pen-to-square"
                         size="2xs"
-                      />
+                      /> */}
+                      NA
                     </td>
                   </tr>
                 );

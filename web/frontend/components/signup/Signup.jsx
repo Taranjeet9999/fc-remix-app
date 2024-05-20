@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../login/style.css";
 import { useState } from "react";
 import { Loader } from "../loader";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export function Signup(props) {
     const [firstName, setFirstName] = useState("");
@@ -14,6 +15,28 @@ export function Signup(props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
+    const fetch = useAuthenticatedFetch();
+    const setMerchantTokenAndDomainId = async (access_token,merchant_domain_id) => {
+        try {
+          setIsLoading(true);
+          const response = await fetch("/api/set-merchant-token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token:access_token,
+              merchant_domain_id:merchant_domain_id
+            }),
+          });
+          const data = await response.json();
+          setIsLoading(false);
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+        }
+      };
+    
 
     const signup = () => {
         setIsLoading(true);
@@ -37,6 +60,7 @@ export function Signup(props) {
             props.setUserDetails(response.data.merchant);
             localStorage.setItem("accessToken", response.data.merchant.access_token);
             localStorage.setItem("merchantDomainId", response.data.merchant.id);
+            setMerchantTokenAndDomainId(response.data.merchant.access_token,response.data.merchant.id);
             navigate('/homepage');
             setIsLoading(false);
         }).catch(error => {

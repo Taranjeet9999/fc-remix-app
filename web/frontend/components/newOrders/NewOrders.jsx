@@ -1,12 +1,12 @@
 import "./style.css";
-import { Modal } from '../modal';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { AddLocation } from '../addLocation';
+import { Modal } from "../modal";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { AddLocation } from "../addLocation";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "../loader";
-import { ErrorModal } from '../errorModal';
+import { ErrorModal } from "../errorModal";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -26,7 +26,7 @@ export function NewOrders(props) {
   const [defaultLocation, setDefaultLocation] = useState(null);
   const [pickupLocations, setPickupLocations] = useState(null);
   const [disabledDates, setDisabledDates] = useState([]);
-  const [allNewOrders, setallNewOrders] = useState([])
+  const [allNewOrders, setallNewOrders] = useState([]);
   const [filterData, setFilterData] = useState({
     startDate: "",
     endDate: "",
@@ -38,11 +38,11 @@ export function NewOrders(props) {
   const getFormattedDate = (originalDateString) => {
     const originalDate = new Date(originalDateString);
     const year = originalDate.getFullYear();
-    const month = String(originalDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-    const day = String(originalDate.getDate()).padStart(2, '0');
+    const month = String(originalDate.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
+    const day = String(originalDate.getDate()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
-  }
+  };
 
   // const disabledDates = [
   //   '2024-01-01',
@@ -61,47 +61,60 @@ export function NewOrders(props) {
   useEffect(() => {
     getPickupLocations();
     getHolidays();
-  }, [])
+  }, []);
 
   const getPickupLocations = () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
     const headers = {
-      "Accept": "application/json",
+      Accept: "application/json",
       "Content-Type": "application/json",
       "request-type": process.env.REQUEST_TYPE,
-      "version": "3.1.1",
-      "Authorization": "Bearer " + accessToken
-    }
-    axios.get(`${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`, { "headers": headers }).then(response => {
-      // setIsLoading(false);
-      setPickupLocations(response.data.data);
-      const defaultPickupLocation = response.data.data?.find(element => element.is_default == 1);
-      console.log("defaultPickupLocation", defaultPickupLocation);
-      setDefaultLocation(defaultPickupLocation);
-    }).catch(error => {
-      setIsLoading(false);
-      console.log(error);
-    })
-  }
+      version: "3.1.1",
+      Authorization: "Bearer " + accessToken,
+    };
+    axios
+      .get(
+        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        { headers: headers }
+      )
+      .then((response) => {
+        // setIsLoading(false);
+        setPickupLocations(response.data.data);
+        const defaultPickupLocation = response.data.data?.find(
+          (element) => element.is_default == 1
+        );
+        console.log("defaultPickupLocation", defaultPickupLocation);
+        setDefaultLocation(defaultPickupLocation);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log(error);
+      });
+  };
 
   const getHolidays = () => {
-      const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          "version": "3.1.1",
-          "Authorization": "Bearer " + accessToken
-      }
-      axios.get(`${process.env.API_ENDPOINT}/api/wp/public-holidays`, { "headers": headers }).then(response => {
-          console.log("holidays", response);
-          setDisabledDates(response.data.data);
-      }).catch(error => {
-          console.log(error);
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": process.env.REQUEST_TYPE,
+      version: "3.1.1",
+      Authorization: "Bearer " + accessToken,
+    };
+    axios
+      .get(`${process.env.API_ENDPOINT}/api/wp/public-holidays`, {
+        headers: headers,
       })
-  }
+      .then((response) => {
+        console.log("holidays", response);
+        setDisabledDates(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const getAllOrders = () => {
     return new Promise((resolve, reject) => {
@@ -155,7 +168,6 @@ export function NewOrders(props) {
     });
   };
 
-
   useEffect(() => {
     setIsLoading(true);
     Promise.all([getAllOrders(), getOrderMeta()])
@@ -179,10 +191,7 @@ export function NewOrders(props) {
     var location = metafields?.find((element) => element.node.key == keyValue);
 
     return location != undefined ? location.node.value : null;
-  }
-
-
-
+  };
 
   // useEffect(async () => {
   //   var filteredData = [];
@@ -203,26 +212,28 @@ export function NewOrders(props) {
 
   const selectOrder = (e) => {
     const orderIds = selectedOrders.includes(e.target.value)
-      ? selectedOrders.filter(item => item !== e.target.value)
+      ? selectedOrders.filter((item) => item !== e.target.value)
       : [...selectedOrders, e.target.value];
     setSelectedOrders(orderIds);
-  }
+  };
 
   const handleSelectAll = (e) => {
-    var selectedIds = e.target.checked ? orders.map((element) => element.id.toString()) : [];
+    var selectedIds = e.target.checked
+      ? orders.map((element) => element.id.toString())
+      : [];
     setSelectedOrders(selectedIds);
-  }
+  };
 
   const holdSelectedOrders = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/hold-orders', {
-        method: 'POST',
+      const response = await fetch("/api/hold-orders", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          orderIds: selectedOrders
+          orderIds: selectedOrders,
         }),
       });
       console.log(response);
@@ -234,86 +245,89 @@ export function NewOrders(props) {
       setIsLoading(false);
       console.log(err);
     }
-  }
-
-
-
-  
-
+  };
 
   const bookSelectedOrders = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const headers = {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
         "request-type": process.env.REQUEST_TYPE,
-        "version": "3.1.1",
-        "Authorization": "Bearer " + accessToken
-      }
-      const selectedOrderDetails = orders?.filter((element) => selectedOrders.includes(`${element.id}`));
-
-      
+        version: "3.1.1",
+        Authorization: "Bearer " + accessToken,
+      };
+      const selectedOrderDetails = orders?.filter((element) =>
+        selectedOrders.includes(`${element.id}`)
+      );
 
       var bookOrders = [];
       for (const element of selectedOrderDetails) {
         const order = {
-          "quoteId": getMetaValue(element.node?.metafields?.edges, "quote_id"),
-          "orderHashId": getMetaValue(element.node?.metafields?.edges, "order_hash_id"),
-          "collectionDate": collectionDate,
-          "destinationEmail": element?.contact_email,
-          "destinationPhone": element?.shipping_address.phone,
-          "wpOrderId": element?.order_number,
-          "destinationFirstName": element?.shipping_address.first_name,
-          "destinationLastName": element?.shipping_address.last_name,
-          "destinationCompanyName": element?.shipping_address.company,
-          "destinationAddress1": element?.shipping_address.address1,
-          "destinationAddress2": element?.shipping_address.address2,
-          "pickupFirstName": defaultLocation?.first_name,
-          "pickupLastName": defaultLocation?.last_name,
-          "pickupCompanyName": null,
-          "pickupAddress1": defaultLocation?.address1,
-          "pickupAddress2": defaultLocation?.address2,
-          "pickupPhone": defaultLocation?.phone,
-          "pickupEmail": defaultLocation?.email,
-          "atl": false
-        }
+          quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
+          orderHashId: getMetaValue(
+            element.node?.metafields?.edges,
+            "order_hash_id"
+          ),
+          collectionDate: collectionDate,
+          destinationEmail: element?.contact_email,
+          destinationPhone: element?.shipping_address.phone,
+          wpOrderId: element?.order_number,
+          destinationFirstName: element?.shipping_address.first_name,
+          destinationLastName: element?.shipping_address.last_name,
+          destinationCompanyName: element?.shipping_address.company,
+          destinationAddress1: element?.shipping_address.address1,
+          destinationAddress2: element?.shipping_address.address2,
+          pickupFirstName: defaultLocation?.first_name,
+          pickupLastName: defaultLocation?.last_name,
+          pickupCompanyName: null,
+          pickupAddress1: defaultLocation?.address1,
+          pickupAddress2: defaultLocation?.address2,
+          pickupPhone: defaultLocation?.phone,
+          pickupEmail: defaultLocation?.email,
+          atl: false,
+        };
 
         bookOrders.push(order);
       }
       const payload = {
-        "orders": bookOrders,
-        "isReprocessOrders": false,
-        "request_type": "wp"
-      }
+        orders: bookOrders,
+        isReprocessOrders: false,
+        request_type: "wp",
+      };
 
       console.log("payload===", payload);
-      axios.post(`${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`, payload, { "headers": headers }).then(response => {
-        fetch('/api/book-orders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            collectionDate: collectionDate,
-            orderIds: selectedOrders
-          }),
+      axios
+        .post(
+          `${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
+          payload,
+          { headers: headers }
+        )
+        .then((response) => {
+          fetch("/api/book-orders", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              collectionDate: collectionDate,
+              orderIds: selectedOrders,
+            }),
+          });
+          setIsLoading(false);
+          getAllOrders();
+          getOrderMeta();
+          setShowBookOrderModal(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(error);
         });
-        setIsLoading(false);
-        getAllOrders();
-        getOrderMeta();
-        setShowBookOrderModal(false);
-      }).catch(error => {
-        setIsLoading(false);
-        console.log(error);
-      })
-
-
     } catch (err) {
       setIsLoading(false);
       console.log(err);
     }
-  }
+  };
 
   const handleDateChange = (e) => {
     const selected = e.target.value;
@@ -326,24 +340,27 @@ export function NewOrders(props) {
 
     // Disable Saturdays (day 6) and Sundays (day 0)
     if (selectedDay === 0 || selectedDay === 6) {
-      setErrorMsg('Weekends not allowed');
+      setErrorMsg("Weekends not allowed");
       setShowError(true);
-      setCollectionDate('');
+      setCollectionDate("");
     }
     // Disable dates before the current date
     else if (new Date(selected) < currentDate) {
-      setErrorMsg('Dates before today are disabled. Please choose another date.');
+      setErrorMsg(
+        "Dates before today are disabled. Please choose another date."
+      );
       setShowError(true);
-      setCollectionDate('');
-    }
-    else if (disabledDates.includes(selected)) {
-      setErrorMsg('This date is disabled. Please choose another date.');
+      setCollectionDate("");
+    } else if (disabledDates.includes(selected)) {
+      setErrorMsg("This date is disabled. Please choose another date.");
       setShowError(true);
-      setCollectionDate(''); // Clear the selected date if it's disabled
+      setCollectionDate(""); // Clear the selected date if it's disabled
     } else {
       setCollectionDate(selected);
     }
   };
+
+
 
   return (
     <div className="new-orders">
@@ -356,9 +373,7 @@ export function NewOrders(props) {
       <Modal showModal={showBookOrderModal} width="30%">
         <div className="booking-modal">
           <div className="modal-header">
-            <div className="shipping-heading">
-              Process
-            </div>
+            <div className="shipping-heading">Process</div>
           </div>
           <div className="modal-body">
             <div className="input-container">
@@ -366,12 +381,22 @@ export function NewOrders(props) {
                 <span> Collection Date&nbsp;</span>
               </div>
               <div className="input-field1">
-                <input className="input-field-text" type="date" value={collectionDate} onChange={(e) => handleDateChange(e)} />
+                <input
+                  className="input-field-text"
+                  type="date"
+                  min={getCurrentDate()}
+                  max={getNextSixDays()}
+                  value={collectionDate}
+                  onChange={(e) => handleDateChange(e)}
+                />
               </div>
             </div>
           </div>
           <div className="modal-footer">
-            <div className="cancel-btn" onClick={() => setShowBookOrderModal(false)}>
+            <div
+              className="cancel-btn"
+              onClick={() => setShowBookOrderModal(false)}
+            >
               Close
             </div>
             <div className="submit-btn" onClick={() => bookSelectedOrders()}>
@@ -383,15 +408,14 @@ export function NewOrders(props) {
       <Modal showModal={showHoldOrderModal} width="30%">
         <div className="booking-modal">
           <div className="modal-header">
-            <div className="shipping-heading">
-              Hold Order
-            </div>
+            <div className="shipping-heading">Hold Order</div>
           </div>
-          <div className="modal-body">
-            Do you want to hold selected orders?
-          </div>
+          <div className="modal-body">Do you want to hold selected orders?</div>
           <div className="modal-footer">
-            <div className="cancel-btn" onClick={() => setShowHoldOrderModal(false)}>
+            <div
+              className="cancel-btn"
+              onClick={() => setShowHoldOrderModal(false)}
+            >
               Close
             </div>
             <div className="submit-btn" onClick={() => holdSelectedOrders()}>
@@ -458,72 +482,97 @@ export function NewOrders(props) {
           </div>
         </div>
         <div className="d-flex align-items-end  ">
-          <button className="fc-yellow-btn pointer"
+          <button
+            className="fc-yellow-btn pointer"
             onClick={() => {
-               
               const filteredOrders = allNewOrders?.filter((element) => {
                 // Convert order date to seconds
                 const orderDate = new Date(element.created_at).getTime() / 1000;
-            
+
                 // Convert start date to seconds (00:00 AM)
                 const startDate = new Date(filterData.startDate);
                 startDate.setHours(0, 0, 0, 0);
                 const startDateInSeconds = startDate.getTime() / 1000;
-            
+
                 // Convert end date to seconds (11:59 PM)
                 const endDate = new Date(filterData.endDate);
                 endDate.setHours(23, 59, 59, 999);
                 const endDateInSeconds = endDate.getTime() / 1000;
-            
+
                 // Check if order date is within the specified range
-                const orderDateCheck = (filterData.startDate !== "" && filterData.endDate !== "")
-                    ? (orderDate >= startDateInSeconds && orderDate <= endDateInSeconds)
+                const orderDateCheck =
+                  filterData.startDate !== "" && filterData.endDate !== ""
+                    ? orderDate >= startDateInSeconds &&
+                      orderDate <= endDateInSeconds
                     : true;
-            
+
                 // Check if order ID matches the filter
-                const orderIdCheck = (filterData.orderId !== "")
-                    ? element.order_number.toString().includes(filterData.orderId.toString())
+                const orderIdCheck =
+                  filterData.orderId !== ""
+                    ? element.order_number
+                        .toString()
+                        .includes(filterData.orderId.toString())
                     : true;
-            
+
                 // Return true only if both checks pass
                 return orderDateCheck && orderIdCheck;
-            });
-            
-            // Set the filtered orders
-            setOrders(filteredOrders);
-            
-            
-            }}
+              });
 
-          >Filter</button>
+              // Set the filtered orders
+              setOrders(filteredOrders);
+            }}
+          >
+            Filter
+          </button>
         </div>
         <div className="filter-buttons">
-          <button className="pointer"
+          <button
+            className="pointer"
             onClick={() => {
               setFilterData({
                 startDate: "",
                 endDate: "",
                 orderId: "",
                 shippingType: "",
-              })
-              setOrders(allNewOrders)
+              });
+              setOrders(allNewOrders);
             }}
-
-          > Reset </button>
+          >
+            {" "}
+            Reset{" "}
+          </button>
         </div>
       </div>
       <div className="order-action-buttons">
-        <button className="submit-btn" onClick={() => selectedOrders.length > 0 ? setShowBookOrderModal(true) : (setShowError(true), setErrorMsg("Please select at least 1 order"))}>
+        <button
+          className="submit-btn"
+          onClick={() =>
+            selectedOrders.length > 0
+              ? setShowBookOrderModal(true)
+              : (setShowError(true),
+                setErrorMsg("Please select at least 1 order"))
+          }
+        >
           Book Selected Orders
         </button>
-        <button className="submit-btn" onClick={() => selectedOrders.length > 0 ? setShowHoldOrderModal(true) : (setShowError(true), setErrorMsg("Please select at least 1 order"))}>
+        <button
+          className="submit-btn"
+          onClick={() =>
+            selectedOrders.length > 0
+              ? setShowHoldOrderModal(true)
+              : (setShowError(true),
+                setErrorMsg("Please select at least 1 order"))
+          }
+        >
           Hold Selected Orders
         </button>
       </div>
       <div className="pickup-locations-table">
         <table>
           <tr className="table-head">
-            <th className="select-all"><input type="checkbox" onChange={(e) => handleSelectAll(e)} /></th>
+            <th className="select-all">
+              <input type="checkbox" onChange={(e) => handleSelectAll(e)} />
+            </th>
             <th>Order Id</th>
             <th>Date</th>
             <th>Customer</th>
@@ -535,25 +584,131 @@ export function NewOrders(props) {
             <th>Shipping type</th>
             <th>Actions</th>
           </tr>
-          {orders?.length > 0 && orders?.map((element, i) => {
-            if (getMetaValue(element.node?.metafields?.edges, "fc_order_status") != "Hold" && getMetaValue(element.node?.metafields?.edges, "fc_order_status") != "Booked for collection") {
-              return <tr key={i} className='products-row' style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}>
-                <td><input type="checkbox" value={element.id} onChange={(e) => selectOrder(e)} checked={selectedOrders.includes(element.id.toString())} /></td>
-                <td width="7%" onClick={() => navigate('/orderDetails')} style={{ cursor: "pointer" }}>{element.order_number}</td>
-                <td width="10%">{getFormattedDate(element.created_at)}</td>
-                <td width="15%">{element?.shipping_address != null ? element?.shipping_address?.first_name + " " + element?.shipping_address?.last_name : element?.billing_address?.first_name + " " + element?.billing_address?.last_name}</td>
-                <td width="15%">{element?.shipping_address != null ? element?.shipping_address?.address1 ?? "" + ", " + element?.shipping_address?.address2 ?? "" + " " + element?.shipping_address?.city ?? "" : element?.billing_address?.address1 ?? "" + ", " + element?.billing_address?.address2 ?? ""+ " " + element?.billing_address?.city ?? ""}</td>
-                <td width="8%">{element.financial_status}</td>
-                <td width={"8%"}>{element.current_total_price}</td>
-                <td width="7%">{element.line_items[0].fulfillable_quantity}</td>
-                <td width="15%">{getMetaValue(element.node?.metafields?.edges, "carrier_name")}</td>
-                <td width="10%">{element.financial_status}</td>
-                <td width="8%">{"NA"}</td>
-              </tr>
-            }
-          })}
+          {orders?.length > 0 &&
+            orders?.map((element, i) => {
+          
+              if (
+                getMetaValue(
+                  element.node?.metafields?.edges,
+                  "fc_order_status"
+                ) != "Hold" &&
+                getMetaValue(
+                  element.node?.metafields?.edges,
+                  "fc_order_status"
+                ) != "Booked for collection"
+              ) {
+                return (
+                  <tr
+                    key={i}
+                    className="products-row"
+                    style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
+                  >
+                    <td>
+                      <input
+                        type="checkbox"
+                        value={element.id}
+                        onChange={(e) => selectOrder(e)}
+                        checked={selectedOrders.includes(element.id.toString())}
+                      />
+                    </td>
+                    <td
+                      width="7%"
+                      onClick={() =>
+                        navigate("/orderDetails", { state: { order: element ,redirectedtab:"newOrders"} })
+                      }
+                      style={{ cursor: "pointer" }}
+                    >
+                      {element.order_number}
+                      {element.order_number=="1080" ?   console.log(element,"LLLLL") :""}
+                    </td>
+                    <td width="10%">{getFormattedDate(element.created_at)}</td>
+                    <td width="15%">
+                      {element?.shipping_address != null
+                        ? element?.shipping_address?.first_name +
+                          " " +
+                          element?.shipping_address?.last_name
+                        : element?.billing_address?.first_name +
+                          " " +
+                          element?.billing_address?.last_name}
+                    </td>
+                    <td width="15%">
+  {element?.shipping_address != null
+    ? getAddress(element.shipping_address)
+    : getAddress(element.billing_address)}
+</td>
+
+                    <td width="8%">
+                    Ready to Book
+                      {/* {element.financial_status} */}
+                      </td>
+                    <td width={"8%"}>A${element.current_total_price}</td>
+                    <td width="7%">
+                      {element.line_items[0].fulfillable_quantity}
+                    </td>
+                    <td width="15%">
+                      {/* {getMetaValue(
+                        element.node?.metafields?.edges,
+                        "carrier_name"
+                      )} */}
+                      {element?.shipping_lines?.[0]?.price ? "A$"+ element?.shipping_lines?.[0]?.price : ""} {element?.shipping_lines?.[0]?.title ?         
+                                
+                                `(${element?.shipping_lines?.[0]?.title?.replace("Fast Courier", "")?.replace("[",'')?.replace("]","")?.replace(" ","") ?? "Free"})`
+
+                                :""
+                                
+                                }
+                    </td>
+                    <td width="10%">
+                    
+                      {element.financial_status}
+                      </td>
+                    <td width="8%">{"NA"}</td>
+                  </tr>
+                );
+              }
+            })}
         </table>
       </div>
     </div>
   );
+}
+
+
+export function getAddress(address) {
+  if (!address) return "";
+  
+  return `${address.address1 ?? ""}
+   ${address.address2 ?? ""}
+   ${address.city ?? ""}
+   ${address.province_code ?? ""}
+     ${address.company ?? ""} 
+     ${address.zip ?? ""} 
+       `;
+}
+
+export function getCurrentDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  let month = today.getMonth() + 1;
+  let day = today.getDate();
+
+  month = month < 10 ? `0${month}` : month;
+  day = day < 10 ? `0${day}` : day;
+
+  return `${year}-${month}-${day}`;
+}
+
+export function getNextSixDays() {
+  const today = new Date();
+  const nextSixDays = new Date(today);
+  nextSixDays.setDate(nextSixDays.getDate() + 6);
+
+  const year = nextSixDays.getFullYear();
+  let month = nextSixDays.getMonth() + 1;
+  let day = nextSixDays.getDate();
+
+  month = month < 10 ? `0${month}` : month;
+  day = day < 10 ? `0${day}` : day;
+
+  return `${year}-${month}-${day}`;
 }

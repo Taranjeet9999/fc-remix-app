@@ -144,7 +144,7 @@ export function AddLocation(props) {
       setErrorMessage("Please enter valid email");
       return false;
     }
-    if (phoneNumber == "") {
+    if (phoneNumber == "" || phoneNumber.length < 10) {
       setErrorMessage("Please enter phone number");
       return false;
     }
@@ -158,6 +158,7 @@ export function AddLocation(props) {
   const addLocation = () => {
     try {
       const isValid = validations();
+      console.log(isValid,"isValid Add location")
       if (isValid) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -472,6 +473,21 @@ export function AddLocation(props) {
       }
     });
   }, []);
+
+
+  const handleDownload = () => {
+    // Define the filename of the CSV file to be downloaded
+    const filename = 'sample.csv';
+    // Construct the URL to the CSV file in the public folder
+    const fileUrl =  '/' + filename;
+    // Trigger the download by creating a temporary link element
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
   return (
     <div className="add-location-modal">
       {isLoading && <Loader />}
@@ -565,8 +581,8 @@ export function AddLocation(props) {
             <div className="input-lebel1">
               <span> Phone Number&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
-              {errorMessage != "" && phoneNumber == "" && (
-                <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+              {errorMessage != "" && (phoneNumber == "" || phoneNumber?.length<10) && (
+                <span style={{ color: "red" }}> &nbsp; {"(Min 10 chars)"}</span>
               )}
             </div>
             <div className="input-field">
@@ -751,12 +767,14 @@ export function AddLocation(props) {
             />
           </div>
           <div className="sample-download"
-          onClick={()=>{}}
+          onClick={()=>{
+            handleDownload()
+          }}
           
           >
             <a
-              href="http://fc-new.vuwork.com/wp-content/plugins/fast-courier-shipping-freight/views/sample/sample.csv"
-              download={true}
+              href="#"
+            
             >
               {" "}
               Sample CSV{" "}

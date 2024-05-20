@@ -177,18 +177,31 @@ export function ProcessedOrders() {
                             console.log("i", i);
                             return <tr key={i} className='products-row' style={{ background: i % 2 == 0 ? "#F5F8FA" : "#FFFFFF" }}>
                                 {/* <td><input type="checkbox" value={element.id} onChange={(e) => selectOrder(e)} checked={selectedOrders.includes(element.id.toString())} /></td> */}
-                                <td width="7%" onClick={() => navigate('/orderDetails')} style={{ cursor: "pointer" }}>{element.order_number}</td>
+                                <td width="7%" onClick={() =>                         navigate("/orderDetails", { state: { order: element ,redirectedtab:"processedOrders"} })
+} style={{ cursor: "pointer" }}>{element.order_number}</td>
                                 {/* <td width="8%">{"GROREYQJYM"}</td> */}
                                 <td width="7%">{new Date(element.created_at).toLocaleDateString('en-GB')}</td>
-                                <td width="15%">{element?.shipping_address?.first_name + " " + element?.shipping_address?.last_name}</td>
+                                <td width="15%">
+                                    {element?.shipping_address?.first_name + " " + element?.shipping_address?.last_name}
+                                    </td>
                                 <td width="8%">{getMetaValue(element.node?.metafields?.edges, "fc_order_status")}</td>
-                                <td width={"8%"}>{element.subtotal_price}</td>
+                                <td width={"8%"}>A${element.subtotal_price}</td>
                                 <td width="8%">{"1"}</td>
-                                <td width="15%">{"$14.11(Aramax Express)"}</td>
+                                <td width="15%">
+                                    {/* {"$14.11(Aramax Express)"} */}
+                                    {element?.shipping_lines?.[0]?.price ? "A$"+ element?.shipping_lines?.[0]?.price : ""} {element?.shipping_lines?.[0]?.title ?         
+                                
+                                `(${element?.shipping_lines?.[0]?.title?.replace("Fast Courier", "")?.replace("[",'')?.replace("]","")?.replace(" ","")})`
+
+                                :""
+                                
+                                }
+                                    </td>
                                 <td width="7%">{getMetaValue(element.node?.metafields?.edges, "collection_date")}</td>
                                 <td width="15%">{"Paid"}</td>
                                 <td width="10%" className="order-actions">
-                                    <FontAwesomeIcon icon="fa-solid fa-pen-to-square" size='2xs' />
+                                    {/* <FontAwesomeIcon icon="fa-solid fa-pen-to-square" size='2xs' /> */}
+                                    NA
                                 </td>
                             </tr>
                         }

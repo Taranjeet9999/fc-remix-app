@@ -7,6 +7,7 @@ import { AddLocation } from "../addLocation";
 import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import CustomTooltip from "../customToolTip/CustomToolTip";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export function PickupLocations(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,7 @@ export function PickupLocations(props) {
   const [pickupLocations, setPickupLocations] = useState([]);
   const [editLocation, setEditLocation] = useState(null);
   const [merchantTags, setMerchantTags] = useState([]);
+  const fetch = useAuthenticatedFetch();
 
   const getPickupLocations = () => {
     setIsLoading(true);
@@ -35,7 +37,15 @@ export function PickupLocations(props) {
       )
       .then((response) => {
         setIsLoading(false);
+        getMerchantTags().then(()=>{
+          setIsLoading(false);
+          
+        }).catch(()=>{
+          setIsLoading(false);
+
+        })
         setPickupLocations(response.data.data);
+        setDataIntoData("merchant_locations",response.data.data)
       })
       .catch((error) => {
         setIsLoading(false);
@@ -44,30 +54,35 @@ export function PickupLocations(props) {
   };
 
   const getMerchantTags = () => {
-    setIsLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
-    const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
-    axios
-      .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
-        { headers: headers }
-      )
-      .then((response) => {
-        setIsLoading(false);
-        setMerchantTags(response.data.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.log(error);
-      });
+    return new Promise((resolve, reject) => {
+      setIsLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      const merchantDomainId = localStorage.getItem("merchantDomainId");
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": process.env.REQUEST_TYPE,
+        version: "3.1.1",
+        Authorization: "Bearer " + accessToken,
+      };
+  
+      axios
+        .get(`${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`, { headers: headers })
+        .then((response) => {
+          setIsLoading(false);
+          setMerchantTags(response.data.data);
+          setDataIntoData("merchant_tags",response.data.data)
+          resolve(response.data.data);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          reject(error);
+        });
+    });
   };
+
+ 
+  
 
   const deleteLocation = (element) => {
     setIsLoading(true);
@@ -132,6 +147,19 @@ export function PickupLocations(props) {
       tagNames.push(tag.name);
     }
     return tagNames.join(", ");
+  }
+
+  async function setDataIntoData(columnName, data) {
+    const response = await fetch("/api/add-data-into-table", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+      columnName:columnName,
+      data:data
+      }),
+    })
   }
 
   return (

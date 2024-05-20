@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 // import { MerchantBillingDetails } from "../components/merchantBillingDetails";
 import "./style.css";
 import { Configuration } from "../components/configuration";
@@ -9,16 +9,52 @@ import { ProcessedOrders } from "../components/processedOrders";
 import { HoldOrders } from "../components/holdOrders";
 import { RejectedOrders } from "../components/rejectedOrders/RejectedOrders";
 import { FallbackOrders } from "../components/fallbackOrders";
-// import { OrderDetails } from "../components/orderDetails/OrderDetails";
+import { useAuthenticatedFetch } from "../hooks";
+import { Loader } from "../components/loader";
+//import { OrderDetails } from "../components/orderDetails/OrderDetails";
 
 export default function HomePage(props) {
   const [activeNavItem, setActiveNavItem] = useState("configuration");
   const navigate = useNavigate();
+  const location = useLocation();
+  const fetch = useAuthenticatedFetch();
+  const [isLoading, setIsLoading] = useState(false);
+   
+  useEffect(() => {
+    if(location.state?.redirectedtab){
+      setActiveNavItem(location.state?.redirectedtab)
 
+    }
+  }, [location.state])
+  
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("merchantDomainId");
-    navigate("/login");
+    logOutUser()
+  }
+
+  async function logOutUser( ) {
+    try {
+        setIsLoading(true);
+      const response = await fetch("/api/remove-merchant-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      
+      if (data.data) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("merchantDomainId");
+        navigate("/login");
+        setIsLoading(false);
+      } else {
+        
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
   }
 
   const getComponent = () => {
@@ -40,6 +76,7 @@ export default function HomePage(props) {
   }
   return (
     <div className="homepage">
+      {isLoading && <Loader />}
       <div className="homepage-left">
         <div className="logo-image">
           <img src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png" />

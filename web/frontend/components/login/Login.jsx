@@ -4,6 +4,7 @@ import "./style.css";
 import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export function Login(props) {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export function Login(props) {
   const [errorMessage, setErrorMessage] = useState(
     "The login details are incorrect. Please try again."
   );
-
+  const fetch = useAuthenticatedFetch();
   const navigate = useNavigate();
 
   function isValidEmail(email) {
@@ -57,9 +58,12 @@ export function Login(props) {
               "accessToken",
               response.data.merchant.access_token
             );
-            localStorage.setItem("merchantDomainId", response.data.merchant.id);
-            navigate("/homepage");
-            setIsLoading(false);
+            setMerchantTokenAndDomainId(response.data.merchant.access_token,response.data.merchant.id).then(()=>{
+
+              localStorage.setItem("merchantDomainId", response.data.merchant.id);
+              navigate("/homepage");
+              setIsLoading(false);
+            });
           })
           .catch((error) => {
             setIsLoading(false);
@@ -75,11 +79,70 @@ export function Login(props) {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      navigate("/homepage");
-    }
+    // const accessToken = localStorage.getItem("accessToken");
+    // if (accessToken) {
+    //   navigate("/homepage");
+    // }
+    getMerchantTokenAndDomainId();
   }, []);
+
+  const setMerchantTokenAndDomainId = (access_token, merchant_domain_id) => {
+    setIsLoading(true);
+  
+    return fetch("/api/set-merchant-token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: access_token,
+        merchant_domain_id: merchant_domain_id
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+     
+      // You can handle the `data` if needed
+    })
+    .catch(err => {
+      setIsLoading(false);
+      console.log(err);
+    });
+  };
+  
+
+
+  async function getMerchantTokenAndDomainId( ) {
+    try {
+        setIsLoading(true);
+      const response = await fetch("/api/get-merchant-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      
+      if (data.data) {
+        console.log(data.data,"data.data");
+        localStorage.setItem(
+          "accessToken",
+          data.data.merchant_token
+        );
+       
+        localStorage.setItem("merchantDomainId",data.data.merchant_id);
+        navigate("/homepage");
+        setIsLoading(false);
+      } else {
+        localStorage.clear()
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+ 
 
   return (
     <div className="main-container">
