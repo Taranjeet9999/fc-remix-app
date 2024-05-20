@@ -1411,7 +1411,7 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://theatre-indoor-rage-philadelphia.trycloudflare.com/api/shipping-rates";
+        "https://fc-app.vuwork.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
