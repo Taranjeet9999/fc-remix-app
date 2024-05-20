@@ -128,3 +128,7 @@ input:checked+.slider:before {
 .align-items-end{
   align-items: end;
 }
+
+.mr-2{
+  margin-right: 8px;
+}

@@ -169,23 +169,34 @@ export function NewOrders(props) {
   };
 
   useEffect(() => {
+   
+    getAllOrdersData()
+  }, []);
+
+  function getAllOrdersData(){
     setIsLoading(true);
     Promise.all([getAllOrders(), getOrderMeta()])
-      .then(([ordersData, orderMetaData, locationData]) => {
-        const getOrders = ordersData?.map((item1) => {
-          const matchingItem2 = orderMetaData?.body?.data?.orders?.edges.find(
-            (item2) => item2.node.id.includes(item1.id)
-          );
-          return { ...item1, ...matchingItem2 };
-        });
-        setOrders(getOrders);
-        setallNewOrders(getOrders);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("error:", error);
+    .then(([ordersData, orderMetaData, locationData]) => {
+      const getOrders = ordersData?.map((item1) => {
+        const matchingItem2 = orderMetaData?.body?.data?.orders?.edges.find(
+          (item2) => item2.node.id.includes(item1.id)
+        );
+        return { ...item1, ...matchingItem2 };
       });
-  }, []);
+      setOrders(getOrders);
+      setallNewOrders(getOrders);
+      setIsLoading(false);
+      setFilterData({
+        startDate: "",
+        endDate: "",
+        orderId: "",
+        shippingType: "",
+      })
+    })
+    .catch((error) => {
+      console.error("error:", error);
+    });
+  }
 
   const getMetaValue = (metafields, keyValue) => {
     var location = metafields?.find((element) => element.node.key == keyValue);
@@ -238,8 +249,7 @@ export function NewOrders(props) {
       });
       console.log(response);
       setIsLoading(false);
-      getAllOrders();
-      getOrderMeta();
+      getAllOrdersData()
       setShowHoldOrderModal(false);
     } catch (err) {
       setIsLoading(false);
@@ -296,7 +306,7 @@ export function NewOrders(props) {
         request_type: "wp",
       };
 
-      console.log("payload===", payload);
+      
       axios
         .post(
           `${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,

@@ -562,6 +562,8 @@ console.log(response,"responseeeeeee")
   };
 
   const resetFilters = () => {
+    setProductSearchString('')
+    return;
     setSelectedCategory("all");
     setSelectedTag("all");
   };
@@ -667,6 +669,7 @@ console.log(response,"responseeeeeee")
     }
 
   }
+  const [productSearchString, setProductSearchString] = useState('')
   return (
     <div className="product-mapping">
 
@@ -674,7 +677,7 @@ console.log(response,"responseeeeeee")
       {isLoading && <Loader />}
       <div className="product-header">
         
-        <div className="product-map-filters">
+        <div className="product-map-filters align-items-end">
           {/* <div className="input-container">
                         <div className="input-lebel">
                             <span> Keywords&nbsp;</span>
@@ -683,6 +686,7 @@ console.log(response,"responseeeeeee")
                             <input className="input-field-text" type="text" />
                         </div>
                     </div> */}
+            {false &&        <>
           <div className="input-container">
             <div className="input-lebel">
               <span> Category&nbsp;</span>
@@ -718,8 +722,27 @@ console.log(response,"responseeeeeee")
                 })} */}
               </select>
             </div>
+          </div></>}
+          <div className="input-container mr-2">
+          <div className="input-lebel">
+            <span> Product Name&nbsp;</span>
           </div>
-          <div className="input-container">
+          <div className="input-field1">
+            <input
+              className="input-field-text"
+              type="text"
+              placeholder="Product"
+              onChange={(e) =>{
+                setProductSearchString(e.target.value)
+              }
+                // setFilterData({ ...filterData, orderId: e.target.value })
+
+              }
+              value={productSearchString}
+            />
+          </div>
+        </div>
+          <div className="input-container mr-2">
             <div className="input-lebel">
               <span> Product Type&nbsp;</span>
             </div>
@@ -738,7 +761,7 @@ console.log(response,"responseeeeeee")
             </div>
           </div>
           <div className="filter-buttons">
-            <button className="fc-yellow-btn pointer"> Filter </button>
+            {/* <button className="fc-yellow-btn pointer"> Filter </button> */}
             <button onClick={() => resetFilters()}> Reset </button>
           </div>
         </div>
@@ -1353,7 +1376,7 @@ console.log(response,"responseeeeeee")
               onChange={(e) => handleSelectAll(e)} />
             </th>
             <th>Name</th>
-            <th>SKU</th>
+            {/* <th>SKU</th> */}
             <th>Price</th>
             <th>Category</th>
             <th>Tags</th>
@@ -1366,7 +1389,8 @@ console.log(response,"responseeeeeee")
             <th>Location/Tag</th>
           </tr>
           {products?.length > 0 &&
-            products.map((element, i) => {
+            products.filter((prod)=>prod.title.toLowerCase().includes(productSearchString.toLowerCase()))
+            .map((element, i) => {
               return element?.variants.length > 0 &&
                 element?.variants[0]?.title == "Default Title" ? (
                 <tr
@@ -1384,7 +1408,7 @@ console.log(response,"responseeeeeee")
                     />
                   </td>
                   <td width="10%">{element.title}</td>
-                  <td width="10%">{element.variants[0].sku}</td>
+                  {/* <td width="10%">{element?.variants?.[0]?.sku}</td> */}
                   <td width="10%">{"$" + element.variants[0].price}</td>
                   <td width="10%">{element.product_type}</td>
                   <td width="20%">{element.tags}</td>

@@ -43,7 +43,7 @@ function Extension() {
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://fc-app.vuwork.com/api/get-order/${orderId}`,
+      `https://theatre-indoor-rage-philadelphia.trycloudflare.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -68,7 +68,7 @@ function Extension() {
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://fc-app.vuwork.com/api/set-order-metafields`,
+        `https://theatre-indoor-rage-philadelphia.trycloudflare.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -86,7 +86,7 @@ function Extension() {
       );
     } else {
       const result = await fetch(
-        `https://fc-app.vuwork.com/api/process-order/${orderId}`,
+        `https://theatre-indoor-rage-philadelphia.trycloudflare.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

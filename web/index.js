@@ -57,7 +57,6 @@ const db = new sqlite3.Database(
 // }
 
 function getSession(shop) {
-  
   return new Promise((resolve, reject) => {
     const query = "SELECT * FROM shopify_sessions WHERE shop = ?";
     db.all(query, [shop], (err, rows) => {
@@ -364,25 +363,22 @@ function getKeyValueArray(objects) {
 //   });
 // });
 app.use((req, res, next) => {
-  if (req.url === '/api/shipping-rates') {
+  if (req.url === "/api/shipping-rates") {
     const start = process.hrtime();
-    res.on('finish', () => {
+    res.on("finish", () => {
       const diff = process.hrtime(start);
       const timeInSeconds = (diff[0] + diff[1] / 1e9).toFixed(2); // Convert to seconds
       console.log(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
       logger.info(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
-      logger.info(`Response: ${""}`)
+      logger.info(`Response: ${""}`);
     });
   }
 
   next();
 });
- 
-
 
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
-
     // res.status(200).json({
     //   rates: [
     //     {
@@ -400,18 +396,20 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     const session = await getSession(
       `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
     );
-//  logger.info(session,"session")
+    //  logger.info(session,"session")
     if (session.length === 0 || !session[0].merchant_token) {
-      logger.info("Returned error", 'session.length === 0 || !session[0].merchant_token')
+      logger.info(
+        "Returned error",
+        "session.length === 0 || !session[0].merchant_token"
+      );
       res.status(200).json({ error: "Merchant not found" });
       return;
     }
     if (!session[0].merchant_locations) {
-      logger.info("Returned error", '!session[0].merchant_locations')
+      logger.info("Returned error", "!session[0].merchant_locations");
       res.status(200).json({ error: "Merchant not found" });
       return;
     }
-    
 
     const merchant = JSON.parse(session[0].merchant);
     // logger.info("API STARTING","response")
@@ -450,7 +448,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             locationData = { ...merchant_default_location };
             // logger.info(locationData,"Default locationData")
           } else {
-             locationData = filteredLocations[0];
+            locationData = filteredLocations[0];
             // logger.info(destination,"destination")
             if (destination.latitude && destination.longitude) {
               let minDistance = haversineDistance(
@@ -524,8 +522,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         };
       })
     );
-    
-    
 
     let courier_data_to_Show_end_user = { ...groupByLocation(courierData) };
 
@@ -572,7 +568,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             (acc, item) => acc + item.price,
             0
           );
-         
+
           const payload = {
             request_type: "wp",
             pickupFirstName: items[0].pickupLocation?.first_name,
@@ -610,7 +606,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             items: JSON.stringify(items),
             isDropOffTailLift: merchant?.is_drop_off_tail_lift,
           };
-          
 
           const quote = await fetch(
             `https://fctest-api.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
@@ -629,8 +624,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             }
           );
           const data = await quote.json();
-        
-           
+
           courier_data_to_Show_end_user[location] = items.map((xitem) => {
             return {
               ...xitem,
@@ -669,8 +663,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       )
     );
 
-     
-
     // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
       (sum, quote) => sum + parseFloat(quote.amount),
@@ -690,7 +682,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         },
       ],
     };
-   
+
     // const response = {
     //   rates: quotes.map((quote) => ({
     //     service_name: `Fast Courier [${quote.courierName}]`,
@@ -922,6 +914,19 @@ app.get("/api/get-merchant-token", async (_req, res) => {
       res.status(200).send({ data: null });
       return;
     }
+
+    res.status(200).send({ data: session[0] });
+  } catch (error) {
+    console.log("get-merchant=", error);
+  }
+});
+app.get("/api/get-current-session", async (_req, res) => {
+  try {
+    let current_session = res.locals.shopify.session;
+   
+    const session = await getSession(current_session.shop);
+     
+    await createColoumnIfNotExist()
 
     res.status(200).send({ data: session[0] });
   } catch (error) {
@@ -1393,25 +1398,29 @@ app.post("/api/carrier-service/create", async (_req, res) => {
   }
 });
 
-app.post("/api/carrier-service/update",bodyParser.json(), async (_req, res) => {
-  try {
-    const body = _req.body;
-    const  id = body?.id;
-    const carrier_service = new shopify.api.rest.CarrierService({
-      session: res.locals.shopify.session,
-    });
-    carrier_service.id = id ?? 68618911963;
-    carrier_service.name = "Fast Courier";
-    carrier_service.callback_url =
-      "https://fc-app.vuwork.com/api/shipping-rates";
-    await carrier_service.save({
-      update: true,
-    });
-    res.status(200).send(carrier_service);
-  } catch (error) {
-    console.log("carrier-update=", error);
+app.post(
+  "/api/carrier-service/update",
+  bodyParser.json(),
+  async (_req, res) => {
+    try {
+      const body = _req.body;
+      const id = body?.id;
+      const carrier_service = new shopify.api.rest.CarrierService({
+        session: res.locals.shopify.session,
+      });
+      carrier_service.id = id ?? 68618911963;
+      carrier_service.name = "Fast Courier";
+      carrier_service.callback_url =
+        "https://theatre-indoor-rage-philadelphia.trycloudflare.com/api/shipping-rates";
+      await carrier_service.save({
+        update: true,
+      });
+      res.status(200).send(carrier_service);
+    } catch (error) {
+      console.log("carrier-update=", error);
+    }
   }
-});
+);
 
 app.get("/api/orders", async (_req, res) => {
   try {
@@ -1734,6 +1743,7 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
           addColumn("merchant_locations", "TEXT"), // Add other columns as needed
           addColumn("merchant_tags", "TEXT"),
           addColumn("merchant", "TEXT"),
+          addColumn("is_production", "TEXT", "false"),
           // Add more columns here
         ])
           .then(() => {
@@ -1756,19 +1766,60 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
     });
   });
 }
-
-function addColumn(columnName, columnType) {
+async function createColoumnIfNotExist() {
   return new Promise((resolve, reject) => {
-    db.run(
-      `ALTER TABLE shopify_sessions ADD COLUMN ${columnName} ${columnType}`,
-      (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(true);
-        }
+    // Check if the column exists
+    db.get("PRAGMA table_info(shopify_sessions)", async (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
+      let columnExists = await isMerchantColumnExist("merchant_token");
+
+      if (!columnExists) {
+        Promise.all([
+          addColumn("merchant_token", "TEXT"),
+          addColumn("merchant_id", "TEXT"),
+          addColumn("merchant_locations", "TEXT"), // Add other columns as needed
+          addColumn("merchant_tags", "TEXT"),
+          addColumn("merchant", "TEXT"),
+          addColumn("is_production", "TEXT", "false"),
+          // Add more columns here
+        ])
+          .then(() => {
+            return {
+              success: true,
+            };
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        // If the column exists, directly insert the merchant ID
+        return {
+          success: true,
+        };
+      }
+    });
+  });
+}
+
+function addColumn(columnName, columnType, initialValue) {
+  return new Promise((resolve, reject) => {
+    const defaultClause = initialValue
+      ? `DEFAULT ${initialValue}`
+      : "DEFAULT NULL";
+    const query = `
+      ALTER TABLE shopify_sessions
+      ADD COLUMN ${columnName} ${columnType} ${defaultClause}
+    `;
+    db.run(query, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
   });
 }
 

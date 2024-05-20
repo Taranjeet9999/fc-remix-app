@@ -148,10 +148,12 @@ export function OrderDetails(props) {
      return convertArrayToObject(product.metafields)
      
     }else{
-      return {}
+      return {location:{}}
     }
   }
 
+  const orderLocation = getProductDimensionsById(order?.line_items[0]?.product_id)?.['location'] !="{}" ?? null;
+   console.log(orderLocation,"orderLocation")
   return (
     <div className="order-details-main">
       {isLoading && <Loader />}
@@ -291,7 +293,7 @@ export function OrderDetails(props) {
             <table>
               <tr className="table-head">
                 <th>Item</th>
-                <th>SKU</th>
+                {/* <th>SKU</th> */}
                 <th>Cost</th>
                 <th>Quantity</th>
                 <th>Tax</th>
@@ -304,7 +306,7 @@ export function OrderDetails(props) {
                 return (
                   <tr className="table-body">
                     <td>{item.name}</td>
-                    <td>{item.sku}</td>
+                    {/* <td>{item.sku}</td> */}
                     <td>${item.price}</td>
                     <td>{item.quantity}</td>
                     <td>{item.taxable ? "Yes" : "No"}</td>
@@ -367,7 +369,7 @@ export function OrderDetails(props) {
                 <td>{order.shipping_lines?.[0]?.title}</td>
                 <td>  {order.shipping_lines?.[0]?.price ?`A$${order.shipping_lines?.[0]?.price}`:""}</td>
                 <td>{  order?.line_items[0]?.requires_shipping ? "5-8 Business Days" :"NA"}</td>
-                <td>{getProductDimensionsById(order?.line_items[0]?.product_id)?.['location']} </td>
+                <td>{JSON.parse(orderLocation ?? "{}")?.value?.location_name} </td>
                 <td>AUS </td>
                 <td>- </td>
               </tr>
