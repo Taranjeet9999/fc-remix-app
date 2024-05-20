@@ -183,6 +183,8 @@ export function NewOrders(props) {
         );
         return { ...item1, ...matchingItem2 };
       });
+
+      
       setOrders(getOrders);
       setallNewOrders(getOrders);
       setIsLoading(false);
