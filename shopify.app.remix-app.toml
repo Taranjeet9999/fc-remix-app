@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://hart-chocolate-east-premiere.trycloudflare.com"
+application_url = "https://correspondence-optimum-destroy-aj.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://hart-chocolate-east-premiere.trycloudflare.com/auth/callback",
-  "https://hart-chocolate-east-premiere.trycloudflare.com/auth/shopify/callback",
-  "https://hart-chocolate-east-premiere.trycloudflare.com/api/auth/callback"
+  "https://correspondence-optimum-destroy-aj.trycloudflare.com/auth/callback",
+  "https://correspondence-optimum-destroy-aj.trycloudflare.com/auth/shopify/callback",
+  "https://correspondence-optimum-destroy-aj.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -362,20 +362,20 @@ function getKeyValueArray(objects) {
 //     ],
 //   });
 // });
-app.use((req, res, next) => {
-  if (req.url === "/api/shipping-rates") {
-    const start = process.hrtime();
-    res.on("finish", () => {
-      const diff = process.hrtime(start);
-      const timeInSeconds = (diff[0] + diff[1] / 1e9).toFixed(2); // Convert to seconds
-      console.log(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
-      logger.info(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
-      logger.info(`Response: ${""}`);
-    });
-  }
+// app.use((req, res, next) => {
+//   if (req.url === "/api/shipping-rates") {
+//     const start = process.hrtime();
+//     res.on("finish", () => {
+//       const diff = process.hrtime(start);
+//       const timeInSeconds = (diff[0] + diff[1] / 1e9).toFixed(2); // Convert to seconds
+//       console.log(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
+//       logger.info(`API ${req.method} ${req.url} took ${timeInSeconds} seconds`);
+//       logger.info(`Response: ${""}`);
+//     });
+//   }
 
-  next();
-});
+//   next();
+// });
 
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
@@ -875,7 +875,6 @@ console.log([shopify, STATIC_PATH]);
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
-app.use(bodyParser.json());
 
 app.get("/api/orders/count", async (_req, res) => {
   const countData = await shopify.api.rest.Order.all({

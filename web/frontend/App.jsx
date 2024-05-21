@@ -79,14 +79,10 @@ export default function App() {
               {/* <BrowserRouter> */}
               <Routes>
 
-                {isLoading || false ? (
-                  <>
-                  <Loader />
-                  </>
-                ) : (
-                <>
-                    <Route index element={<Navigate to="/login" />} />
+              
+                 
                 <Route path="/exitiframe" element={<ExitIframe />} />
+                    <Route index element={<Navigate to="/login" />} />
                     <Route
                       path="/login"
                       element={<Login setUserDetails={setUserDetails} />}
@@ -113,8 +109,8 @@ export default function App() {
                       path="/merchantBillingDetails"
                       element={<MerchantBillingDetails />}
                     />
-                  </>  
-                 )}  
+                  
+                  
               </Routes>
               {/* </BrowserRouter > */}
             </div>
