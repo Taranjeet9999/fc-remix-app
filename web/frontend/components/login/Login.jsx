@@ -83,7 +83,7 @@ export function Login(props) {
     // if (accessToken) {
     //   navigate("/homepage");
     // }
-    // getMerchantTokenAndDomainId();
+     getMerchantTokenAndDomainId();
   }, []);
 
   const setMerchantTokenAndDomainId = (access_token, merchant_domain_id) => {
