@@ -39,7 +39,7 @@ const db = new sqlite3.Database(
   sqlite3.OPEN_READWRITE,
   (err) => {
     if (err) {
-      console.error(err.message, "eroroorro");
+      console.error(err.message, "error");
     }
     console.log("Connected to the database.");
   }
@@ -109,6 +109,8 @@ const STATIC_PATH =
     : `${process.cwd()}/frontend/`;
 
 const app = express();
+
+
 function getKeyValueArray(objects) {
   return objects.map((obj) => {
     return {
