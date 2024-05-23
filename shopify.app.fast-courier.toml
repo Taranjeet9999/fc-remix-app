@@ -3,13 +3,12 @@
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier"
 handle = "fc-dev"
-application_url = "https://behaviour-italian-township-absolutely.trycloudflare.com"
+application_url = "https://undertaken-limitation-v-evanescence.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
 dev_store_url = "staging-fc.myshopify.com"
-include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -17,9 +16,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://behaviour-italian-township-absolutely.trycloudflare.com/auth/callback",
-  "https://behaviour-italian-township-absolutely.trycloudflare.com/auth/shopify/callback",
-  "https://behaviour-italian-township-absolutely.trycloudflare.com/api/auth/callback"
+  "https://undertaken-limitation-v-evanescence.trycloudflare.com/auth/callback",
+  "https://undertaken-limitation-v-evanescence.trycloudflare.com/auth/shopify/callback",
+  "https://undertaken-limitation-v-evanescence.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
