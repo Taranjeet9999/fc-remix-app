@@ -742,7 +742,7 @@ console.log(response,"responseeeeeee")
             />
           </div>
         </div>
-          <div className="input-container mr-2">
+       {false &&   <div className="input-container mr-2">
             <div className="input-lebel">
               <span> Product Type&nbsp;</span>
             </div>
@@ -759,7 +759,7 @@ console.log(response,"responseeeeeee")
                 <option value="variable">Variable</option> */}
               </select>
             </div>
-          </div>
+          </div>}
           <div className="filter-buttons">
             {/* <button className="fc-yellow-btn pointer"> Filter </button> */}
             <button onClick={() => resetFilters()}> Reset </button>
@@ -767,12 +767,12 @@ console.log(response,"responseeeeeee")
         </div>
         
         <div className="product-actions">
-          <button
+          {/* <button
             className="submit-btn"
             onClick={() => setShowShippingBoxesModal(true)}
           >
             Shipping Boxes
-          </button>
+          </button> */}
           <button
             className="submit-btn"
             onClick={() =>
@@ -1479,7 +1479,7 @@ console.log(response,"responseeeeeee")
                       />
                     </td>
                     <td width="10%">{element.title}</td>
-                    <td width="10%">{element.variants[0].sku}</td>
+                    {/* <td width="10%">{element.variants[0].sku}</td> */}
                     <td width="10%">{"$" + element.variants[0].price}</td>
                     <td width="10%">{element.product_type}</td>
                     <td width="20%">{getLocationtagName(element.tags)}</td>
@@ -1533,7 +1533,7 @@ console.log(response,"responseeeeeee")
                             />
                           </td>
                           <td width="10%">{value.title}</td>
-                          <td width="10%">{value.sku}</td>
+                          {/* <td width="10%">{value.sku}</td> */}
                           <td width="10%">{"$" + value.price}</td>
                           <td width="10%">{}</td>
                           <td width="20%">{}</td>

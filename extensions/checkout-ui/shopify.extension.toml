@@ -16,7 +16,8 @@ handle = "checkout-ui"
 
 [[extensions.targeting]]
 module = "./src/ThankYou.jsx"
-target = "purchase.thank-you.header.render-after"
+target = "purchase.thank-you.block.render"
+#target = "purchase.thank-you.header.render-after"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.

@@ -10,19 +10,22 @@ export function OrderDetails(props) {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
-  const { order,redirectedtab } = location.state;
+  const [locationListData, setLocationListData] = useState([]);
+  const { order, redirectedtab } = location.state;
   const [products, setProducts] = useState([]);
   const fetch = useAuthenticatedFetch();
-
-  console.log(order, "order");
-
+  const [pickupLocations, setPickupLocations] = useState([]);
+  console.log("order", order);
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
-    getAllProducts().then(() => {
-      setIsLoading(false);
-    });
+    Promise.all([getAllProducts(), getPickupLocations()]).then(
+      ([products, pickupLocations]) => {
+        setIsLoading(false);
+        getLocationDataObj();
+      }
+    );
   }, []);
 
   const getAllProducts = () => {
@@ -97,71 +100,241 @@ export function OrderDetails(props) {
     });
     return result;
   }
-  function getProductDimensionsById(productId) {
-    const product = products.find((product) => Number(product.id) === Number(productId));
-    console.log(product,productId, "product")
-    const metafieldsObj=[
-      {
-          "key": "title_tag",
-          "value": "Complete Snowboard"
-      },
-      {
-          "key": "description_tag",
-          "value": "snowboard winter sport snowboarding"
-      },
-      {
-          "key": "snowboard_length",
-          "value": "{\"value\":159.0,\"unit\":\"CENTIMETERS\"}"
-      },
-      {
-          "key": "snowboard_weight",
-          "value": "{\"value\":7.0,\"unit\":\"POUNDS\"}"
-      },
-      {
-          "key": "location",
-          "value": "Adios"
-      },
-      {
-          "key": "package_type",
-          "value": "box"
-      },
-      {
-          "key": "height",
-          "value": "10"
-      },
-      {
-          "key": "width",
-          "value": "10"
-      },
-      {
-          "key": "length",
-          "value": "10"
-      },
-      {
-          "key": "weight",
-          "value": "1"
-      }
-  ]
+  async function getProductDimensionsById(productId) {
+    try {
+      const product = products.find(
+        (product) => Number(product.id) === Number(productId)
+      );
+      let locationList = [];
 
-    if (product) {
-       
-     return convertArrayToObject(product.metafields)
-     
-    }else{
-      return {location:{}}
+      const metafieldsObj = [
+        {
+          key: "title_tag",
+          value: "Complete Snowboard",
+        },
+        {
+          key: "description_tag",
+          value: "snowboard winter sport snowboarding",
+        },
+        {
+          key: "snowboard_length",
+          value: '{"value":159.0,"unit":"CENTIMETERS"}',
+        },
+        {
+          key: "snowboard_weight",
+          value: '{"value":7.0,"unit":"POUNDS"}',
+        },
+        {
+          key: "location",
+          value: "Adios",
+        },
+        {
+          key: "package_type",
+          value: "box",
+        },
+        {
+          key: "height",
+          value: "10",
+        },
+        {
+          key: "width",
+          value: "10",
+        },
+        {
+          key: "length",
+          value: "10",
+        },
+        {
+          key: "weight",
+          value: "1",
+        },
+      ];
+
+      if (product) {
+        let locationObj = {};
+        let location_key_pair_object = convertArrayToObject(product.metafields);
+        if (typeof location_key_pair_object["location"] === "string") {
+          locationObj = JSON.parse(location_key_pair_object["location"]);
+          if (locationObj?.type === "name") {
+            locationList.push(locationObj?.value);
+          } else if (locationObj?.type === "tag") {
+            let location_value = await getMerchantLocationDataFromTagId(
+              locationObj?.value?.id
+            );
+            if (location_value) {
+              locationList.push(location_value);
+            }
+          }
+        }
+      } else {
+      }
+
+      return locationList;
+    } catch (error) {
+      console.log("finding location error", error);
     }
   }
 
-  const orderLocation = getProductDimensionsById(order?.line_items[0]?.product_id)?.['location'] !="{}" ?? null;
-   console.log(orderLocation,"orderLocation")
+  async function getMerchantLocationDataFromTagId(tagId) {
+    const accessToken = localStorage.getItem("accessToken");
+    const merchantDomainId = localStorage.getItem("merchantDomainId");
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": process.env.REQUEST_TYPE,
+      version: "3.1.1",
+      Authorization: "Bearer " + accessToken,
+    };
+
+    const response = await axios.get(
+      `${process.env.API_ENDPOINT}/api/wp/merchant_locations/${merchantDomainId}/${tagId}`,
+      { headers: headers }
+    );
+
+    // Assuming response.data.data is an array and you want the first element
+    return response.data.data[0];
+
+    // let merchant_location_details = await merchant_location.json();
+    // return merchant_location_details;
+  }
+
+  const getPickupLocations = () => {
+    return new Promise((resolve, reject) => {
+      setIsLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      const merchantDomainId = localStorage.getItem("merchantDomainId");
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": process.env.REQUEST_TYPE,
+        version: "3.1.1",
+        Authorization: "Bearer " + accessToken,
+      };
+
+      axios
+        .get(
+          `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+          { headers: headers }
+        )
+        .then((response) => {
+          setIsLoading(false);
+          setPickupLocations(response.data.data);
+          resolve(response.data.data);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          reject(error);
+        });
+    });
+  };
+  function getLocationDataObj() {
+    if (products?.length > 0 && pickupLocations?.length > 0) {
+       
+
+      const merchant_default_location = pickupLocations.find(
+        (element) => element.is_default == 1
+      );
+      const product = products.find(
+        (product) =>
+          Number(product.id) === Number(order?.line_items[0]?.product_id)
+      );
+      let locationList = [];
+      let locationData;
+      let destination = order.billing_address;
+      if (product) {
+        let locationObj = {};
+        let location_key_pair_object = convertArrayToObject(product.metafields);
+        if (typeof location_key_pair_object["location"] === "string") {
+          locationObj = JSON.parse(location_key_pair_object["location"]);
+          if (locationObj?.type === "name") {
+            locationData = pickupLocations.find(
+              (element) => element.id == locationObj.value.id
+            );
+            if (!locationData) {
+              locationData = { ...merchant_default_location };
+            }
+            locationList.push(locationData);
+          } else if (locationObj?.type === "tag") {
+            const filteredLocations = pickupLocations?.filter((location) => {
+              if (location.tag && location.tag !== "[]") {
+                const tags = location.tag.split(",").map(Number);
+                return tags.includes(Number(locationObj.value.id));
+              }
+              return false;
+            });
+            if (filteredLocations.length === 0) {
+              locationData = { ...merchant_default_location };
+              // logger.info(locationData,"Default locationData")
+            } else {
+              locationData = filteredLocations[0];
+              // logger.info(destination,"destination")
+              if (destination.latitude && destination.longitude) {
+                let minDistance = haversineDistance(
+                  parseFloat(destination.latitude),
+                  parseFloat(destination.longitude),
+                  parseFloat(locationData.latitude),
+                  parseFloat(locationData.longitude)
+                );
+                // logger.info(minDistance,"minDistance")
+
+                for (let i = 1; i < filteredLocations.length; i++) {
+                  const location = filteredLocations[i];
+                  const distance = haversineDistance(
+                    parseFloat(destination.latitude),
+                    parseFloat(destination.longitude),
+                    parseFloat(location.latitude),
+                    parseFloat(location.longitude)
+                  );
+                  // logger.info(distance,minDistance,"distance , minDistance")
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                    locationData = { ...location };
+                  }
+                  // logger.info(locationData,"locationData")
+                }
+              } else {
+                locationData = { ...merchant_default_location };
+                // logger.info(locationData,"Merchant default locationData")
+              }
+            }
+            locationList.push(locationData);
+          }
+        }
+      }
+      console.log("locationList", locationList);
+      setLocationListData(locationList);
+    }
+  }
+
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    const toRad = (x) => (x * Math.PI) / 180;
+    const R = 6371; // Radius of the Earth in km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+  // getLocationDataObj()
+  useEffect(() => {
+    getLocationDataObj();
+  }, [products,pickupLocations])
+  
   return (
     <div className="order-details-main">
       {isLoading && <Loader />}
       <div className="order-details-container">
         <div className="order-details-head">
           <div className="order-detail-heading">Order Details</div>
-          <div className="back-btn" onClick={() =>                         navigate("/homepage", { state: { redirectedtab } })
-}>
+          <div
+            className="back-btn"
+            onClick={() => navigate("/homepage", { state: { redirectedtab } })}
+          >
             Back
           </div>
         </div>
@@ -190,7 +363,7 @@ export function OrderDetails(props) {
               <div className="order-details-value">Not Required</div>
             </div>
             <div className="order-details-item">
-              <div className="order-details-name">Authoriry to Leave:</div>
+              <div className="order-details-name">Authority to Leave:</div>
               <div className="order-details-value">False</div>
             </div>
           </div>
@@ -279,7 +452,9 @@ export function OrderDetails(props) {
                   <br />
                 </>
               )}
-              {order.shipping_address?.zip && <>{order.shipping_address?.zip}</>}
+              {order.shipping_address?.zip && (
+                <>{order.shipping_address?.zip}</>
+              )}
             </div>
           </div>
         </div>
@@ -311,13 +486,19 @@ export function OrderDetails(props) {
                     <td>{item.quantity}</td>
                     <td>{item.taxable ? "Yes" : "No"}</td>
                     {/* <td>{item.grams / 1000}</td> */}
-                    <td>{getProductDimensionsById(item.product_id)['weight']}</td>
-                    <td>{getProductDimensionsById(item.product_id)['length'] ?`${getProductDimensionsById(item.product_id)['length']}x
-                    ${getProductDimensionsById(item.product_id)['width']}x
-                    ${getProductDimensionsById(item.product_id)['height']}`:""}</td>
-                    
-                    
-                  
+                    <td>
+                      {getProductDimensionsById(item.product_id)["weight"]}
+                    </td>
+                    <td>
+                      {getProductDimensionsById(item.product_id)["length"]
+                        ? `${
+                            getProductDimensionsById(item.product_id)["length"]
+                          }x
+                    ${getProductDimensionsById(item.product_id)["width"]}x
+                    ${getProductDimensionsById(item.product_id)["height"]}`
+                        : ""}
+                    </td>
+
                     <td>{item.requires_shipping ? "Yes" : "No"}</td>
                     <td>${item.price * item.quantity}</td>
                   </tr>
@@ -367,11 +548,44 @@ export function OrderDetails(props) {
               <tr className="table-body">
                 <td>{order.confirmation_number} </td>
                 <td>{order.shipping_lines?.[0]?.title}</td>
-                <td>  {order.shipping_lines?.[0]?.price ?`A$${order.shipping_lines?.[0]?.price}`:""}</td>
-                <td>{  order?.line_items[0]?.requires_shipping ? "5-8 Business Days" :"NA"}</td>
-                <td>{JSON.parse(orderLocation ?? "{}")?.value?.location_name} </td>
-                <td>AUS </td>
-                <td>- </td>
+                <td>
+                  {" "}
+                  {order.shipping_lines?.[0]?.price
+                    ? `$${order.shipping_lines?.[0]?.price}`
+                    : ""}
+                </td>
+                <td>
+                  {order?.line_items[0]?.requires_shipping
+                    ? "5-8 Business Days"
+                    : "NA"}
+                </td>
+                <td>
+                  {/* {console.log("locationListData", locationListData)} */}
+                  {locationListData
+                    ?.map((location) => {
+                      return location.location_name;
+                    })
+                    .join(", ")}
+                </td>
+                <td>
+
+                  {locationListData
+  ?.map((location) => {
+    console.log(location, "location"); 
+    const address1 = location?.address1 || "";
+    const address2 = location?.address2 || "";
+    return `${address1} ${address2}`.trim();  
+  })
+  .join(", ")} 
+
+
+                
+                 </td>
+                <td>   {locationListData
+                    ?.map((location) => {
+                      return  location.suburb +" "+ location.postcode +" "+ location.state;
+                    })
+                    .join(", ")} </td>
               </tr>
             </table>
           </div>

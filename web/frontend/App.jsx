@@ -41,7 +41,6 @@ export default function App() {
     // getMerchantTokenAndDomainId()
   });
 
-
   return (
     <PolarisProvider>
       <BrowserRouter>
@@ -60,7 +59,7 @@ export default function App() {
               <div className="top-bar">
                 <div className="toggle-text">Sandbox</div>
                 <label className="switch">
-                  <input type="checkbox" />
+                  <input type="checkbox" checked disabled />
                   <span className="slider round"></span>
                 </label>
               </div>
@@ -78,39 +77,28 @@ export default function App() {
               </div>
               {/* <BrowserRouter> */}
               <Routes>
-
-              
-                 
                 <Route path="/exitiframe" element={<ExitIframe />} />
-                    <Route index element={<Navigate to="/login" />} />
-                    <Route
-                      path="/login"
-                      element={<Login setUserDetails={setUserDetails} />}
-                    />
-                    <Route
-                      path="/homepage"
-                      element={
-                        <HomePage
-                          userDetails={userDetails}
-                          isStaging={isStaging}
-                        />
-                      }
-                    />
-                    <Route path="/orderDetails" element={<OrderDetails />} />
-                    <Route
-                      path="/signup"
-                      element={<Signup setUserDetails={setUserDetails} />}
-                    />
-                    <Route
-                      path="/forgotPassword"
-                      element={<ForgotPassword />}
-                    />
-                    <Route
-                      path="/merchantBillingDetails"
-                      element={<MerchantBillingDetails />}
-                    />
-                  
-                  
+                <Route index element={<Navigate to="/login" />} />
+                <Route
+                  path="/login"
+                  element={<Login setUserDetails={setUserDetails} />}
+                />
+                <Route
+                  path="/homepage"
+                  element={
+                    <HomePage userDetails={userDetails} isStaging={isStaging} />
+                  }
+                />
+                <Route path="/orderDetails" element={<OrderDetails />} />
+                <Route
+                  path="/signup"
+                  element={<Signup setUserDetails={setUserDetails} />}
+                />
+                <Route path="/forgotPassword" element={<ForgotPassword />} />
+                <Route
+                  path="/merchantBillingDetails"
+                  element={<MerchantBillingDetails />}
+                />
               </Routes>
               {/* </BrowserRouter > */}
             </div>

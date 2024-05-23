@@ -431,9 +431,7 @@ export function HoldOrders() {
                       {new Date(element.created_at).toLocaleDateString("en-GB")}
                     </td>
                     <td width="15%">
-                      {element?.shipping_address?.first_name ?? "" +
-                        " " +
-                        element?.shipping_address?.last_name ?? ""}
+                    {element?.shipping_address?.first_name + " " + element?.shipping_address?.last_name}
                     </td>
                     <td width="15%">
                     {element?.shipping_address != null
@@ -442,7 +440,7 @@ export function HoldOrders() {
                     </td>
                     <td width="8%">{"Hold"}</td>
                     <td width="8%">{"NA"}</td>
-                    <td width={"8%"}>A${element.subtotal_price}</td>
+                    <td width={"8%"}>${element.subtotal_price}</td>
                     <td width="7%">
                       {element.line_items[0].fulfillable_quantity}
                     </td>

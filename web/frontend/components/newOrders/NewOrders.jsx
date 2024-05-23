@@ -169,35 +169,33 @@ export function NewOrders(props) {
   };
 
   useEffect(() => {
-   
-    getAllOrdersData()
+    getAllOrdersData();
   }, []);
 
-  function getAllOrdersData(){
+  function getAllOrdersData() {
     setIsLoading(true);
     Promise.all([getAllOrders(), getOrderMeta()])
-    .then(([ordersData, orderMetaData, locationData]) => {
-      const getOrders = ordersData?.map((item1) => {
-        const matchingItem2 = orderMetaData?.body?.data?.orders?.edges.find(
-          (item2) => item2.node.id.includes(item1.id)
-        );
-        return { ...item1, ...matchingItem2 };
-      });
+      .then(([ordersData, orderMetaData, locationData]) => {
+        const getOrders = ordersData?.map((item1) => {
+          const matchingItem2 = orderMetaData?.body?.data?.orders?.edges.find(
+            (item2) => item2.node.id.includes(item1.id)
+          );
+          return { ...item1, ...matchingItem2 };
+        });
 
-      
-      setOrders(getOrders);
-      setallNewOrders(getOrders);
-      setIsLoading(false);
-      setFilterData({
-        startDate: "",
-        endDate: "",
-        orderId: "",
-        shippingType: "",
+        setOrders(getOrders);
+        setallNewOrders(getOrders);
+        setIsLoading(false);
+        setFilterData({
+          startDate: "",
+          endDate: "",
+          orderId: "",
+          shippingType: "",
+        });
       })
-    })
-    .catch((error) => {
-      console.error("error:", error);
-    });
+      .catch((error) => {
+        console.error("error:", error);
+      });
   }
 
   const getMetaValue = (metafields, keyValue) => {
@@ -251,7 +249,7 @@ export function NewOrders(props) {
       });
       console.log(response);
       setIsLoading(false);
-      getAllOrdersData()
+      getAllOrdersData();
       setShowHoldOrderModal(false);
     } catch (err) {
       setIsLoading(false);
@@ -308,7 +306,6 @@ export function NewOrders(props) {
         request_type: "wp",
       };
 
-      
       axios
         .post(
           `${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
@@ -371,8 +368,6 @@ export function NewOrders(props) {
       setCollectionDate(selected);
     }
   };
-
-
 
   return (
     <div className="new-orders">
@@ -598,7 +593,6 @@ export function NewOrders(props) {
           </tr>
           {orders?.length > 0 &&
             orders?.map((element, i) => {
-          
               if (
                 getMetaValue(
                   element.node?.metafields?.edges,
@@ -608,6 +602,11 @@ export function NewOrders(props) {
                   element.node?.metafields?.edges,
                   "fc_order_status"
                 ) != "Booked for collection"
+                &&
+                getMetaValue(
+                  element.node?.metafields?.edges,
+                  "fc_order_status"
+                ) != ""
               ) {
                 return (
                   <tr
@@ -626,12 +625,13 @@ export function NewOrders(props) {
                     <td
                       width="7%"
                       onClick={() =>
-                        navigate("/orderDetails", { state: { order: element ,redirectedtab:"newOrders"} })
+                        navigate("/orderDetails", {
+                          state: { order: element, redirectedtab: "newOrders" },
+                        })
                       }
                       style={{ cursor: "pointer" }}
                     >
                       {element.order_number}
-                      {element.order_number=="1080" ?   console.log(element,"LLLLL") :""}
                     </td>
                     <td width="10%">{getFormattedDate(element.created_at)}</td>
                     <td width="15%">
@@ -644,36 +644,34 @@ export function NewOrders(props) {
                           element?.billing_address?.last_name}
                     </td>
                     <td width="15%">
-  {element?.shipping_address != null
-    ? getAddress(element.shipping_address)
-    : getAddress(element.billing_address)}
-</td>
+                      {element?.shipping_address != null
+                        ? getAddress(element.shipping_address)
+                        : getAddress(element.billing_address)}
+                    </td>
 
                     <td width="8%">
-                    Ready to Book
+                      Ready to Book
                       {/* {element.financial_status} */}
-                      </td>
-                    <td width={"8%"}>A${element.current_total_price}</td>
+                    </td>
+                    <td width={"8%"}>${element.current_total_price}</td>
                     <td width="7%">
                       {element.line_items[0].fulfillable_quantity}
                     </td>
                     <td width="15%">
-                      {/* {getMetaValue(
-                        element.node?.metafields?.edges,
-                        "carrier_name"
-                      )} */}
-                      {element?.shipping_lines?.[0]?.price ? "A$"+ element?.shipping_lines?.[0]?.price : ""} {element?.shipping_lines?.[0]?.title ?         
-                                
-                                `(${element?.shipping_lines?.[0]?.title?.replace("Fast Courier", "")?.replace("[",'')?.replace("]","")?.replace(" ","") ?? "Free"})`
-
-                                :""
-                                
-                                }
+                      {element?.shipping_lines?.[0]?.price &&  element?.shipping_lines?.[0]?.price >0
+                        ? "$" + element?.shipping_lines?.[0]?.price
+                        : ""}{" "}
+                      {element?.shipping_lines?.[0]?.title
+                        ? `(${
+                            element?.shipping_lines?.[0]?.title
+                              ?.replace("Fast Courier", "")
+                              ?.replace("[", "")
+                              ?.replace("]", "")
+                              ?.replace(" ", "") ?? "Free"
+                          })`
+                        : ""}
                     </td>
-                    <td width="10%">
-                    
-                      {element.financial_status}
-                      </td>
+                    <td width="10%">{element.financial_status}</td>
                     <td width="8%">{"NA"}</td>
                   </tr>
                 );
@@ -685,10 +683,9 @@ export function NewOrders(props) {
   );
 }
 
-
 export function getAddress(address) {
   if (!address) return "";
-  
+
   return `${address.address1 ?? ""}
    ${address.address2 ?? ""}
    ${address.city ?? ""}

@@ -24,8 +24,8 @@ const shopify = shopifyApp({
     // apiSecretKey: "76340c674fc34252622a40c916af1d2c",
     scopes: 'read_checkouts,read_orders,read_products,read_shipping,unauthenticated_read_checkouts,unauthenticated_write_checkouts,write_checkouts,write_orders,write_products,write_shipping',
     //  hostName: "https://webshots-charity-delta-sunny.trycloudflare.com",
-    // hostName: "https://fc-app.vuwork.com/",
-    //  hostName: "https://fc-app.vuwork.com/",
+    // hostName: "https://cialis-distant-homeless-matter.trycloudflare.com/",
+    //  hostName: "https://cialis-distant-homeless-matter.trycloudflare.com/",
 
     restResources,
     billing: undefined, // or replace with billingConfig above to enable example billing

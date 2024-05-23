@@ -6,16 +6,20 @@ import {
 } from "@shopify/ui-extensions-react/customer-account";
 import { useEffect } from "react";
 
-export default reactExtension("purchase.thank-you.header.render-after", () => (
+export default reactExtension("purchase.thank-you.block.render", () => (
   <Extension />
 ));
+// export default reactExtension("purchase.thank-you.header.render-after", () => (
+//   <Extension />
+// ));
 
 function Extension() {
   const test = useApi();
-  const { orderConfirmation } = useApi();
+  const  {orderConfirmation}  = useApi();
   const sessionToken = useSessionToken();
   
-
+console.log("orderConfirmation", orderConfirmation);
+console.log("orderConfirmation", 'orderConfirmation');
   const getOrderId = (orderIdString) => {
     const regex = /(\d+)/;
     const match = orderIdString.match(regex);
@@ -43,7 +47,7 @@ function Extension() {
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://fc-app.vuwork.com/api/get-order/${orderId}`,
+      `https://cialis-distant-homeless-matter.trycloudflare.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -63,12 +67,13 @@ function Extension() {
       // Trim the quotes from each value and assign them to variables
       const quoteId = valuesArray[0].replace(/"/g, "");
       const orderHashId = valuesArray[1].replace(/"/g, "");
+      console.log(orderDetails,"orderDetails")
 
       const carrierName = getCarrier(orderDetails.shipping_lines);
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://fc-app.vuwork.com/api/set-order-metafields`,
+        `https://cialis-distant-homeless-matter.trycloudflare.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -86,7 +91,7 @@ function Extension() {
       );
     } else {
       const result = await fetch(
-        `https://fc-app.vuwork.com/api/process-order/${orderId}`,
+        `https://cialis-distant-homeless-matter.trycloudflare.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

@@ -110,7 +110,6 @@ const STATIC_PATH =
 
 const app = express();
 
-
 function getKeyValueArray(objects) {
   return objects.map((obj) => {
     return {
@@ -555,7 +554,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
               amount: 0,
               description: "Free Shipping",
               eta: "1-2 days",
-              serviceCode: "FS",
+              serviceCode: "FREESHIPPING",
               courierName: "Fast Courier",
               totalPrice: 0,
             };
@@ -626,6 +625,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             }
           );
           const data = await quote.json();
+          logger.info(data, "quote");
 
           courier_data_to_Show_end_user[location] = items.map((xitem) => {
             return {
@@ -635,7 +635,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                 amount: xitem?.is_free_shipping
                   ? 0
                   : data?.message === "No quote found"
-                  ? `${merchant?.fallback_amount}00`
+                  ? `${merchant?.fallback_amount}`
                   : `${data?.data?.priceIncludingGst}`,
               },
             };
@@ -644,22 +644,26 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           return {
             amount:
               data?.message === "No quote found"
-                ? `${merchant?.fallback_amount}00`
+                ? `${merchant?.fallback_amount}`
                 : `${data?.data?.priceIncludingGst}`,
             description:
               data?.message === "No quote found"
-                ? "Default fallback amount"
+                ? "Incl.Tax"
                 : "Includes tracking and insurance",
             eta: data?.data?.eta,
             serviceCode:
               data?.message === "No quote found"
-                ? "FC"
-                : `"${data?.data?.id}","${data?.data?.orderHashId}"`,
-            courierName: data?.data?.courierName,
+                ? "FALLBACK"
+                : `${data?.data?.orderHashId}`,
+            courierName: data?.data?.courierName ?? "Shipping",
             totalPrice:
               data?.message === "No quote found"
-                ? `${merchant?.fallback_amount}00`
+                ? `${merchant?.fallback_amount}`
                 : `${data?.data?.priceIncludingGst}`,
+            quoteData: {
+              ...data,
+              ...payload,
+            },
           };
         }
       )
@@ -674,16 +678,22 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     const response = {
       rates: [
         {
-          service_name: `Fast Courier [${quotes
-            .map((quote) => quote.courierName)
-            .join(",")}]`,
+          service_name: quotes.some(
+            (quote) => quote.serviceCode === "FALLBACK"
+          )
+            ? "Shipping"
+            : `Fast Courier [${quotes
+                .map((quote) => quote.courierName)
+                .join(",")}]`,
           service_code: quotes.map((quote) => quote.serviceCode).join(","),
+          // service_code: JSON.stringify(quotes),
           total_price: `${Number(totalPrice * 10 * 10)}`,
           description: quotes.map((quote) => quote.description).join(","),
           currency: "AUD",
         },
       ],
     };
+    logger.info(response, "response");
 
     // const response = {
     //   rates: quotes.map((quote) => ({
@@ -924,10 +934,10 @@ app.get("/api/get-merchant-token", async (_req, res) => {
 app.get("/api/get-current-session", async (_req, res) => {
   try {
     let current_session = res.locals.shopify.session;
-   
+
     const session = await getSession(current_session.shop);
-     
-    await createColoumnIfNotExist()
+
+    await createColoumnIfNotExist();
 
     res.status(200).send({ data: session[0] });
   } catch (error) {
@@ -1388,7 +1398,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://fc-app.vuwork.com/api/shipping-rates";
+      "https://cialis-distant-homeless-matter.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1412,7 +1422,7 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://fc-app.vuwork.com/api/shipping-rates";
+        "https://cialis-distant-homeless-matter.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
