@@ -675,17 +675,28 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       0
     );
 
+    const totalPriceOfItems = quotes.reduce(
+      (acc, quote) => acc + parseFloat(String(quote.totalPrice)),
+      0
+    );
+
     const response = {
       rates: [
         {
-          service_name: quotes.some(
-            (quote) => quote.serviceCode === "FALLBACK"
-          )
+          service_name: quotes.some((quote) => quote.serviceCode === "FALLBACK")
             ? "Shipping"
             : `Fast Courier [${quotes
                 .map((quote) => quote.courierName)
                 .join(",")}]`,
-          service_code: quotes.map((quote) => quote.serviceCode).join(","),
+          service_code: `${quotes
+            .map((quote) => quote.serviceCode)
+            .join(",")}~${
+            quotes.some((quote) => quote.serviceCode === "FALLBACK")
+              ? "FALLBACK"
+              : totalPrice === 0
+              ? "FREESHIPPING"
+              : "PAID"
+          }~${totalPriceOfItems}`,
           // service_code: JSON.stringify(quotes),
           total_price: `${Number(totalPrice * 10 * 10)}`,
           description: quotes.map((quote) => quote.description).join(","),

@@ -65,7 +65,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       const valuesArray = codes.split(",");
 
       // Trim the quotes from each value and assign them to variables
-      const quoteId = valuesArray[0].replace(/"/g, "");
+      const quoteId = valuesArray[0].replacke(/"/g, "");
       const orderHashId = valuesArray[1].replace(/"/g, "");
       console.log(orderDetails,"orderDetails")
 

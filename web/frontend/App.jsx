@@ -77,8 +77,8 @@ export default function App() {
               </div>
               {/* <BrowserRouter> */}
               <Routes>
-                <Route path="/exitiframe" element={<ExitIframe />} />
                 <Route index element={<Navigate to="/login" />} />
+                <Route path="/exitiframe" element={<ExitIframe />} />
                 <Route
                   path="/login"
                   element={<Login setUserDetails={setUserDetails} />}
