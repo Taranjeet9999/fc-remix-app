@@ -34,6 +34,32 @@ console.log("orderConfirmation", 'orderConfirmation');
     return item ? item.code : null;
   };
 
+  function extractIds(input) {
+    // Define the regular expression to match the pattern (quoteid, orderid)
+    const regex = /\(([^,]+),([^,]+)\)/g;
+  
+    // Initialize arrays to store the quoteids and orderIds
+    const quoteids = [];
+    const orderIds = [];
+  
+    let match;
+    // Use a loop to find all matches
+    while ((match = regex.exec(input)) !== null) {
+      // match[1] is the quoteid and match[2] is the orderid
+      quoteids.push(match[1]);
+      orderIds.push(match[2]);
+    }
+  
+    // Convert the arrays to comma-separated strings
+    const quoteidsStr = quoteids.join(',');
+    const orderIdsStr = orderIds.join(',');
+  
+    return {
+      quoteIds: quoteidsStr,
+      orderIds: orderIdsStr
+    };
+  }
+
   const getCarrier = (data) => {
     const item = data.find((obj) => obj.source === "Fast Courier");
     const title = item ? item.title : null;
@@ -47,7 +73,7 @@ console.log("orderConfirmation", 'orderConfirmation');
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://cialis-distant-homeless-matter.trycloudflare.com/api/get-order/${orderId}`,
+      `https://fc-app.vuwork.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -60,20 +86,20 @@ console.log("orderConfirmation", 'orderConfirmation');
     const orderDetails = await result.json();
     console.log("orderDetails", orderDetails);
     const codes = getCodes(orderDetails.shipping_lines);
-    console.log(codes, "codes==");
+     
     if (codes != null) {
-      const valuesArray = codes.split(",");
+      const valuesArray = codes.split("~"); // FORMAT=====YQOXXZXPVO~PAID~195.26
 
       // Trim the quotes from each value and assign them to variables
-      const quoteId = valuesArray[0].replacke(/"/g, "");
-      const orderHashId = valuesArray[1].replace(/"/g, "");
-      console.log(orderDetails,"orderDetails")
+      const {quoteIds} = extractIds(valuesArray[0]);
+      const {orderIds} = extractIds(valuesArray[0]);
+     
 
       const carrierName = getCarrier(orderDetails.shipping_lines);
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://cialis-distant-homeless-matter.trycloudflare.com/api/set-order-metafields`,
+        `https://fc-app.vuwork.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -82,16 +108,23 @@ console.log("orderConfirmation", 'orderConfirmation');
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            quoteId: quoteId,
-            orderHashId: orderHashId,
+            quoteId: quoteIds,
+            orderHashId: orderIds,
             orderId: orderId,
             carrierName: carrierName,
+            orderStatus:
+              valuesArray[valuesArray.length - 2] === "FALLBACK"
+                ? "Fallback"
+                : valuesArray[valuesArray.length - 2] === "FREESHIPPING"
+                ? "Freeshipping"
+                : "Paid",
+            courierCharges: valuesArray[valuesArray.length - 1],
           }),
         }
       );
     } else {
       const result = await fetch(
-        `https://cialis-distant-homeless-matter.trycloudflare.com/api/process-order/${orderId}`,
+        `https://fc-app.vuwork.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

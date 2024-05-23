@@ -654,7 +654,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             serviceCode:
               data?.message === "No quote found"
                 ? "FALLBACK"
-                : `${data?.data?.orderHashId}`,
+                : `(${data?.data?.id}-${data?.data?.orderHashId})`,
             courierName: data?.data?.courierName ?? "Shipping",
             totalPrice:
               data?.message === "No quote found"
@@ -759,6 +759,7 @@ function getFreeShippingFlagForUser(_merchant, product) {
 
   return null;
 }
+
 
 function getUniqueQuoteData(data) {
   const quoteDataMap = new Map();
@@ -1409,7 +1410,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://cialis-distant-homeless-matter.trycloudflare.com/api/shipping-rates";
+      "https://fc-app.vuwork.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1433,7 +1434,7 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://cialis-distant-homeless-matter.trycloudflare.com/api/shipping-rates";
+        "https://fc-app.vuwork.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
@@ -1639,7 +1640,7 @@ app.get("/api/products", async (_req, res) => {
 
 app.post("/api/set-order-metafields", async (_req, res) => {
   try {
-    const { quoteId, orderHashId, orderId, carrierName } = _req.body;
+    const { quoteId, orderHashId, orderId, carrierName ,orderStatus,courierCharges } = _req.body;
     const order = new shopify.api.rest.Order({
       session: res.locals.shopify.session,
     });
@@ -1663,7 +1664,20 @@ app.post("/api/set-order-metafields", async (_req, res) => {
         type: "single_line_text_field",
         namespace: "Order",
       },
+      {
+        key: "fc_order_status",
+        value: orderStatus,
+        type: "single_line_text_field",
+        namespace: "Order",
+      },
+      {
+        key: "courier_charges",
+        value: courierCharges,
+        type: "single_line_text_field",
+        namespace: "Order",
+      },
     ];
+    
     await order.save({
       update: true,
     });

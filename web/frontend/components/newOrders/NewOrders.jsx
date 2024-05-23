@@ -369,6 +369,18 @@ export function NewOrders(props) {
     }
   };
 
+  function getFreeShippingPrice(orderItem) {
+    if (
+      getMetaValue(orderItem.node?.metafields?.edges, "fc_order_status") ===
+      "Freeshipping"
+    ) {
+      return `$${getMetaValue(
+        orderItem.node?.metafields?.edges,
+        "courier_charges"
+      )}`;
+    }
+  }
+
   return (
     <div className="new-orders">
       {isLoading && <Loader />}
@@ -601,12 +613,11 @@ export function NewOrders(props) {
                 getMetaValue(
                   element.node?.metafields?.edges,
                   "fc_order_status"
-                ) != "Booked for collection"
-                &&
+                ) != "Booked for collection" &&
                 getMetaValue(
                   element.node?.metafields?.edges,
                   "fc_order_status"
-                ) != ""
+                ) != "Fallback"
               ) {
                 return (
                   <tr
@@ -658,9 +669,12 @@ export function NewOrders(props) {
                       {element.line_items[0].fulfillable_quantity}
                     </td>
                     <td width="15%">
-                      {element?.shipping_lines?.[0]?.price &&  element?.shipping_lines?.[0]?.price >0
-                        ? "$" + element?.shipping_lines?.[0]?.price
-                        : ""}{" "}
+                      {getMetaValue(
+                        element.node?.metafields?.edges,
+                        "fc_order_status"
+                      ) === "Freeshipping"
+                        ? getFreeShippingPrice(element)
+                        : "$" + element?.shipping_lines?.[0]?.price}{" "}
                       {element?.shipping_lines?.[0]?.title
                         ? `(${
                             element?.shipping_lines?.[0]?.title

@@ -1,14 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://vid-headphones-recognized-showcase.trycloudflare.com"
+application_url = "https://fc-app.vuwork.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "test-development-fc-app.myshopify.com"
+dev_store_url = "staging-fc.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://vid-headphones-recognized-showcase.trycloudflare.com/auth/callback",
-  "https://vid-headphones-recognized-showcase.trycloudflare.com/auth/shopify/callback",
-  "https://vid-headphones-recognized-showcase.trycloudflare.com/api/auth/callback"
+  "https://fc-app.vuwork.com/auth/callback",
+  "https://fc-app.vuwork.com/auth/shopify/callback",
+  "https://fc-app.vuwork.com/api/auth/callback"
 ]
 
 [webhooks]
