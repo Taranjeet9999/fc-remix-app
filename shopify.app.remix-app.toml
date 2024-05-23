@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "48c11f190fe107153899a7f870f79215"
+client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://fc-app.vuwork.com"
+application_url = "https://cr-celebration-blast-font.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://fc-app.vuwork.com/auth/callback",
-  "https://fc-app.vuwork.com/auth/shopify/callback",
-  "https://fc-app.vuwork.com/api/auth/callback"
+  "https://cr-celebration-blast-font.trycloudflare.com/auth/callback",
+  "https://cr-celebration-blast-font.trycloudflare.com/auth/shopify/callback",
+  "https://cr-celebration-blast-font.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

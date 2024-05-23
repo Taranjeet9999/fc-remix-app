@@ -3,12 +3,12 @@
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier"
 handle = "fc-dev"
-application_url = "https://wild-racks-gross-plus.trycloudflare.com"
+application_url = "https://behaviour-italian-township-absolutely.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "fc54-staging.myshopify.com"
+dev_store_url = "staging-fc.myshopify.com"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -16,9 +16,9 @@ scopes = "read_all_orders,read_checkouts,read_orders,read_products,read_shipping
 
 [auth]
 redirect_urls = [
-  "https://wild-racks-gross-plus.trycloudflare.com/auth/callback",
-  "https://wild-racks-gross-plus.trycloudflare.com/auth/shopify/callback",
-  "https://wild-racks-gross-plus.trycloudflare.com/api/auth/callback"
+  "https://behaviour-italian-township-absolutely.trycloudflare.com/auth/callback",
+  "https://behaviour-italian-township-absolutely.trycloudflare.com/auth/shopify/callback",
+  "https://behaviour-italian-township-absolutely.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
