@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier"
 handle = "fc-dev"
-application_url = "https://fc-app.vuwork.com"
+application_url = "https://looks-toyota-heat-simple.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://fc-app.vuwork.com/auth/callback",
-  "https://fc-app.vuwork.com/auth/shopify/callback",
-  "https://fc-app.vuwork.com/api/auth/callback"
+  "https://looks-toyota-heat-simple.trycloudflare.com/auth/callback",
+  "https://looks-toyota-heat-simple.trycloudflare.com/auth/shopify/callback",
+  "https://looks-toyota-heat-simple.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

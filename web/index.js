@@ -1410,7 +1410,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://fc-app.vuwork.com/api/shipping-rates";
+      "https://looks-toyota-heat-simple.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1434,7 +1434,7 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://fc-app.vuwork.com/api/shipping-rates";
+        "https://looks-toyota-heat-simple.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
