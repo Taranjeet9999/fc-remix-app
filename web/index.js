@@ -1,6 +1,7 @@
 // @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
+
 import express from "express";
 import serveStatic from "serve-static";
 import { MongoClient, ObjectId } from "mongodb";
@@ -12,6 +13,13 @@ import PrivacyWebhookHandlers from "./privacy.js";
 import bodyParser from "body-parser";
 import sqlite3 from "sqlite3";
 import log4js from "log4js";
+// import * as BinPacking3D from "binpackingjs";
+// import  BP3D  from 'binpackingjs';
+// const { Item, Bin, Packer } = BP3D;
+
+// // import BinPacking3D from "binpackingjs";
+// // // const BinPacking3D = require("binpackingjs").BP3D;
+// const {  Bin, Packer } = BinPacking3D.BinPacking;
 
 // Create a logger object
 // const logger = log4js.getLogger();
@@ -33,7 +41,6 @@ log4js.configure({
 
 // Create a logger object
 const logger = log4js.getLogger();
-
 const db = new sqlite3.Database(
   "./database.sqlite",
   sqlite3.OPEN_READWRITE,
@@ -57,6 +64,7 @@ const db = new sqlite3.Database(
 // }
 
 function getSession(shop) {
+  logger.info("getSession==", shop);
   return new Promise((resolve, reject) => {
     const query = "SELECT * FROM shopify_sessions WHERE shop = ?";
     db.all(query, [shop], (err, rows) => {
@@ -118,251 +126,7 @@ function getKeyValueArray(objects) {
     };
   });
 }
-// app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
-//   try {
-//     const session = await getSession(
-//       `${_req.body.rate.origin.company_name}.myshopify.com`
-//     );
 
-//     console.log("_req.body===", _req.body);
-
-//     // Check if Merchant exists
-//     if (session.length == 0 || !session[0].merchant_token) {
-//       res.status(200).json({ error: "Merchant not found" });
-//       return;
-//     }
-
-//     // Get Merchant Details
-//     let merchant = await getMerchantData(session[0].merchant_token);
-//     merchant = merchant.data;
-
-//     var items = [];
-
-//     let productsList = [];
-
-//     for (const element of _req.body.rate.items) {
-//       const variantId = element.variant_id;
-//       const productId = element.product_id;
-
-//       const productMetafields = await shopify.api.rest.Metafield.all({
-//         session: session[0],
-//         metafield: { owner_id: productId, owner_resource: "product" },
-//       });
-
-//       const metaData = getKeyValueArray(productMetafields.data);
-
-//       let is_free_shipping =
-//         getValueByKey(metaData, "is_free_shipping") == "1" ? true : false;
-//       let locationData;
-
-//       if (typeof JSON.parse(getValueByKey(metaData, "location")) === "object") {
-//         locationData = JSON.parse(getValueByKey(metaData, "location"));
-//         if (locationData.type === "name") {
-//           locationData = locationData.value;
-//         } else if (locationData.type === "tag") {
-//           locationData = await getMerchantLocationDataFromTagId(
-//             merchant.access_token,
-//             merchant.id,
-//             locationData.value.id
-//           );
-//           locationData = locationData.data[0];
-//         }
-//       }
-
-//       // locationData=  {
-//       //   id: 142,
-//       //   merchant_domain_id: 215,
-//       //   location_name: 'Mi Locacion 22',
-//       //   first_name: 'primero nmbre',
-//       //   last_name: 'mi appliedo',
-//       //   email: 'email@rmail.com',
-//       //   phone: '987456321',
-//       //   address1: 'fwefcsfsaf',
-//       //   address2: 'asfasfasf',
-//       //   building_type: 'residential',
-//       //   tail_lift: 0,
-//       //   time_window: '9am to 5pm',
-//       //   suburb: 'ADELAIDE',
-//       //   state: 'SA',
-//       //   postcode: '5000',
-//       //   latitude: '-37.817403',
-//       //   longitude: '144.956776',
-//       //   tag: '72,73,74',
-//       //   free_shipping_postcodes: '["2040","2025","2026"]',
-//       //   is_deleted: 0,
-//       //   is_default: 0,
-//       //   created_at: '2024-03-15T04:50:07.000000Z',
-//       //   updated_at: '2024-03-15T04:50:07.000000Z'
-//       // }
-
-//       var item = {
-//         product_id: element.product_id,
-//         type: getValueByKey(metaData, "package_type"),
-//         height: getValueByKey(metaData, "height"),
-//         length: getValueByKey(metaData, "length"),
-//         width: getValueByKey(metaData, "width"),
-//         weight: getValueByKey(metaData, "weight"),
-//         quantity: element.quantity,
-//         price: parseInt(element.price) / 100,
-//         is_free_shipping: is_free_shipping,
-//         location_id: locationData?.id,
-//         location_name: locationData?.location_name,
-//         location_address:
-//           locationData?.address1 +
-//           " " +
-//           locationData?.address2 +
-//           " " +
-//           locationData?.suburb +
-//           " " +
-//           locationData?.state +
-//           " " +
-//           locationData?.postcode,
-//         location_lat: locationData?.latitude,
-//         location_long: locationData?.longitude,
-//         free_shipping_postcodes: locationData?.free_shipping_postcodes,
-//         pickupLocation: locationData,
-//       };
-
-//       items.push(item);
-
-//       // })
-//     }
-
-//     // logger.info(items);
-//     const destination = _req?.body?.rate?.destination;
-
-//     // Make Group by Locations
-//     let productsGroupByLocations = groupByLocation(items);
-//     var courier_data = {
-//       amount: Array(0),
-//       description: Array(0),
-//       eta: Array(0),
-//       serviceCode: Array(0),
-//       courierName: Array(0),
-//       total_price: Array(0),
-//     };
-
-//     for (const items of Object.values(productsGroupByLocations)) {
-//       const headers = {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//         "request-type": "shopify_development",
-//         version: "3.1.1",
-//         Authorization: "Bearer " + merchant.access_token,
-//       };
-//       let totalPriceOfitems = items.reduce((acc, item) => {
-//         return acc + item.price;
-//       }, 0);
-//       const payload = {
-//         request_type: "wp",
-//         pickupFirstName: items[0].pickupLocation?.first_name,
-//         pickupLastName: items[0].pickupLocation?.last_name,
-//         pickupCompanyName: "",
-//         pickupEmail: items[0].pickupLocation?.email,
-//         pickupAddress1: items[0].pickupLocation?.address1,
-//         pickupAddress2: items[0].pickupLocation?.address2,
-//         pickupPhone: items[0].pickupLocation?.phone,
-//         pickupSuburb: items[0].pickupLocation?.suburb,
-//         pickupState: items[0].pickupLocation?.state,
-//         pickupPostcode: items[0].pickupLocation?.postcode,
-//         pickupBuildingType: items[0].pickupLocation?.building_type,
-//         pickupTimeWindow: `${items[0].pickupLocation?.time_window}`,
-//         isPickupTailLift: `${items[0].pickupLocation?.tail_lift}`,
-//         destinationSuburb: destination.city,
-//         destinationState: destination.province,
-//         destinationPostcode: destination.postal_code,
-//         destinationBuildingType: destination.company
-//           ? "commercial"
-//           : "residential",
-//         destinationFirstName: destination.name,
-//         destinationLastName: "",
-//         destinationCompanyName: "NA",
-//         destinationEmail: destination.email,
-//         destinationAddress1: destination.address1,
-//         destinationAddress2:
-//           destination.address2 != null ? destination.address2 : "",
-//         destinationPhone: destination.phone,
-//         parcelContent: "Order from Main Hub",
-//         valueOfContent: `${totalPriceOfitems}`,
-//         items: JSON.stringify(items),
-//         isDropOffTailLift: merchant?.is_drop_off_tail_lift,
-//       };
-
-//       const quote = await fetch(
-//         `https://fctest-api.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
-//           payload
-//         )}`,
-//         {
-//           method: "GET",
-//           credentials: "include",
-//           headers: headers,
-//         }
-//       );
-//       const data = await quote.json();
-//       logger.info(data);
-
-//       let amount = "";
-//       let description = "";
-//       let eta = "";
-//       let serviceCode = "";
-
-//       if (data?.message == "No quote found") {
-//         amount = `${merchant?.fallback_amount}00`;
-//         description = "Default fallback amount";
-//         serviceCode = "FC";
-//       } else {
-//         amount = `${data?.data?.priceIncludingGst}`;
-//         description = "Includes tracking and insurance";
-//         eta = `${data?.data?.eta}`;
-//         serviceCode = `"${data?.data?.id}","${data?.data?.orderHashId}"`;
-//       }
-
-//       courier_data["amount"].push(amount);
-//       courier_data["description"].push(description);
-//       courier_data["eta"].push(eta);
-//       courier_data["serviceCode"].push(serviceCode);
-//       courier_data["courierName"].push(data?.data?.courierName);
-//       courier_data["total_price"].push(amount);
-//     }
-
-//     logger.info(courier_data);
-
-//     const response = {
-//       rates: [
-//         {
-//           service_name: `Fast Courier [${courier_data["courierName"].join(
-//             ","
-//           )}]`,
-//           service_code: courier_data["serviceCode"].join(","),
-//           total_price: `${Number(
-//             Number(sumArray(courier_data["total_price"])) * 10 * 10
-//           )}`,
-//           description: courier_data["description"].join(","),
-//           currency: "AUD",
-//         },
-//       ],
-//     };
-
-//     console.log("response===", response);
-
-//     res.status(200).json(response);
-//   } catch (error) {
-//     console.log("shipping-rates==", error);
-//   }
-//   res.status(200).json({
-//     rates: [
-//       {
-//         service_name: `Fast Courier [Hunter express]`,
-//         service_code: "Advasvasvv",
-//         total_price: `${Number(
-//           Number(sumArray([555555, 5, 5, , 5, 55, 5])) * 10 * 10
-//         )}`,
-//         description: "afavav",
-//         currency: "AUD",
-//       },
-//     ],
-//   });
-// });
 // app.use((req, res, next) => {
 //   if (req.url === "/api/shipping-rates") {
 //     const start = process.hrtime();
@@ -377,43 +141,142 @@ function getKeyValueArray(objects) {
 
 //   next();
 // });
+// Order Create Webhook
+const getOrderId = (orderIdString) => {
+  const regex = /(\d+)/;
+  const match = orderIdString.match(regex);
 
+  // Check if there is a match and extract the numeric portion
+  const orderId = match ? match[0] : null;
+  return orderId;
+};
+
+const getCodes = (data) => {
+  const item = data.find((obj) => obj.source === "Fast Courier");
+  return item ? item.code : null;
+};
+
+function extractIds(input) {
+  // Define the regular expression to match the pattern (quoteid, orderid)
+  const regex = /\(([^,]+),([^,]+)\)/g;
+
+  // Initialize arrays to store the quoteids and orderIds
+  const quoteids = [];
+  const orderIds = [];
+
+  let match;
+  // Use a loop to find all matches
+  while ((match = regex.exec(input)) !== null) {
+    // match[1] is the quoteid and match[2] is the orderid
+    quoteids.push(match[1]);
+    orderIds.push(match[2]);
+  }
+
+  // Convert the arrays to comma-separated strings
+  const quoteidsStr = quoteids.join(',');
+  const orderIdsStr = orderIds.join(',');
+
+  return {
+    quoteIds: quoteidsStr,
+    orderIds: orderIdsStr
+  };
+}
+
+const getCarrier = (data) => {
+  const item = data.find((obj) => obj.source === "Fast Courier");
+  const title = item ? item.title : null;
+  const startIndex = title.indexOf("[");
+  const endIndex = title.indexOf("]");
+  // Extract the substring between '[' and ']'
+  const carrierName = title.substring(startIndex + 1, endIndex);
+  return carrierName;
+};
+
+app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
+  try {
+    const session = await getSession(
+      `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
+    );
+    let orderDetails = _req.body;
+    const codes = getCodes(orderDetails.shipping_lines);
+    if (codes != null) {
+      const valuesArray = codes.split("~"); // FORMAT=====YQOXXZXPVO~PAID~195.26
+
+      // Trim the quotes from each value and assign them to variables
+      const { quoteIds } = extractIds(valuesArray[0]);
+      const { orderIds } = extractIds(valuesArray[0]);
+
+      const carrierName = getCarrier(orderDetails.shipping_lines);
+      console.log("carrierName", carrierName);
+
+      const order = new shopify.api.rest.Order({
+        session: session[0],
+      });
+      order.id = parseInt(orderDetails.id);
+      order.metafields = [
+        {
+          key: "quote_id",
+          value: quoteIds,
+          type: "single_line_text_field",
+          namespace: "Order",
+        },
+        {
+          key: "order_hash_id",
+          value: orderIds,
+          type: "single_line_text_field",
+          namespace: "Order",
+        },
+        {
+          key: "carrier_name",
+          value: carrierName,
+          type: "single_line_text_field",
+          namespace: "Order",
+        },
+        {
+          key: "fc_order_status",
+          value:
+            valuesArray[valuesArray.length - 2] === "FALLBACK"
+              ? "Fallback"
+              : valuesArray[valuesArray.length - 2] === "FREESHIPPING"
+              ? "Freeshipping"
+              : "Paid",
+          type: "single_line_text_field",
+          namespace: "Order",
+        },
+        {
+          key: "courier_charges",
+          value: valuesArray[valuesArray.length - 1],
+          type: "single_line_text_field",
+          namespace: "Order",
+        },
+      ];
+
+      await order.save({
+        update: true,
+      });
+      res.status(200).send(order);
+    }
+  } catch (error) {
+    logger.info("order-create-webhook-error==", error);
+  }
+});
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
-    // res.status(200).json({
-    //   rates: [
-    //     {
-    //       service_name: `Fast Courier [Hunter express]`,
-    //       service_code: "Advasvasvv",
-    //       total_price: `${Number(
-    //         Number(sumArray([555555, 5, 5, , 5, 55, 5])) * 10 * 10
-    //       )}`,
-    //       description: "afavav",
-    //       currency: "AUD",
-    //     },
-    //   ],
-    // });
-    // logger.info("WELCOME", 'WELCOME');
     const session = await getSession(
       `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
     );
-    //  logger.info(session,"session")
+
     if (session.length === 0 || !session[0].merchant_token) {
-      logger.info(
-        "Returned error",
-        "session.length === 0 || !session[0].merchant_token"
-      );
       res.status(200).json({ error: "Merchant not found" });
       return;
     }
     if (!session[0].merchant_locations) {
-      logger.info("Returned error", "!session[0].merchant_locations");
       res.status(200).json({ error: "Merchant not found" });
       return;
     }
 
     const merchant = JSON.parse(session[0].merchant);
-    // logger.info("API STARTING","response")
+
     const destination = _req.body.rate.destination;
     const merchant_locations = JSON.parse(session[0].merchant_locations);
     const merchant_default_location = merchant_locations.find(
@@ -444,13 +307,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             }
             return false;
           });
-          // logger.info(filteredLocations,"filteredLocations")
+
           if (filteredLocations.length === 0) {
             locationData = { ...merchant_default_location };
-            // logger.info(locationData,"Default locationData")
           } else {
             locationData = filteredLocations[0];
-            // logger.info(destination,"destination")
+
             if (destination.latitude && destination.longitude) {
               let minDistance = haversineDistance(
                 parseFloat(destination.latitude),
@@ -458,7 +320,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                 parseFloat(locationData.latitude),
                 parseFloat(locationData.longitude)
               );
-              // logger.info(minDistance,"minDistance")
 
               for (let i = 1; i < filteredLocations.length; i++) {
                 const location = filteredLocations[i];
@@ -468,16 +329,14 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                   parseFloat(location.latitude),
                   parseFloat(location.longitude)
                 );
-                // logger.info(distance,minDistance,"distance , minDistance")
+
                 if (distance < minDistance) {
                   minDistance = distance;
                   locationData = { ...location };
                 }
-                // logger.info(locationData,"locationData")
               }
             } else {
               locationData = { ...merchant_default_location };
-              // logger.info(locationData,"Merchant default locationData")
             }
           }
         } else {
@@ -489,8 +348,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           }
         }
 
-        // logger.info("locationData",locationData)
-
         return {
           product_id: element.product_id,
           type: getValueByKey(metaData, "package_type"),
@@ -498,6 +355,9 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           length: getValueByKey(metaData, "length"),
           width: getValueByKey(metaData, "width"),
           weight: getValueByKey(metaData, "weight"),
+          productDimentions:
+            JSON.parse(getValueByKey(metaData, "product_dimentions")) ?? [],
+          // productDimentions: getValueByKey(metaData, "product_dimentions") ?? [],
           quantity: element.quantity,
           price: parseInt(element.price) / 100,
           is_free_shipping:
@@ -546,6 +406,8 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       // Object.values(groupByLocation(courierData)).map(async (_items) => {
       Object.entries(groupByLocation(courierData)).map(
         async ([location, _items], index) => {
+     
+          
           // Only Process those items those are not free shipping
           let items = _items.filter((_item) => !_item.free);
 
@@ -559,17 +421,55 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
               totalPrice: 0,
             };
           }
-          const totalWeightOfItems = items.reduce((sum, product) => {
-            const weight = parseFloat(product.weight);
-            const quantity = parseInt(product.quantity);
-            return sum + weight * quantity;
-          }, 0);
+          let itemsArray = [];
+          items.forEach((entry) => {
+            let product_parts = entry.productDimentions; 
+            product_parts.forEach((__item) => {
+              itemsArray.push({
+                type: __item.packageType,
+                weight: __item.weight,
+                width: __item.width,
+                height: __item.height,
+                length: __item.length,
+                isIndividual:__item.isIndividual,
+                quantity:1
+              });
+            });
+          });
+
+          // SHipping Box Functionality START
+          // let individual_items = itemsArray.filter((item) => item.isIndividual ==="Yes");
+          // let non_individual_items = itemsArray.filter((item) => item.isIndividual ==="No");
+          // const _bins = [
+          //   {
+          //     name: "Le petite box",
+          //     width: 296,
+          //     height: 296,
+          //     length: 8,
+          //   },
+          // ];
+          // let individual_items_packed = packItems(_bins,non_individual_items);
+          // individual_items_packed = processBoxes(JSON.parse(JSON.stringify(individual_items_packed)))
+          // let itemsArray_to_send_to_courier = [...individual_items_packed,...individual_items];
+          // SHipping Box Functionality STOP
+
+          let totalWeightOfItems = 0;
+
+          items.forEach((entry) => {
+            let product_parts = entry.productDimentions;
+            let totalWeight = product_parts.reduce((sum, __item) => {
+              const weight = parseFloat(__item.weight);
+              const quantity = parseInt(entry.quantity); // Use the quantity of the product entry
+              return sum + weight * quantity;
+            }, 0);
+            totalWeightOfItems += totalWeight;
+          });
 
           const totalPriceOfItems = items.reduce(
             (acc, item) => acc + item.price,
             0
           );
-
+          
           const payload = {
             request_type: "wp",
             pickupFirstName: items[0].pickupLocation?.first_name,
@@ -604,10 +504,10 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             destinationPhone: destination.phone,
             parcelContent: "Order from Main Hub",
             valueOfContent: `${totalPriceOfItems}`,
-            items: JSON.stringify(items),
+            items: JSON.stringify(itemsArray),
             isDropOffTailLift: merchant?.is_drop_off_tail_lift,
           };
-
+          
           const quote = await fetch(
             `https://fctest-api.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
               payload
@@ -625,8 +525,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             }
           );
           const data = await quote.json();
-          logger.info(data, "quote");
-
+          
           courier_data_to_Show_end_user[location] = items.map((xitem) => {
             return {
               ...xitem,
@@ -704,7 +603,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         },
       ],
     };
-    logger.info(response, "response");
 
     // const response = {
     //   rates: quotes.map((quote) => ({
@@ -715,7 +613,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     //     currency: "AUD",
     //   })),
     // }
-    // logger.info("response", response);
 
     res.status(200).json(response);
   } catch (error) {
@@ -759,7 +656,6 @@ function getFreeShippingFlagForUser(_merchant, product) {
 
   return null;
 }
-
 
 function getUniqueQuoteData(data) {
   const quoteDataMap = new Map();
@@ -926,9 +822,9 @@ app.get("/api/get-merchant", async (_req, res) => {
 app.get("/api/get-merchant-token", async (_req, res) => {
   try {
     let current_session = res.locals.shopify.session;
-    logger.info("current_session", current_session);
+
     const session = await getSession(current_session.shop);
-    logger.info("session", session);
+
     if (
       session.length == 0 ||
       !session[0].merchant_token ||
@@ -1113,59 +1009,61 @@ app.get("/api/get-token", async (_req, res) => {
 app.post("/api/product/add-dimensions", async (_req, res) => {
   try {
     const {
-      package_type,
-      height,
-      width,
-      length,
-      weight,
-      isIndividual,
+      // package_type,
+      // height,
+      // width,
+      // length,
+      // weight,
+      // isIndividual,
+      productDimentions,
       product_ids,
       variant_ids,
     } = _req.body;
     const session = res.locals.shopify.session;
 
     let metaFields_list = [
-      package_type,
-      height,
-      width,
-      length,
-      weight,
-      isIndividual,
+      // package_type,
+      // height,
+      // width,
+      // length,
+      // weight,
+      // isIndividual,
+      productDimentions,
     ];
 
     let products = [];
 
     const metafields_Item = [
       {
-        key: "package_type",
+        key: "product_dimentions",
         type: "single_line_text_field",
         namespace: "Product",
       },
-      {
-        key: "height",
-        type: "single_line_text_field",
-        namespace: "Product",
-      },
-      {
-        key: "width",
-        type: "single_line_text_field",
-        namespace: "Product",
-      },
-      {
-        key: "length",
-        type: "single_line_text_field",
-        namespace: "Product",
-      },
-      {
-        key: "weight",
-        type: "single_line_text_field",
-        namespace: "Product",
-      },
-      {
-        key: "is_individaul", // Corrected key name
-        type: "single_line_text_field",
-        namespace: "Product",
-      },
+      // {
+      //   key: "height",
+      //   type: "single_line_text_field",
+      //   namespace: "Product",
+      // },
+      // {
+      //   key: "width",
+      //   type: "single_line_text_field",
+      //   namespace: "Product",
+      // },
+      // {
+      //   key: "length",
+      //   type: "single_line_text_field",
+      //   namespace: "Product",
+      // },
+      // {
+      //   key: "weight",
+      //   type: "single_line_text_field",
+      //   namespace: "Product",
+      // },
+      // {
+      //   key: "is_individaul", // Corrected key name
+      //   type: "single_line_text_field",
+      //   namespace: "Product",
+      // },
     ];
 
     // Process product_ids
@@ -1176,8 +1074,10 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.product_id = parseInt(productId);
             metafield.key = item.key;
-            metafield.value = metaFields_list[index];
-            metafield.type = "single_line_text_field";
+             
+            metafield.value = JSON.stringify(metaFields_list[index]);
+            // metafield.type = "single_line_text_field";
+            metafield.type = "json";
             metafield.namespace = "Product";
             // Assign value from metaFields_list
             await metafield.save({ update: true });
@@ -1198,8 +1098,10 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.variant_id = parseInt(variantId);
             metafield.key = item.key;
-            metafield.value = metaFields_list[index];
+            metafield.value = JSON.stringify(metaFields_list[index]);
+
             metafield.type = "single_line_text_field";
+            // metafield.type = "json";
             metafield.namespace = "Product Variant";
             await metafield.save({ update: true });
             return metafield;
@@ -1410,7 +1312,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://looks-toyota-heat-simple.trycloudflare.com/api/shipping-rates";
+      "https://classroom-differences-excuse-ati.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1434,13 +1336,24 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://looks-toyota-heat-simple.trycloudflare.com/api/shipping-rates";
+        "https://classroom-differences-excuse-ati.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
+
+      // Dummy Test START
+      const webhook = new shopify.api.rest.Webhook({session: res.locals.shopify.session});
+      webhook.address = "https://classroom-differences-excuse-ati.trycloudflare.com/api/webhook/order-create";
+      webhook.topic = "orders/paid";
+      webhook.format = "json";
+      await webhook.save({
+        update: true,
+      });
+     // Dummy Test STOP
       res.status(200).send(carrier_service);
     } catch (error) {
       console.log("carrier-update=", error);
+      logger.info("carrier-update-==", error);
     }
   }
 );
@@ -1640,7 +1553,14 @@ app.get("/api/products", async (_req, res) => {
 
 app.post("/api/set-order-metafields", async (_req, res) => {
   try {
-    const { quoteId, orderHashId, orderId, carrierName ,orderStatus,courierCharges } = _req.body;
+    const {
+      quoteId,
+      orderHashId,
+      orderId,
+      carrierName,
+      orderStatus,
+      courierCharges,
+    } = _req.body;
     const order = new shopify.api.rest.Order({
       session: res.locals.shopify.session,
     });
@@ -1677,7 +1597,7 @@ app.post("/api/set-order-metafields", async (_req, res) => {
         namespace: "Order",
       },
     ];
-    
+
     await order.save({
       update: true,
     });
@@ -1933,6 +1853,77 @@ function groupByLocation(products) {
   });
 
   return locationItems;
+}
+// function packItems(_bins, _items, level = 0) {
+//   // logger.info("Packing items",BinPacking3D.BinPacking);
+//   // logger.info("Packing items 2",BinPacking3D.BP3D);
+// logger.info("dsvdsv",typeof Packer);
+ 
+//   let packer = new Packer();
+//   let bin_itemsto_send = [];
+
+//   let bins = _bins.map(
+//     (bin) =>
+//       new Bin(
+//         `${bin?.name ?? "Box"}-${level}`,
+//         bin.width,
+//         bin.height,
+//         bin.length,
+//         1000000000000
+//       )
+//   );
+//   let items = _items.map(
+//     (item) =>
+//       new Item(item.name, item.width, item.height, item.length, item.weight)
+//   );
+//   bins.forEach((bin) => packer.addBin(bin));
+//   items.forEach((item) => packer.addItem(item));
+//   packer.pack();
+//   let packedItems = bins.map((bin) => ({
+//     ...bin,
+//     length: bin.depth,
+//     sub_packs: bin.items,
+//   }));
+
+//   packedItems.forEach((bin) => {
+//     if (bin.sub_packs.length > 0) {
+//       bin_itemsto_send.push(bin);
+//     }
+//   });
+//   if (packer.unfitItems.length > 0) { 
+//     let updatedItems = packer.unfitItems.map((item) => ({
+//       ...item,
+//       width: item.height / 100000,
+//       height: item.width / 100000,
+//       length: item.depth / 100000,
+//       weight: item.weight / 100000,
+//     }));
+//     let newItems = packItems(_bins, updatedItems, level + 1);
+//     bin_itemsto_send = bin_itemsto_send.concat(newItems);
+//   }
+
+//   return bin_itemsto_send;
+// }
+function processBoxes(boxes) {
+  return boxes.map((box) => ({
+    name: box.name,
+    type: "box",
+    quantity: 1,
+    width: box.width ? box.width / 100000 : null,
+    height: box.height ? box.height / 100000 : null,
+    length: box.depth ? box.depth / 100000 : null,
+    weight:
+      box.items.reduce((acc, item) => acc + (item.weight || 0), 0) / 100000,
+    sub_packs: box.items.map((pack) => ({
+      name: pack.name,
+      width: pack.width ? pack.width / 100000 : null,
+      height: pack.height ? pack.height / 100000 : null,
+      length: pack.depth ? pack.depth / 100000 : null,
+      weight: pack.weight ? pack.weight / 100000 : null,
+      type: "box",
+      quantity: 1,
+    })),
+  }));
 }
 
 app.use(shopify.cspHeaders());

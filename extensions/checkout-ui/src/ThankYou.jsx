@@ -73,7 +73,7 @@ console.log("orderConfirmation", 'orderConfirmation');
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://looks-toyota-heat-simple.trycloudflare.com/api/get-order/${orderId}`,
+      `https://classroom-differences-excuse-ati.trycloudflare.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -99,7 +99,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://looks-toyota-heat-simple.trycloudflare.com/api/set-order-metafields`,
+        `https://classroom-differences-excuse-ati.trycloudflare.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -124,7 +124,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       );
     } else {
       const result = await fetch(
-        `https://looks-toyota-heat-simple.trycloudflare.com/api/process-order/${orderId}`,
+        `https://classroom-differences-excuse-ati.trycloudflare.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

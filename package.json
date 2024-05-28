@@ -11,9 +11,10 @@
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
     "logout": "shopify auth logout"
-
   },
-  "dependencies": {},
+  "dependencies": {
+    "binpackingjs": "^3.0.2"
+  },
   "author": "tf",
   "private": true,
   "workspaces": [

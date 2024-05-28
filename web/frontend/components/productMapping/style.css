@@ -105,12 +105,13 @@
 }
 
 .assign-location .modal-body {
-    overflow: unset;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: unset;
+    /* justify-content: center; */
+    height: auto;
+    max-height: 300px;
 }
 
 .select-all {

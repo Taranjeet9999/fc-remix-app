@@ -35,7 +35,7 @@ export function ProductMapping() {
   const [selectedVariants, setSelectedVariants] = useState([]);
   const [showError, setShowError] = useState(false);
   const [addLocationSubmit, setAddLocationSubmit] = useState(false);
-  const [dimensionCount, setDimensionCount] = useState(1);
+  const [dimensionCount, setDimensionCount] = useState(3);
   const [selectedTag, setSelectedTag] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedProductType, setSelectedProductType] = useState("all");
@@ -51,6 +51,16 @@ export function ProductMapping() {
   const [openProductIds, setOpenProductIds] = useState([]);
   const [showImportDimensionsModal, setShowImportDimensionsModal] =
     useState(false);
+  const [productDimentions, setProductDimentions] = useState([
+    {
+      packageType: "box",
+      height: "",
+      width: "",
+      length: "",
+      weight: "",
+      isIndividual: "Yes",
+    },
+  ]);
   const [csvData, setCsvData] = useState(null);
   const [dataArray, setDataArray] = useState([]);
   const [products, setProducts] = useState(null);
@@ -68,16 +78,14 @@ export function ProductMapping() {
       },
     });
 
-    const data = await response.json(); 
+    const data = await response.json();
 
-    if(data){
-
+    if (data) {
       const formattedProducts = formatProductData(data.body.data.products);
       console.log("formattedproducts", formattedProducts);
-  
+
       setProducts(formattedProducts);
       setIsLoading(false);
-
     }
   };
   function getProductIdFromGID(gid) {
@@ -110,6 +118,18 @@ export function ProductMapping() {
     return formattedResponse;
   }
 
+  function hasEmptyFields(items) {
+    for (let item of items) {
+      for (let key in item) {
+        if (item[key] === "" || item[key] === undefined || item[key] === null) {
+          setErrorMessage("Please fill all the fields");
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // const getVariantMeta = async () => {
   //     const response = await fetch(
   //         `/api/variant-metafields`,
@@ -127,6 +147,7 @@ export function ProductMapping() {
   // }
 
   const getShippingBoxes = async () => {
+    return
     const response = await fetch(`/api/shipping-boxes`, {
       method: "GET",
       headers: {
@@ -149,7 +170,6 @@ export function ProductMapping() {
   // const uniqueCategories = new Set();
 
   // Iterate over the products and add tags to the Set
-  
 
   // products?.forEach((product) => {
   //   if (product.tags) {
@@ -201,11 +221,11 @@ export function ProductMapping() {
     setCsvData(e.target.files[0]);
   };
 
-  const [importDimensionError, setImportDimensionError] = useState('')
+  const [importDimensionError, setImportDimensionError] = useState("");
   useEffect(() => {
-    setImportDimensionError("")
-  }, [showImportDimensionsModal])
-  
+    setImportDimensionError("");
+    setErrorMessage("");
+  }, [showImportDimensionsModal]);
 
   const importDimensions = async () => {
     setIsLoading(true);
@@ -215,17 +235,16 @@ export function ProductMapping() {
         skipEmptyLines: false,
         complete: async (result) => {
           setDataArray(result.data);
-          const importData = result.data; 
+          const importData = result.data;
           const productIds = importData.map((element) => {
             const product = products?.find((element1) => {
               return element?.SKU == element1?.variants?.[0]?.sku;
             });
-            if(product?.id){
-
+            if (product?.id) {
               return product?.id;
             }
           });
-          if(productIds?.length > 0){
+          if (productIds?.length > 0) {
             const element = importData[0];
             // importData.map(async (element) => {
             const response = await fetch("/api/product/add-dimensions", {
@@ -240,25 +259,32 @@ export function ProductMapping() {
                 length: element.Length,
                 weight: element.Weight,
                 isIndividual: element.Individual,
-                product_ids:  productIds,
+                productDimentions:[
+                  {
+                    packageType: element["Package Type"],
+                    height: element.Height,
+                    width: element.Width,
+                    length: element.Length,
+                    weight: element.Weight,
+                    isIndividual: element.Individual,
+                  }
+                ],
+                product_ids: productIds,
               }),
             });
-    
+
             // })
             getAllProducts();
             setIsLoading(false);
             setShowImportDimensionsModal(false);
-
-          }else{
-
-            setImportDimensionError('No Products found')
+          } else {
+            setImportDimensionError("No Products found");
             setIsLoading(false);
           }
         },
       });
-      
     } catch (error) {
-      console.log("import dmensions error",error)
+      console.log("import dmensions error", error);
     }
   };
 
@@ -344,7 +370,6 @@ export function ProductMapping() {
       ? selectedProducts.filter((item) => item !== e.target.value)
       : [...selectedProducts, e.target.value];
     setSelectedProducts(productIds);
-
   };
 
   const selectVariant = (e) => {
@@ -355,18 +380,15 @@ export function ProductMapping() {
   };
 
   const handleSelectAll = (e) => {
-     
     var selectedProductIds = e.target.checked
       ? products.map((element) => element.id.toString())
       : [];
     setSelectedProducts(selectedProductIds);
 
-
     var selectedVariantIds = e.target.checked
       ? products.map((element) => element.variants.map((variant) => variant.id))
       : [];
     setSelectedVariants(selectedVariantIds.flat());
-     
   };
 
   const assignLocation = async () => {
@@ -382,12 +404,10 @@ export function ProductMapping() {
           product_ids: selectedProducts,
           variant_ids: selectedVariants,
         }),
-       
       });
-       
+
       if (response) {
-console.log(response,"responseeeeeee")
-        
+        console.log(response, "responseeeeeee");
       }
       getAllProducts();
       setIsLoading(false);
@@ -426,7 +446,7 @@ console.log(response,"responseeeeeee")
 
   const assignDimensions = async () => {
     try {
-      const isValid = dimensionValidations();
+      const isValid =  !hasEmptyFields(productDimentions);
       if (isValid) {
         setIsLoading(true);
         await fetch("/api/product/add-dimensions", {
@@ -435,12 +455,13 @@ console.log(response,"responseeeeeee")
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            package_type: packageType,
-            height: height,
-            width: width,
-            length: length,
-            weight: weight,
-            isIndividual: isIndividual,
+            // package_type: packageType,
+            // height: height,
+            // width: width,
+            // length: length,
+            // weight: weight,
+            // isIndividual: isIndividual,
+            productDimentions: productDimentions,
             product_ids: selectedProducts,
             variant_ids: selectedVariants,
           }),
@@ -468,7 +489,7 @@ console.log(response,"responseeeeeee")
   };
 
   const handleLocationChange = (e) => {
-    let locationJson= {...locationMetafields}
+    let locationJson = { ...locationMetafields };
     locationJson.type = locationBy;
     locationJson.value = JSON.parse(e.target.value);
 
@@ -562,7 +583,7 @@ console.log(response,"responseeeeeee")
   };
 
   const resetFilters = () => {
-    setProductSearchString('')
+    setProductSearchString("");
     return;
     setSelectedCategory("all");
     setSelectedTag("all");
@@ -602,81 +623,99 @@ console.log(response,"responseeeeeee")
     setOpenProductIds(variableProducts);
   };
 
+  useEffect(() => {
+    setErrorMessage("");
 
-  useEffect(() => {
-     if(showDimensionsModal){
+    if (showDimensionsModal) {
       // setPackageType("bag")
-      setLength("")
-      setWidth("")
-      setHeight("")
-      setWeight("")
-      setIsIndividual("Yes")
-      setErrorMessage("")
+      setLength("");
+      setWidth("");
+      setHeight("");
+      setWeight("");
+      setIsIndividual("Yes");
+      setErrorMessage("");
+      setProductDimentions([
+        {
+          packageType: "box",
+          height: "",
+          width: "",
+          length: "",
+          weight: "",
+          isIndividual: "Yes",
+        },
+      ]);
     }
-  }, [showDimensionsModal])
+  }, [showDimensionsModal]);
   useEffect(() => {
+    setErrorMessage("");
+
     if (showAddShippingBoxModal) {
-      setErrorMessage("")
-       
+      setErrorMessage("");
     }
-  }, [showAddShippingBoxModal])
-  
+  }, [showAddShippingBoxModal]);
+
   const handleDownloadCSV = () => {
     // Define the filename of the CSV file to be downloaded
-    const filename = 'dimensions-sample.csv';
+    const filename = "dimensions-sample.csv";
     // Construct the URL to the CSV file in the public folder
-    const fileUrl =  '/' + filename;
+    const fileUrl = "/" + filename;
     // Trigger the download by creating a temporary link element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = fileUrl;
-    link.setAttribute('download', filename);
+    link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  };
 
-
-  function getLocationtagName(tagData){
-    
-    
+  function getLocationtagName(tagData) {
     try {
-      let _tagData = JSON.parse(tagData)
-    
-      if (typeof _tagData == 'string') {
-        return ''
-        
-      }
-      
-      if(_tagData.type == 'name'){
-        let IsLocationExistForLoginUser = locations.find((element) => element.id == _tagData.value.id)
-        if(!IsLocationExistForLoginUser){
-          return ""
-        }
-        return _tagData.value.location_name
-      
-      }
-      if(_tagData.type == 'tag'){
+      let _tagData = JSON.parse(tagData);
 
-        let IsTagExistForLoginUser = merchantTags.find((element) => element.id == _tagData.value.id)
-        if(!IsTagExistForLoginUser){
-          return ""
+      if (typeof _tagData == "string") {
+        return "";
+      }
+
+      if (_tagData?.type == "name") {
+        let IsLocationExistForLoginUser = locations.find(
+          (element) => element.id == _tagData.value.id
+        );
+        if (!IsLocationExistForLoginUser) {
+          return "";
         }
-        return _tagData.value.name
+        return _tagData.value.location_name;
+      }
+      if (_tagData?.type == "tag") {
+        let IsTagExistForLoginUser = merchantTags.find(
+          (element) => element.id == _tagData.value.id
+        );
+        if (!IsTagExistForLoginUser) {
+          return "";
+        }
+        return _tagData.value.name;
       }
     } catch (error) {
-      console.log(error,"error")
-      return""
+      console.log(error, "error");
+      return "";
     }
-
   }
-  const [productSearchString, setProductSearchString] = useState('')
+  const [productSearchString, setProductSearchString] = useState("");
+
+  function getProductDimentionArray(_productDimension) {
+    try {
+      console.log(_productDimension, "productDimension");
+      return JSON.parse(_productDimension);
+      
+    } catch (error) {
+      return []
+      
+    }
+    
+  }
   return (
     <div className="product-mapping">
-
-       
       {isLoading && <Loader />}
       <div className="product-header">
-        
         <div className="product-map-filters align-items-end">
           {/* <div className="input-container">
                         <div className="input-lebel">
@@ -686,86 +725,91 @@ console.log(response,"responseeeeeee")
                             <input className="input-field-text" type="text" />
                         </div>
                     </div> */}
-            {false &&        <>
-          <div className="input-container">
-            <div className="input-lebel">
-              <span> Category&nbsp;</span>
-            </div>
-            <div className="input-field">
-              <select
-                className="input-field-text"
-                type="text"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="all">All</option>
-                {/* {uniqueCategoriesArray.map((element, i) => {
+          {false && (
+            <>
+              <div className="input-container">
+                <div className="input-lebel">
+                  <span> Category&nbsp;</span>
+                </div>
+                <div className="input-field">
+                  <select
+                    className="input-field-text"
+                    type="text"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    <option value="all">All</option>
+                    {/* {uniqueCategoriesArray.map((element, i) => {
                   return <option value={element}>{element}</option>;
                 })} */}
-              </select>
-            </div>
-          </div>
-          <div className="input-container">
-            <div className="input-lebel">
-              <span> Tags&nbsp;</span>
-            </div>
-            <div className="input-field">
-              <select
-                className="input-field-text"
-                type="text"
-                value={selectedTag}
-                onChange={(e) => setSelectedTag(e.target.value)}
-              >
-                <option value="all">All</option>
-                {/* {uniqueTagsArray.map((element, i) => {
+                  </select>
+                </div>
+              </div>
+              <div className="input-container">
+                <div className="input-lebel">
+                  <span> Tags&nbsp;</span>
+                </div>
+                <div className="input-field">
+                  <select
+                    className="input-field-text"
+                    type="text"
+                    value={selectedTag}
+                    onChange={(e) => setSelectedTag(e.target.value)}
+                  >
+                    <option value="all">All</option>
+                    {/* {uniqueTagsArray.map((element, i) => {
                   return <option value={element}>{element}</option>;
                 })} */}
-              </select>
-            </div>
-          </div></>}
+                  </select>
+                </div>
+              </div>
+            </>
+          )}
           <div className="input-container mr-2">
-          <div className="input-lebel">
-            <span> Product Name&nbsp;</span>
-          </div>
-          <div className="input-field1">
-            <input
-              className="input-field-text"
-              type="text"
-              placeholder="Product"
-              onChange={(e) =>{
-                setProductSearchString(e.target.value)
-              }
-                // setFilterData({ ...filterData, orderId: e.target.value })
-
-              }
-              value={productSearchString}
-            />
-          </div>
-        </div>
-       {false &&   <div className="input-container mr-2">
             <div className="input-lebel">
-              <span> Product Type&nbsp;</span>
+              <span> Product Name&nbsp;</span>
             </div>
-            <div className="input-field">
-              <select
+            <div className="input-field1">
+              <input
                 className="input-field-text"
                 type="text"
-                value={selectedProductType}
-                onChange={(e) => setSelectedProductType(e.target.value)}
-              >
-                <option value="all">All</option>
-                {/* <option value="simple">Simple</option>
+                placeholder="Product"
+                onChange={
+                  (e) => {
+                    setProductSearchString(e.target.value);
+                  }
+                  // setFilterData({ ...filterData, orderId: e.target.value })
+                }
+                value={productSearchString}
+              />
+            </div>
+          </div>
+          {false && (
+            <div className="input-container mr-2">
+              <div className="input-lebel">
+                <span> Product Type&nbsp;</span>
+              </div>
+              <div className="input-field">
+                <select
+                  className="input-field-text"
+                  type="text"
+                  value={selectedProductType}
+                  onChange={(e) => setSelectedProductType(e.target.value)}
+                >
+                  <option value="all">All</option>
+                  {/* <option value="simple">Simple</option>
                 <option value="virtual">Virtual</option>
                 <option value="variable">Variable</option> */}
-              </select>
+                </select>
+              </div>
             </div>
-          </div>}
+          )}
           <div className="filter-buttons">
             {/* <button className="fc-yellow-btn pointer"> Filter </button> */}
             <button onClick={() => resetFilters()}> Reset </button>
           </div>
         </div>
-        
+
         <div className="product-actions">
           {/* <button
             className="submit-btn"
@@ -785,22 +829,19 @@ console.log(response,"responseeeeeee")
           </button>
           <button
             className="submit-btn"
-            onClick={() =>
+            onClick={() => {
+              setErrorMessage("");
+
               selectedProducts.length > 0 || selectedVariants.length > 0
                 ? setShowAssignLocationModal(true)
-                : setShowError(true)
-            }
+                : setShowError(true);
+            }}
           >
             Assign Location
           </button>
           <button
             className="submit-btn"
-             
-            onClick={() =>
-            
-               setShowImportDimensionsModal(true)
-                
-            }
+            onClick={() => setShowImportDimensionsModal(true)}
           >
             Import Dimensions
           </button>
@@ -823,31 +864,22 @@ console.log(response,"responseeeeeee")
                   onChange={(e) => handleCsvInputChange(e)}
                 />
               </div>
-              <div className="sample-download"
-              onClick={()=>{
-                handleDownloadCSV()
-              }}
-              
+              <div
+                className="sample-download"
+                onClick={() => {
+                  handleDownloadCSV();
+                }}
               >
-                <a
-                  href="#"
-                  download={true}
-                >
+                <a href="#" download={true}>
                   {" "}
                   Sample CSV{" "}
                 </a>
               </div>
             </div>
 
-            {importDimensionError&&
-            <div className="error-message">
-              {importDimensionError}
-            </div>
-            
-            
-            
-            
-            }
+            {importDimensionError && (
+              <div className="error-message">{importDimensionError}</div>
+            )}
           </div>
           <div className="modal-footer">
             <div
@@ -1005,13 +1037,14 @@ console.log(response,"responseeeeeee")
                         <span> Default&nbsp;</span>
                         <span style={{ color: "red" }}> *</span>
                       </div>
-                      <div className=" "
-                      style={{
-                        width:'100%',
-                        display: 'flex',
-                        /* justify-content: center, */
-                        marginTop: '10px',
-                      }}
+                      <div
+                        className=" "
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          /* justify-content: center, */
+                          marginTop: "10px",
+                        }}
                       >
                         <input
                           type="radio"
@@ -1142,23 +1175,21 @@ console.log(response,"responseeeeeee")
                 <select
                   className="input-field-text"
                   type="text"
-                  onChange={(e) =>{ 
-                     
-                    handleLocationChange(e)}}
+                  onChange={(e) => {
+                    handleLocationChange(e);
+                  }}
                 >
                   <option>Select option</option>
                   {locationBy == "name" &&
                     locations.length > 0 &&
                     locations.map((element, i) => {
                       return (
-                        <option value={JSON.stringify(element)}
-                        
-                        onChange={(e) =>{
-                          
-                          
-                          console.log(e.target.value,"dd")
-                          setLocationName(e.target.value)}}
-                        
+                        <option
+                          value={JSON.stringify(element)}
+                          onChange={(e) => {
+                            console.log(e.target.value, "dd");
+                            setLocationName(e.target.value);
+                          }}
                         >
                           {element.location_name}
                         </option>
@@ -1168,7 +1199,9 @@ console.log(response,"responseeeeeee")
                     merchantTags.length > 0 &&
                     merchantTags.map((element, i) => {
                       return (
-                        <option value={JSON.stringify(element)}>{element.name}</option>
+                        <option value={JSON.stringify(element)}>
+                          {element.name}
+                        </option>
                       );
                     })}
                 </select>
@@ -1196,14 +1229,14 @@ console.log(response,"responseeeeeee")
             Assign dimensions to selected product(s)
           </div>
           <div className="modal-body">
-            {dimensionDivsArray.map((item) => (
+            {productDimentions.map((item, itemIndex) => (
               <div className="dimension-container">
                 <div className="input-row">
                   <div className="input-container1">
                     <div className="input-lebel1">
                       <span> Package Types&nbsp;</span>
                       <span style={{ color: "red" }}> *</span>
-                      {errorMessage != "" && packageType == "" && (
+                      {errorMessage != "" && item.packageType == "" && (
                         <span style={{ color: "red" }}>
                           &nbsp; {"(Required)"}
                         </span>
@@ -1213,7 +1246,12 @@ console.log(response,"responseeeeeee")
                       <select
                         className="input-field-text1"
                         type="text"
-                        onChange={(e) => setPackageType(e.target.value)}
+                        value={item.packageType}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].packageType = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
                       >
                         <option>Select package type</option>
                         {packageTypes.length > 0 &&
@@ -1231,7 +1269,7 @@ console.log(response,"responseeeeeee")
                     <div className="input-lebel1">
                       <span> Length&nbsp;</span>
                       <span style={{ color: "red" }}> *</span>
-                      {errorMessage != "" && length == "" && (
+                      {errorMessage != "" && item.length == "" && (
                         <span style={{ color: "red" }}>
                           &nbsp; {"(Required)"}
                         </span>
@@ -1242,8 +1280,12 @@ console.log(response,"responseeeeeee")
                         className="input-field-text1"
                         type="number"
                         placeholder="Length"
-                        value={length}
-                        onChange={(e) => setLength(e.target.value)}
+                        value={item.length}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].length = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
                       />
                     </div>
                   </div>
@@ -1251,7 +1293,7 @@ console.log(response,"responseeeeeee")
                     <div className="input-lebel1">
                       <span> Width&nbsp;</span>
                       <span style={{ color: "red" }}> *</span>
-                      {errorMessage != "" && width == "" && (
+                      {errorMessage != "" && item.width == "" && (
                         <span style={{ color: "red" }}>
                           &nbsp; {"(Required)"}
                         </span>
@@ -1262,8 +1304,12 @@ console.log(response,"responseeeeeee")
                         className="input-field-text1"
                         type="number"
                         placeholder="Width"
-                        value={width}
-                        onChange={(e) => setWidth(e.target.value)}
+                        value={item.width}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].width = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
                       />
                     </div>
                   </div>
@@ -1273,7 +1319,7 @@ console.log(response,"responseeeeeee")
                     <div className="input-lebel1">
                       <span> Height&nbsp;</span>
                       <span style={{ color: "red" }}> *</span>
-                      {errorMessage != "" && height == "" && (
+                      {errorMessage != "" && item.height == "" && (
                         <span style={{ color: "red" }}>
                           &nbsp; {"(Required)"}
                         </span>
@@ -1284,8 +1330,12 @@ console.log(response,"responseeeeeee")
                         className="input-field-text1"
                         type="text"
                         placeholder="Height"
-                        value={height}
-                        onChange={(e) => setHeight(e.target.value)}
+                        value={item.height}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].height = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
                       />
                     </div>
                   </div>
@@ -1293,14 +1343,23 @@ console.log(response,"responseeeeeee")
                     <div className="input-lebel1">
                       <span> Weight(kgs)&nbsp;</span>
                       <span style={{ color: "red" }}> *</span>
+                      {errorMessage != "" && item.weight == "" && (
+                        <span style={{ color: "red" }}>
+                          &nbsp; {"(Required)"}
+                        </span>
+                      )}
                     </div>
                     <div className="input-field">
                       <input
                         className="input-field-text1"
                         type="text"
                         placeholder="Weight(kgs)"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
+                        value={item.weight}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].weight = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
                       />
                     </div>
                   </div>
@@ -1312,23 +1371,31 @@ console.log(response,"responseeeeeee")
                     <div className="input-field">
                       <input
                         type="radio"
-                        name={item + "isIndividual"}
-                        id={item + "yes"}
+                        name={itemIndex + "isIndividual"}
+                        id={itemIndex + "yes"}
                         value="Yes"
-                        onChange={(e) => setIsIndividual(e.target.value)}
-                        checked={isIndividual == "Yes"}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].isIndividual = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
+                        checked={item.isIndividual == "Yes"}
                       />
-                      <label htmlFor={item + "yes"}>&nbsp;Yes</label>
+                      <label htmlFor={itemIndex + "yes"}>&nbsp;Yes</label>
                       <input
                         type="radio"
-                        name={item + "isIndividual"}
-                        id={item + "no"}
+                        name={itemIndex + "isIndividual"}
+                        id={itemIndex + "no"}
                         value="No"
-                        onChange={(e) => setIsIndividual(e.target.value)}
-                        checked={isIndividual == "No"}
+                        onChange={(e) => {
+                          let updated_data = [...productDimentions];
+                          updated_data[itemIndex].isIndividual = e.target.value;
+                          setProductDimentions(updated_data);
+                        }}
+                        checked={item.isIndividual == "No"}
                       />
-                      <label htmlFor={item + "no"}>&nbsp;No</label>
-                      {item != 0 && (
+                      <label htmlFor={itemIndex + "no"}>&nbsp;No</label>
+                      {itemIndex != 0 && (
                         <FontAwesomeIcon
                           icon="fa-solid fa-trash"
                           style={{
@@ -1337,10 +1404,13 @@ console.log(response,"responseeeeeee")
                             marginLeft: "30px",
                             cursor: "pointer",
                           }}
-                          onClick={() =>
-                            dimensionCount > 1 &&
-                            setDimensionCount(dimensionCount - 1)
-                          }
+                          onClick={() => {
+                            let updated_data = [...productDimentions];
+
+                            updated_data.splice(itemIndex, 1);
+
+                            setProductDimentions(updated_data);
+                          }}
                         />
                       )}
                     </div>
@@ -1349,9 +1419,23 @@ console.log(response,"responseeeeeee")
               </div>
             ))}
           </div>
-          {/* <div className="add-more-dimension" onClick={() => setDimensionCount(dimensionCount + 1)}>
-                        Add More Dimensions
-                    </div> */}
+          <div
+            className="add-more-dimension"
+            onClick={() => {
+              let updated_data = [...productDimentions];
+              updated_data.push({
+                packageType: "box",
+                height: "",
+                width: "",
+                length: "",
+                weight: "",
+                isIndividual: "Yes",
+              });
+              setProductDimentions(updated_data);
+            }}
+          >
+            Add More Dimensions
+          </div>
           <div className="modal-footer">
             <button
               className="cancel-btn"
@@ -1369,11 +1453,11 @@ console.log(response,"responseeeeeee")
         <table>
           <tr className="table-head">
             <th className="select-all">
-              <input type="checkbox"
-              
-              checked={selectedProducts?.length === products?.length}
-              
-              onChange={(e) => handleSelectAll(e)} />
+              <input
+                type="checkbox"
+                checked={selectedProducts?.length === products?.length}
+                onChange={(e) => handleSelectAll(e)}
+              />
             </th>
             <th>Name</th>
             {/* <th>SKU</th> */}
@@ -1381,7 +1465,7 @@ console.log(response,"responseeeeeee")
             <th>Category</th>
             <th>Tags</th>
             <th>Package Type</th>
-            <th>L x W x H</th>
+            <th>L x W x H </th>
             <th>Weight</th>
             <th>Is Individual</th>
             {/* <th>Eligible For Shipping</th> */}
@@ -1389,108 +1473,84 @@ console.log(response,"responseeeeeee")
             <th>Location/Tag</th>
           </tr>
           {products?.length > 0 &&
-            products.filter((prod)=>prod.title.toLowerCase().includes(productSearchString.toLowerCase()))
-            .map((element, i) => {
-              return element?.variants.length > 0 &&
-                element?.variants[0]?.title == "Default Title" ? (
-                <tr
-                  key={i}
-                  className="products-row"
-                  style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
-                >
-                  <td>
-                    <input
-                      type="checkbox"
-                      style={{ width: "40px" }}
-                      value={element.id}
-                      onChange={(e) => selectProduct(e)}
-                      checked={selectedProducts.includes(element.id.toString())}
-                    />
-                  </td>
-                  <td width="10%">{element.title}</td>
-                  {/* <td width="10%">{element?.variants?.[0]?.sku}</td> */}
-                  <td width="10%">{"$" + element.variants[0].price}</td>
-                  <td width="10%">{element.product_type}</td>
-                  <td width="20%">{element.tags}</td>
-                  <td width="10%">
-                    {getProductMetaField(element.metafields, "package_type")}
-                  </td>
-                  <td width="20%">
-                    {getProductMetaField(element.metafields, "width") != null
-                      ? getProductMetaField(element.metafields, "length") +
-                        " x " +
-                        getProductMetaField(element.metafields, "width") +
-                        " x " +
-                        getProductMetaField(element.metafields, "height")
-                      : "0 x 0 x 0"}
-                  </td>
-                  <td width="10%">
-                    {getProductMetaField(element.metafields, "weight") ?? "0kg"}
-                  </td>
-                  <td width="10%">
-                    {getProductMetaField(element.metafields, "is_individaul")}
-                  </td>
-                  {/* <td width="10%"><label className="switch">
-                                    <input type="checkbox" />
-                                    <span className="slider round"></span>
-                                </label></td> */}
-                  <td width="10%">
-                    <label className="switch">
+            products
+              .filter((prod) =>
+                prod.title
+                  .toLowerCase()
+                  .includes(productSearchString.toLowerCase())
+              )
+              .map((element, i) => {
+                return element?.variants.length > 0 &&
+                  element?.variants[0]?.title == "Default Title" ? (
+                  <tr
+                    key={i}
+                    className="products-row"
+                    style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
+                  >
+                    <td>
                       <input
                         type="checkbox"
-                        onChange={(e) =>
-                          handleFreeShippingChange(e, element.id)
-                        }
-                        checked={
-                          getProductMetaField(
-                            element.metafields,
-                            "is_free_shipping"
-                          ) == "1"
-                            ? true
-                            : false
-                        }
-                      />
-                      <span className="slider round"></span>
-                    </label>
-                  </td>
-                  <td width="10%">
-          
-                    {getLocationtagName(getProductMetaField(element.metafields, "location"))}
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  <tr
-                    className="products-row"
-                    style={{
-                      background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => openVariableProduct(element.id)}
-                  >
-                    <td style={{ textAlign: "center" }}>
-                      <FontAwesomeIcon
-                        icon={
-                          openProductIds.includes(element.id)
-                            ? "fa-solid fa-caret-down"
-                            : "fa-solid fa-caret-right"
-                        }
-                        style={{ height: "1.3rem" }}
+                        style={{ width: "40px" }}
+                        value={element.id}
+                        onChange={(e) => selectProduct(e)}
+                        checked={selectedProducts.includes(
+                          element.id.toString()
+                        )}
                       />
                     </td>
                     <td width="10%">{element.title}</td>
-                    {/* <td width="10%">{element.variants[0].sku}</td> */}
+                    {/* <td width="10%">{element?.variants?.[0]?.sku}</td> */}
                     <td width="10%">{"$" + element.variants[0].price}</td>
                     <td width="10%">{element.product_type}</td>
-                    <td width="20%">{getLocationtagName(element.tags)}</td>
-                    <td width="10%">{"-- --"}</td>
-                    <td width="20%">{"-- --"}</td>
-                    <td width="10%">{"-- --"}</td>
-                    <td width="10%">{"-- --"}</td>
+                    <td width="20%">{element.tags}</td>
+                    <td width="10%">
+                      {getProductDimentionArray(
+                        getProductMetaField(
+                          element.metafields,
+                          "product_dimentions"
+                        )
+                      )?.map((item, i) => {
+                        return <div>{item.packageType}</div>;
+                      })}
+                    </td>
+                    <td width="20%">
+                      {getProductDimentionArray(
+                        getProductMetaField(
+                          element.metafields,
+                          "product_dimentions"
+                        )
+                      )?.map((item, i) => {
+                        return (
+                          <div>
+                            {item.length} x {item.width} x {item.height}
+                          </div>
+                        );
+                      })}
+                    </td>
+                    <td width="10%">
+                      {getProductDimentionArray(
+                        getProductMetaField(
+                          element.metafields,
+                          "product_dimentions"
+                        )
+                      )?.map((item, i) => {
+                        return <div>{item.weight}kg</div>;
+                      })}
+                    </td>
+                    <td width="10%">
+                      {getProductDimentionArray(
+                        getProductMetaField(
+                          element.metafields,
+                          "product_dimentions"
+                        )
+                      )?.map((item, i) => {
+                        return <div>{item.isIndividual}</div>;
+                      })}
+                    </td>
                     {/* <td width="10%"><label className="switch">
-                                        <input type="checkbox" />
-                                        <span className="slider round"></span>
-                                    </label></td> */}
+                                    <input type="checkbox" />
+                                    <span className="slider round"></span>
+                                </label></td> */}
                     <td width="10%">
                       <label className="switch">
                         <input
@@ -1511,76 +1571,155 @@ console.log(response,"responseeeeeee")
                       </label>
                     </td>
                     <td width="10%">
-                      {getLocationtagName(getProductMetaField(element.metafields, "location"))}
+                      {getLocationtagName(
+                        getProductMetaField(element.metafields, "location")
+                      )}
                     </td>
                   </tr>
-                  {openProductIds.includes(element.id) &&
-                    element.variants.map((value, i) => {
-                      return (
-                        <tr
-                          className="products-row"
-                          style={{ background: "#eaebeb" }}
-                        >
-                          <td>
-                            <input
-                              type="checkbox"
-                              style={{ width: "40px" }}
-                              value={value.id}
-                              onChange={(e) => selectVariant(e)}
-                              checked={selectedVariants.includes(
-                                value.id.toString()
-                              )}
-                            />
-                          </td>
-                          <td width="10%">{value.title}</td>
-                          {/* <td width="10%">{value.sku}</td> */}
-                          <td width="10%">{"$" + value.price}</td>
-                          <td width="10%">{}</td>
-                          <td width="20%">{}</td>
-                          <td width="10%">
-                            {getProductMetaField(
-                              value.metafields,
-                              "package_type"
-                            )}
-                          </td>
-                          <td width="10%">
-                            {getProductMetaField(value.metafields, "width") !=
-                            null
-                              ? getProductMetaField(
+                ) : (
+                  <>
+                    <tr
+                      className="products-row"
+                      style={{
+                        background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => openVariableProduct(element.id)}
+                    >
+                      <td style={{ textAlign: "center" }}>
+                        <FontAwesomeIcon
+                          icon={
+                            openProductIds.includes(element.id)
+                              ? "fa-solid fa-caret-down"
+                              : "fa-solid fa-caret-right"
+                          }
+                          style={{ height: "1.3rem" }}
+                        />
+                      </td>
+                      <td width="10%">{element.title}</td>
+                      {/* <td width="10%">{element.variants[0].sku}</td> */}
+                      <td width="10%">{"$" + element.variants[0].price}</td>
+                      <td width="10%">{element.product_type}</td>
+                      <td width="20%">{getLocationtagName(element.tags)}</td>
+                      <td width="10%">{"-- --"}</td>
+                      <td width="20%">{"-- --"}</td>
+                      <td width="10%">{"-- --"}</td>
+                      <td width="10%">{"-- --"}</td>
+                      {/* <td width="10%"><label className="switch">
+                                        <input type="checkbox" />
+                                        <span className="slider round"></span>
+                                    </label></td> */}
+                      <td width="10%">
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            onChange={(e) =>
+                              handleFreeShippingChange(e, element.id)
+                            }
+                            checked={
+                              getProductMetaField(
+                                element.metafields,
+                                "is_free_shipping"
+                              ) == "1"
+                                ? true
+                                : false
+                            }
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                      </td>
+                      <td width="10%">
+                        {/* {getLocationtagName(
+                          getProductMetaField(element.metafields, "location")
+                        )} */}
+                      </td>
+                    </tr>
+                    {openProductIds.includes(element.id) &&
+                      element.variants.map((value, i) => {
+                        return (
+                          <tr
+                            className="products-row"
+                            style={{ background: "#eaebeb" }}
+                          >
+                            <td>
+                              <input
+                                type="checkbox"
+                                style={{ width: "40px" }}
+                                value={value.id}
+                                onChange={(e) => selectVariant(e)}
+                                checked={selectedVariants.includes(
+                                  value.id.toString()
+                                )}
+                              />
+                            </td>
+                            <td width="10%">{value.title}</td>
+                            {/* <td width="10%">{value.sku}</td> */}
+                            <td width="10%">{"$" + value.price}</td>
+                            <td width="10%">{}</td>
+                            <td width="20%">{}</td>
+                            <td width="10%">
+                              {getProductDimentionArray(
+                                getProductMetaField(
                                   value.metafields,
-                                  "length"
-                                ) +
-                                " x " +
-                                getProductMetaField(value.metafields, "width") +
-                                " x " +
-                                getProductMetaField(value.metafields, "height")
-                              : "0 x 0 x 0"}
-                          </td>
-                          <td width="20%">
-                            {getProductMetaField(value.metafields, "weight")}
-                          </td>
-                          <td width="10%">
-                            {getProductMetaField(
-                              value.metafields,
-                              "is_individaul"
-                            )}
-                          </td>
-                          {/* <td width="10%"><label className="switch">
+                                  "product_dimentions"
+                                )
+                              )?.map((item, i) => {
+                                return <div>{item.packageType}</div>;
+                              })}
+                            </td>
+                            <td width="20%">
+                              {getProductDimentionArray(
+                                getProductMetaField(
+                                  value.metafields,
+                                  "product_dimentions"
+                                )
+                              )?.map((item, i) => {
+                                return (
+                                  <div>
+                                    {item.length} x {item.width} x {item.height}
+                                  </div>
+                                );
+                              })}
+                            </td>
+                            <td width="10%">
+                              {getProductDimentionArray(
+                                getProductMetaField(
+                                  value.metafields,
+                                  "product_dimentions"
+                                )
+                              )?.map((item, i) => {
+                                return <div>{item.weight}kg</div>;
+                              })}
+                            </td>
+                            <td width="10%">
+                              {getProductDimentionArray(
+                                getProductMetaField(
+                                  value.metafields,
+                                  "product_dimentions"
+                                )
+                              )?.map((item, i) => {
+                                return <div>{item.isIndividual}</div>;
+                              })}
+                            </td>
+                            {/* <td width="10%"><label className="switch">
                                             <input type="checkbox" />
                                             <span className="slider round"></span>
                                         </label></td> */}
-                          <td></td>
-                          <td width="10%">
-                             
-                    {getLocationtagName(getProductMetaField(value.metafields, "location"))}
-
-                          </td>
-                        </tr>
-                      );
-                    })}
-                </>
-              );
-            })}
+                            <td></td>
+                            <td width="10%">
+                              {getLocationtagName(
+                                getProductMetaField(
+                                  value.metafields,
+                                  "location"
+                                )
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </>
+                );
+              })}
         </table>
       </div>
     </div>
