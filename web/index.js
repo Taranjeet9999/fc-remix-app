@@ -1312,7 +1312,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://classroom-differences-excuse-ati.trycloudflare.com/api/shipping-rates";
+      "https://work-hd-sapphire-powder.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1336,14 +1336,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://classroom-differences-excuse-ati.trycloudflare.com/api/shipping-rates";
+        "https://work-hd-sapphire-powder.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Dummy Test START
       const webhook = new shopify.api.rest.Webhook({session: res.locals.shopify.session});
-      webhook.address = "https://classroom-differences-excuse-ati.trycloudflare.com/api/webhook/order-create";
+      webhook.address = "https://work-hd-sapphire-powder.trycloudflare.com/api/webhook/order-create";
       webhook.topic = "orders/paid";
       webhook.format = "json";
       await webhook.save({

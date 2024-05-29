@@ -579,9 +579,9 @@ export function FallbackOrders() {
         <div className="pickup-locations-table">
           <table>
             <tr className="table-head">
-              <th className="select-all">
+              {/* <th className="select-all">
                 <input type="checkbox" onChange={(e) => handleSelectAll(e)} />
-              </th>
+              </th> */}
               <th>Order Id</th>
               <th>Date</th>
               <th>Customer</th>
@@ -616,14 +616,14 @@ export function FallbackOrders() {
                       className="products-row"
                       style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
                     >
-                      <td>
+                      {/* <td>
                         <input
                           type="checkbox"
                           value={element.id}
                           onChange={(e) => selectOrder(e)}
                           checked={selectedOrders.includes(element.id.toString())}
                         />
-                      </td>
+                      </td> */}
                       <td
                         width="7%"
                         // onClick={() =>
