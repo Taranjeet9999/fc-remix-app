@@ -7,3 +7,5 @@ export const locationMetafields = {
     description: "The location of the store",
   },    
 };
+
+

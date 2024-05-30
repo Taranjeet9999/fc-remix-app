@@ -78,7 +78,7 @@ export function FallbackOrders() {
       };
       axios
         .get(
-          `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -106,7 +106,7 @@ export function FallbackOrders() {
         Authorization: "Bearer " + accessToken,
       };
       axios
-        .get(`${process.env.API_ENDPOINT}/api/wp/public-holidays`, {
+        .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
           headers: headers,
         })
         .then((response) => {
@@ -310,7 +310,7 @@ export function FallbackOrders() {
   
         axios
           .post(
-            `${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
+            `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
             payload,
             { headers: headers }
           )

@@ -73,7 +73,7 @@ console.log("orderConfirmation", 'orderConfirmation');
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://work-hd-sapphire-powder.trycloudflare.com/api/get-order/${orderId}`,
+      `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -99,7 +99,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://work-hd-sapphire-powder.trycloudflare.com/api/set-order-metafields`,
+        `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -124,7 +124,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       );
     } else {
       const result = await fetch(
-        `https://work-hd-sapphire-powder.trycloudflare.com/api/process-order/${orderId}`,
+        `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

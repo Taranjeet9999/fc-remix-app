@@ -31,6 +31,26 @@ export default function HomePage(props) {
     logOutUser()
   }
 
+  
+
+  const getComponent = () => {
+    if (activeNavItem == "configuration") {
+      return <Configuration {...props} />;
+    } else if (activeNavItem == "newOrders") {
+      return <NewOrders setActiveNavItem={setActiveNavItem} />
+    } else if (activeNavItem == "processedOrders") {
+      return <ProcessedOrders setActiveNavItem={setActiveNavItem} />
+    } else if (activeNavItem == "holdOrders") {
+      return <HoldOrders setActiveNavItem={setActiveNavItem} />
+    } else if (activeNavItem == "rejectedOrders") {
+      return <RejectedOrders setActiveNavItem={setActiveNavItem} />
+    } else if (activeNavItem == "fallbackOrders") {
+      return <FallbackOrders setActiveNavItem={setActiveNavItem} />
+    } else if (activeNavItem == "changePassword") {
+      return <ChangePassword setActiveNavItem={setActiveNavItem} />
+    }
+  }
+
   async function logOutUser( ) {
     try {
         setIsLoading(true);
@@ -57,23 +77,45 @@ export default function HomePage(props) {
     }
   }
 
-  const getComponent = () => {
-    if (activeNavItem == "configuration") {
-      return <Configuration {...props} />;
-    } else if (activeNavItem == "newOrders") {
-      return <NewOrders setActiveNavItem={setActiveNavItem} />
-    } else if (activeNavItem == "processedOrders") {
-      return <ProcessedOrders setActiveNavItem={setActiveNavItem} />
-    } else if (activeNavItem == "holdOrders") {
-      return <HoldOrders setActiveNavItem={setActiveNavItem} />
-    } else if (activeNavItem == "rejectedOrders") {
-      return <RejectedOrders setActiveNavItem={setActiveNavItem} />
-    } else if (activeNavItem == "fallbackOrders") {
-      return <FallbackOrders setActiveNavItem={setActiveNavItem} />
-    } else if (activeNavItem == "changePassword") {
-      return <ChangePassword setActiveNavItem={setActiveNavItem} />
-    }
+  function setDataIntoData(columnName, data) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/add-data-into-table", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: columnName,
+          data: data
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(`Error: ${error.message}`);
+          });
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        resolve(responseData);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        reject(error);
+      });
+    });
   }
+  useEffect(() => {
+    if (props.executeSandboxStatus.execute == "sandbox") {
+      setIsLoading(true);
+      setDataIntoData("is_production", props.executeSandboxStatus.value).then(()=>{
+        logOutUser()
+      })
+    }
+   
+  }, [props.executeSandboxStatus])
+  
   return (
     <div className="homepage">
       {isLoading && <Loader />}

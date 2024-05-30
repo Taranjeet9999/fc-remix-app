@@ -19,7 +19,7 @@ export function MerchantBillingDetails(props) {
   const [billingPostcode, setBillingPostcode] = useState("");
   const [billingSuburb, setBillingSuburb] = useState("");
   const [bookingPreference, setBookingPreference] = useState("");
-  const [fallbackAmount, setFallbackAmount] = useState("");
+  const [fallbackAmount, setFallbackAmount] = useState(50);
   const [insuranceType, setInsuranceType] = useState("");
   const [isInsurancePaidByCustomer, setIsInsurancePaidByCustomer] = useState(0);
   const [automaticOrderProcess, setAutomaticOrderProcess] = useState(0);
@@ -105,7 +105,7 @@ export function MerchantBillingDetails(props) {
       count_of_errros++;
       _errors.bookingPreferenceError = "Please select booking preference.";
     }
-    if (!fallbackAmount) {
+    if (!fallbackAmount || fallbackAmount < 50) {
       count_of_errros++;
       _errors.fallbackAmountError = "Please enter fallback amount.";
     }
@@ -155,7 +155,7 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/get_merchant`, {
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/get_merchant`, {
         headers: headers,
       })
       .then((response) => {
@@ -209,7 +209,7 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/categories_of_goods`, {
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/categories_of_goods`, {
         headers: headers,
       })
       .then((response) => {
@@ -316,7 +316,7 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
       .then((response) => {
         var suburbData = [];
         response.data.data.forEach((element) => {
@@ -356,7 +356,7 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/couriers`, { headers: headers })
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/couriers`, { headers: headers })
       .then((response) => {
         setCouriers(response.data.data);
         var courierIds = [];
@@ -417,7 +417,7 @@ export function MerchantBillingDetails(props) {
           Authorization: "Bearer " + accessToken,
         };
         await axios
-          .post(`${process.env.API_ENDPOINT}/api/wp/activate`, payload, {
+          .post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/activate`, payload, {
             headers: headers,
           })
           .then((response) => {
@@ -556,7 +556,7 @@ export function MerchantBillingDetails(props) {
 
       axios
         .get(
-          `${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -586,7 +586,7 @@ export function MerchantBillingDetails(props) {
     };
     axios
       .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -597,6 +597,72 @@ export function MerchantBillingDetails(props) {
         console.log(error);
       });
   };
+
+  async function logOutUser() {
+    try {
+        setIsLoading(true);
+      const response = await fetch("/api/remove-merchant-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      
+      if (data.data) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("merchantDomainId");
+        navigate("/login");
+        props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
+        setIsLoading(false);
+      } else {
+        
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+  function setDataIntoData(columnName, data) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/add-data-into-table", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: columnName,
+          data: data
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(`Error: ${error.message}`);
+          });
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        resolve(responseData);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        reject(error);
+      });
+    });
+  }
+  useEffect(() => {
+    if (props.executeSandboxStatus.execute == "sandbox") {
+      setIsLoading(true);
+      setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
+        localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
+        logOutUser()
+      })
+    }
+   
+  }, [props.executeSandboxStatus])
 
   return (
     <div className="merchant-main">
@@ -861,6 +927,12 @@ export function MerchantBillingDetails(props) {
               type="number"
               value={fallbackAmount}
               onChange={(e) => setFallbackAmount(e.target.value)}
+              onBlur={()=>{
+                if(fallbackAmount<50){
+                  setFallbackAmount(50)
+                }
+              
+              }}
             />
           </div>
         </div>
@@ -1030,6 +1102,12 @@ export function MerchantBillingDetails(props) {
               className="input-field-text1"
               value={tailLiftValue}
               onChange={(e) => setTailLiftValue(e.target.value)}
+              onBlur={()=>{
+                if(tailLiftValue<30){
+                  setTailLiftValue(30)
+                }
+              
+              }}
             />{" "}
             {" Kgs."}
           </span>

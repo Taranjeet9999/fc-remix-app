@@ -301,7 +301,7 @@ export function ProductMapping() {
     };
     axios
       .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -327,7 +327,7 @@ export function ProductMapping() {
     };
     axios
       .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -352,7 +352,7 @@ export function ProductMapping() {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/package_types`, {
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/package_types`, {
         headers: headers,
       })
       .then((response) => {
@@ -606,6 +606,27 @@ export function ProductMapping() {
         body: JSON.stringify({
           productId: id,
           isFreeShipping: checked,
+        }),
+      });
+      getAllProducts();
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  };
+  const handleVirtualShipping = async (e, id) => {
+    const checked = e.target.checked;
+    try {
+      setIsLoading(true);
+      await fetch("/api/virtual-shipping", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: id,
+          isVirtual: checked,
         }),
       });
       getAllProducts();
@@ -1463,7 +1484,12 @@ export function ProductMapping() {
             {/* <th>SKU</th> */}
             <th>Price</th>
             <th>Category</th>
-            <th>Tags</th>
+            <th>
+              {/* Tags */}
+              Virtual
+              
+              
+              </th>
             <th>Package Type</th>
             <th>L x W x H </th>
             <th>Weight</th>
@@ -1502,7 +1528,30 @@ export function ProductMapping() {
                     {/* <td width="10%">{element?.variants?.[0]?.sku}</td> */}
                     <td width="10%">{"$" + element.variants[0].price}</td>
                     <td width="10%">{element.product_type}</td>
-                    <td width="20%">{element.tags}</td>
+                    <td width="20%">
+                      {/* {element.tags} */}
+                      
+                      <label className="switch">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleVirtualShipping(e, element.id)
+                          }
+                          checked={
+                            getProductMetaField(
+                              element.metafields,
+                              "is_virtual"
+                            ) == "1"
+                              ? true
+                              : false
+                          }
+                        />
+                        <span className="slider round"></span>
+                      </label>
+                      
+                      
+                      
+                      </td>
                     <td width="10%">
                       {getProductDimentionArray(
                         getProductMetaField(
@@ -1600,7 +1649,27 @@ export function ProductMapping() {
                       {/* <td width="10%">{element.variants[0].sku}</td> */}
                       <td width="10%">{"$" + element.variants[0].price}</td>
                       <td width="10%">{element.product_type}</td>
-                      <td width="20%">{getLocationtagName(element.tags)}</td>
+                      <td width="20%">
+                        {/* {getLocationtagName(element.tags)} */}
+                        <label className="switch">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleVirtualShipping(e, element.id)
+                          }
+                          checked={
+                            getProductMetaField(
+                              element.metafields,
+                              "is_virtual"
+                            ) == "1"
+                              ? true
+                              : false
+                          }
+                        />
+                        <span className="slider round"></span>
+                      </label>
+                        
+                        </td>
                       <td width="10%">{"-- --"}</td>
                       <td width="20%">{"-- --"}</td>
                       <td width="10%">{"-- --"}</td>

@@ -56,7 +56,7 @@ export function Signup(props) {
             "version": "3.1.1",
         }
 
-        axios.post(`${process.env.API_ENDPOINT}/api/wp/signup`, payload, { "headers": headers }).then(response => {
+        axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/signup`, payload, { "headers": headers }).then(response => {
             props.setUserDetails(response.data.merchant);
             localStorage.setItem("accessToken", response.data.merchant.access_token);
             localStorage.setItem("merchantDomainId", response.data.merchant.id);
@@ -69,6 +69,73 @@ export function Signup(props) {
         })
 
     }
+
+    async function logOutUser( ) {
+        try {
+            setIsLoading(true);
+          const response = await fetch("/api/remove-merchant-token", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          
+          if (data.data) {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("merchantDomainId");
+            navigate("/login");
+            props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
+            setIsLoading(false);
+          } else {
+            
+            setIsLoading(false);
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log(err);
+        }
+      }
+    
+      function setDataIntoData(columnName, data) {
+        return new Promise((resolve, reject) => {
+          fetch("/api/add-data-into-table", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              columnName: columnName,
+              data: data
+            }),
+          })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(error => {
+                throw new Error(`Error: ${error.message}`);
+              });
+            }
+            return response.json();
+          })
+          .then(responseData => {
+            resolve(responseData);
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            reject(error);
+          });
+        });
+      }
+      useEffect(() => {
+        if (props.executeSandboxStatus.execute == "sandbox") {
+          setIsLoading(true);
+          setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
+            localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
+            logOutUser()
+          })
+        }
+       
+      }, [props.executeSandboxStatus])
     return (
         <div className="main-container">
             {

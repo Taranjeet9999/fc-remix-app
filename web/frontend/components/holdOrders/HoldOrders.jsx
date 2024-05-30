@@ -108,7 +108,7 @@ export function HoldOrders() {
       }
 
    
-     await axios.post(`${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`, payload, { "headers": headers }).then(async response => {
+     await axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`, payload, { "headers": headers }).then(async response => {
       let res = await fetch('/api/book-orders', {
           method: 'POST',
           headers: {

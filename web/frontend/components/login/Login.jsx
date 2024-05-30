@@ -49,7 +49,7 @@ export function Login(props) {
           version: "3.1.1",
         };
         axios
-          .post(`${process.env.API_ENDPOINT}/api/wp/login`, payload, {
+          .post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/login`, payload, {
             headers: headers,
           })
           .then((response) => {
@@ -58,9 +58,14 @@ export function Login(props) {
               "accessToken",
               response.data.merchant.access_token
             );
-            setMerchantTokenAndDomainId(response.data.merchant.access_token,response.data.merchant.id).then(()=>{
-
-              localStorage.setItem("merchantDomainId", response.data.merchant.id);
+            setMerchantTokenAndDomainId(
+              response.data.merchant.access_token,
+              response.data.merchant.id
+            ).then(() => {
+              localStorage.setItem(
+                "merchantDomainId",
+                response.data.merchant.id
+              );
               navigate("/homepage");
               setIsLoading(false);
             });
@@ -83,12 +88,26 @@ export function Login(props) {
     // if (accessToken) {
     //   navigate("/homepage");
     // }
-     getMerchantTokenAndDomainId();
+    localStorage.clear();
+    getUserData().then((data) => {
+      if (data.data) {
+        console.log(data)
+        localStorage.setItem("userData", JSON.stringify(data.data));
+        if (data.data.is_production === "1") {
+          localStorage.setItem("isProduction", "1");
+          props.setIsStaging(false);
+        } else {
+          localStorage.setItem("isProduction", "0");
+          props.setIsStaging(true);
+        }
+        getMerchantTokenAndDomainId();
+      }
+    });
   }, []);
 
   const setMerchantTokenAndDomainId = (access_token, merchant_domain_id) => {
     setIsLoading(true);
-  
+
     return fetch("/api/set-merchant-token", {
       method: "POST",
       headers: {
@@ -96,26 +115,73 @@ export function Login(props) {
       },
       body: JSON.stringify({
         token: access_token,
-        merchant_domain_id: merchant_domain_id
+        merchant_domain_id: merchant_domain_id,
       }),
     })
-    .then(response => response.json())
-    .then(data => {
-     
-      // You can handle the `data` if needed
-    })
-    .catch(err => {
-      setIsLoading(false);
-      console.log(err);
+      .then((response) => response.json())
+      .then((data) => {
+        // You can handle the `data` if needed
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        console.log(err);
+      });
+  };
+  const getUserData = () => {
+    return new Promise((resolve, reject) => {
+      setIsLoading(true);
+
+      fetch("/api/get-current-session", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setIsLoading(false);
+          resolve(data); // Resolve the promise with the fetched data
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          reject(err); // Reject the promise with the error
+        });
     });
   };
-  
+
+  async function getMerchantTokenAndDomainId() {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/get-merchant-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+
+      if (data.data) {
+        console.log(data.data, "data.data");
+        localStorage.setItem("accessToken", data.data.merchant_token);
+
+        localStorage.setItem("merchantDomainId", data.data.merchant_id);
+        navigate("/homepage");
+        setIsLoading(false);
+      } else {
+       
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
 
 
-  async function getMerchantTokenAndDomainId( ) {
+  async function logOutUser( ) {
     try {
         setIsLoading(true);
-      const response = await fetch("/api/get-merchant-token", {
+      const response = await fetch("/api/remove-merchant-token", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -124,17 +190,13 @@ export function Login(props) {
       const data = await response.json();
       
       if (data.data) {
-        console.log(data.data,"data.data");
-        localStorage.setItem(
-          "accessToken",
-          data.data.merchant_token
-        );
-       
-        localStorage.setItem("merchantDomainId",data.data.merchant_id);
-        navigate("/homepage");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("merchantDomainId");
+        navigate("/login");
+        props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
         setIsLoading(false);
       } else {
-        localStorage.clear()
+        
         setIsLoading(false);
       }
     } catch (err) {
@@ -142,7 +204,46 @@ export function Login(props) {
       console.log(err);
     }
   }
- 
+
+  function setDataIntoData(columnName, data) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/add-data-into-table", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: columnName,
+          data: data
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(`Error: ${error.message}`);
+          });
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        resolve(responseData);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        reject(error);
+      });
+    });
+  }
+  useEffect(() => {
+    if (props.executeSandboxStatus.execute == "sandbox") {
+      setIsLoading(true);
+      setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
+        localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
+        logOutUser()
+      })
+    }
+   
+  }, [props.executeSandboxStatus])
 
   return (
     <div className="main-container">
@@ -199,7 +300,13 @@ export function Login(props) {
           </div>
         </div>
         <div className="input-container">
-          <button type="submit" className="submit-btn" onClick={() => login()}>
+          <button
+            type="submit"
+            className="submit-btn"
+            onClick={() => {
+              login();
+            }}
+          >
             Continue
           </button>
         </div>
@@ -207,9 +314,3 @@ export function Login(props) {
     </div>
   );
 }
-
-
- 
-
-
-

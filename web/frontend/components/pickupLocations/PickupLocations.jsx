@@ -32,7 +32,7 @@ export function PickupLocations(props) {
     };
     axios
       .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -67,7 +67,7 @@ export function PickupLocations(props) {
       };
   
       axios
-        .get(`${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`, { headers: headers })
+        .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`, { headers: headers })
         .then((response) => {
           setIsLoading(false);
           setMerchantTags(response.data.data);
@@ -98,7 +98,7 @@ export function PickupLocations(props) {
     const payload = {};
     axios
       .post(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/location/delete/${element.id}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/location/delete/${element.id}`,
         payload,
         { headers: headers }
       )
@@ -149,18 +149,36 @@ export function PickupLocations(props) {
     return tagNames.join(", ");
   }
 
-  async function setDataIntoData(columnName, data) {
-    const response = await fetch("/api/add-data-into-table", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-      columnName:columnName,
-      data:data
-      }),
-    })
+  function setDataIntoData(columnName, data) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/add-data-into-table", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: columnName,
+          data: data
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(`Error: ${error.message}`);
+          });
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        resolve(responseData);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        reject(error);
+      });
+    });
   }
+  
 
   return (
     <div className="pickup-locations">

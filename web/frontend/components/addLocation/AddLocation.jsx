@@ -94,7 +94,7 @@ export function AddLocation(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
       .then((response) => {
         setSuburbData(response.data.data);
         var suburbList = [];
@@ -198,8 +198,8 @@ export function AddLocation(props) {
         };
 
         const url = props.editLocation
-          ? `${process.env.API_ENDPOINT}/api/wp/merchant_domain/location/edit/${props.editLocation.id}`
-          : `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/add`;
+          ? `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/location/edit/${props.editLocation.id}`
+          : `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/add`;
         axios
           .post(url, payload, { headers: headers })
           .then((response) => {
@@ -383,7 +383,7 @@ export function AddLocation(props) {
 
       axios
         .get(
-          `${process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {

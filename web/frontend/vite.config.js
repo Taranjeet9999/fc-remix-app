@@ -47,8 +47,8 @@ export default defineConfig({
   plugins: [react()],
   define: {
     "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
-    // "process.env.API_ENDPOINT": JSON.stringify(window.localStorage.getItem("token")==="true"?   "https://google.com"  :       "https://fctest-api.fastcourier.com.au"),
     "process.env.API_ENDPOINT": JSON.stringify("https://fctest-api.fastcourier.com.au"),
+    "process.env.PROD_API_ENDPOINT": JSON.stringify("https://fcapp-api.fastcourier.com.au"),
     "process.env.REQUEST_TYPE": JSON.stringify("shopify_development"),
   },
   resolve: {

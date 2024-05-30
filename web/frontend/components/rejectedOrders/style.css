@@ -1,0 +1,52 @@
+.new-orders {
+    width: 100%;
+    padding: 0px 10px;
+}
+
+.orders-filters {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.orders-filters .input-container {
+    width: 20%;
+}
+
+.orders-filters .filter-buttons {
+    display: flex;
+    align-items: flex-end;
+}
+
+.order-action-buttons {
+    display: flex;
+    width: 50%;
+}
+
+.new-orders a {
+    text-decoration: underline;
+}
+
+.booking-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.booking-modal .modal-body {
+    overflow: unset;
+    height: unset !important;
+}
+
+.booking-modal .modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.booking-modal .cancel-btn {
+    width: 40%;
+}
+
+.booking-modal .submit-btn {
+    width: 40%;
+}

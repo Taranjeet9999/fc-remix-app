@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { NavigationMenu } from "@shopify/app-bridge-react";
+import { NavigationMenu,   } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -18,8 +18,10 @@ import { ForgotPassword } from "./components/forgotPassword";
 import { MerchantBillingDetails } from "./components/merchantBillingDetails";
 import "./App.css";
 import ExitIframe from "./pages/ExitIframe";
-import { useAuthenticatedFetch } from "./hooks";
+// import { useAuthenticatedFetch } from "./hooks";
 import { Loader } from "./components/loader";
+import { Modal } from "./components/modal";
+import React from "react";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
@@ -27,12 +29,18 @@ export default function App() {
   // const pages = import.meta.globEager("./pages/**/!(*.test.[jt]sx)*.([jt]sx)");
   // const { t } = useTranslation();
   library.add(fas, fab);
-  // const fetch = useAuthenticatedFetch();
-
+   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
   const [isStaging, setIsStaging] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSandBoxModal, setShowSandBoxModal] = useState(false)
+  const [executeSandboxStatus, setExecuteSandboxStatus] = useState({
+    execute:null,//"sandbox",
+    value: "0"
+  })
+   
+   
 
   useEffect(() => {
     // setIsLoading(true);
@@ -59,7 +67,13 @@ export default function App() {
               <div className="top-bar">
                 <div className="toggle-text">Sandbox</div>
                 <label className="switch">
-                  <input type="checkbox" checked disabled />
+                  <input
+                    type="checkbox"
+                    checked={isStaging}
+                    onClick={() => {
+                      setShowSandBoxModal(true);
+                    }}
+                  />
                   <span className="slider round"></span>
                 </label>
               </div>
@@ -81,26 +95,81 @@ export default function App() {
                 <Route path="/exitiframe" element={<ExitIframe />} />
                 <Route
                   path="/login"
-                  element={<Login setUserDetails={setUserDetails} />}
+                  element={
+                    <Login
+                      setUserDetails={setUserDetails}
+                      setIsStaging={setIsStaging}
+                      executeSandboxStatus={executeSandboxStatus}
+                    />
+                  }
                 />
                 <Route
                   path="/homepage"
                   element={
-                    <HomePage userDetails={userDetails} isStaging={isStaging} />
+                    <HomePage userDetails={userDetails} isStaging={isStaging} 
+                    
+                    executeSandboxStatus={executeSandboxStatus}
+                    
+                    />
                   }
                 />
-                <Route path="/orderDetails" element={<OrderDetails />} />
+                <Route path="/orderDetails" element={<OrderDetails executeSandboxStatus={executeSandboxStatus}/>} />
                 <Route
                   path="/signup"
-                  element={<Signup setUserDetails={setUserDetails} />}
+                  element={<Signup setUserDetails={setUserDetails} executeSandboxStatus={executeSandboxStatus}/>}
                 />
-                <Route path="/forgotPassword" element={<ForgotPassword />} />
+                <Route path="/forgotPassword" element={<ForgotPassword executeSandboxStatus={executeSandboxStatus}/>} />
                 <Route
                   path="/merchantBillingDetails"
-                  element={<MerchantBillingDetails />}
+                  element={<MerchantBillingDetails executeSandboxStatus={executeSandboxStatus}/>}
                 />
+                
               </Routes>
               {/* </BrowserRouter > */}
+              {/* SandBox Modal */}
+              <Modal showModal={showSandBoxModal} width="30%">
+                  {isLoading && <Loader />}
+                  <div className="assign-location">
+                    <div className="modal-header">Change Sandbox Status</div>
+                    <div className="modal-body">
+                      <div className="input-container">
+                        <div className="input-lebel">
+                          <div> Are you sure?</div>
+                        </div>
+                        <div className="input-lebel">
+                          <div>It will take a while to change status.</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        className="cancel-btn"
+                        onClick={() => setShowSandBoxModal(false)}
+                      >
+                        Close
+                      </button>
+                      <button
+                        className="submit-btn"
+                        onClick={() => {
+                          setExecuteSandboxStatus({
+                            execute: "sandbox",
+                            value: isStaging ? "1" : "0",
+                          });
+                          setTimeout(() => {
+                            setShowSandBoxModal(false);
+                            setExecuteSandboxStatus({
+                              execute: null,
+                              value: isStaging ? "1" : "0",
+                            });
+                          }, 1000);
+                        }}
+                      >
+                        Change
+                      </button>
+                    </div>
+                  </div>
+                </Modal>
+              
             </div>
           </QueryProvider>
         </AppBridgeProvider>

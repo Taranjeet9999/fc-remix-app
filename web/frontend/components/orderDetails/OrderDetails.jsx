@@ -187,7 +187,7 @@ export function OrderDetails(props) {
     };
 
     const response = await axios.get(
-      `${process.env.API_ENDPOINT}/api/wp/merchant_locations/${merchantDomainId}/${tagId}`,
+      `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_locations/${merchantDomainId}/${tagId}`,
       { headers: headers }
     );
 
@@ -213,7 +213,7 @@ export function OrderDetails(props) {
 
       axios
         .get(
-          `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -324,6 +324,73 @@ export function OrderDetails(props) {
   useEffect(() => {
     getLocationDataObj();
   }, [products,pickupLocations])
+
+  async function logOutUser( ) {
+    try {
+        setIsLoading(true);
+      const response = await fetch("/api/remove-merchant-token", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      
+      if (data.data) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("merchantDomainId");
+        navigate("/login");
+        props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
+        setIsLoading(false);
+      } else {
+        
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  }
+
+  function setDataIntoData(columnName, data) {
+    return new Promise((resolve, reject) => {
+      fetch("/api/add-data-into-table", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          columnName: columnName,
+          data: data
+        }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            throw new Error(`Error: ${error.message}`);
+          });
+        }
+        return response.json();
+      })
+      .then(responseData => {
+        resolve(responseData);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        reject(error);
+      });
+    });
+  }
+  useEffect(() => {
+    if (props.executeSandboxStatus.execute == "sandbox") {
+      setIsLoading(true);
+      setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
+        localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
+        logOutUser()
+      })
+    }
+   
+  }, [props.executeSandboxStatus])
   
   return (
     <div className="order-details-main">

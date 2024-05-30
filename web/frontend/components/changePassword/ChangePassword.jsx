@@ -28,7 +28,7 @@ export function ChangePassword(props) {
             "Version": "3.1.1",
             "Authorization": "Bearer " + accessToken
         }
-        axios.post(`${process.env.API_ENDPOINT}/api/wp/change_password`, payload, { "headers": headers }).then(response => {
+        axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/change_password`, payload, { "headers": headers }).then(response => {
             setIsLoading(false);
             setShowModal(true);
         }).catch(error => {

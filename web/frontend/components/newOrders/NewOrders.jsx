@@ -76,7 +76,7 @@ export function NewOrders(props) {
     };
     axios
       .get(
-        `${process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -104,7 +104,7 @@ export function NewOrders(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${process.env.API_ENDPOINT}/api/wp/public-holidays`, {
+      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
         headers: headers,
       })
       .then((response) => {
@@ -308,11 +308,12 @@ export function NewOrders(props) {
 
       axios
         .post(
-          `${process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
+          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
           payload,
           { headers: headers }
         )
         .then((response) => {
+          let output = response.data.response;
           fetch("/api/book-orders", {
             method: "POST",
             headers: {
@@ -321,11 +322,11 @@ export function NewOrders(props) {
             body: JSON.stringify({
               collectionDate: collectionDate,
               orderIds: selectedOrders,
+              orderStatuses:output
             }),
           });
           setIsLoading(false);
-          getAllOrders();
-          getOrderMeta();
+          getAllOrdersData();
           setShowBookOrderModal(false);
         })
         .catch((error) => {
@@ -613,11 +614,17 @@ export function NewOrders(props) {
                 getMetaValue(
                   element.node?.metafields?.edges,
                   "fc_order_status"
-                ) != "Booked for collection" &&
+                ) != "Booked for collection"
+                 &&
                 getMetaValue(
                   element.node?.metafields?.edges,
                   "fc_order_status"
                 ) != "Fallback"
+                 &&
+                getMetaValue(
+                  element.node?.metafields?.edges,
+                  "fc_order_status"
+                ) != "Rejected"
               ) {
                 return (
                   <tr

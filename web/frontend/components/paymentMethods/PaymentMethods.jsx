@@ -34,7 +34,7 @@ export function PaymentMethods(props) {
             "version": "3.1.1",
             "Authorization": "Bearer " + accessToken
         }
-        await axios.get(`${process.env.API_ENDPOINT}/api/wp/get_merchant`, { "headers": headers }).then(response => {
+        await axios.get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/get_merchant`, { "headers": headers }).then(response => {
             console.log("merchantDetials", response.data.data);
             setMerchantDetails(response.data.data);
             setSelectedMethod(response.data.data.payment_method);
@@ -67,7 +67,7 @@ export function PaymentMethods(props) {
                 "version": "3.1.1",
                 "Authorization": "Bearer " + accessToken
             }
-            await axios.post(`${process.env.API_ENDPOINT}/api/wp/activate`, updatedPayload, { "headers": headers }).then(response => {
+            await axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/activate`, updatedPayload, { "headers": headers }).then(response => {
                 props.setActiveNavItem("pickupLocations");
                 props.setActiveApiPayload(payload);
                 localStorage.setItem("tailLiftValue", tailLiftValue);
@@ -144,7 +144,7 @@ export function PaymentMethods(props) {
                     "name": name,
                     "company": companyName,
                 }
-                axios.post(`${process.env.API_ENDPOINT}/api/wp/savePaymentMethod`, payload, { "headers": headers }).then(response => {
+                axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/savePaymentMethod`, payload, { "headers": headers }).then(response => {
                     setPaymentMethods(response.data.data);
                     getPaymentMethods();
                     setIsLoading(false);
@@ -171,7 +171,7 @@ export function PaymentMethods(props) {
             "version": "3.1.1",
             "Authorization": "Bearer " + accessToken
         }
-        axios.get(`${process.env.API_ENDPOINT}/api/wp/payment_method`, { "headers": headers }).then(response => {
+        axios.get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/payment_method`, { "headers": headers }).then(response => {
             setPaymentMethods(response.data.data);
             setIsLoading(false);
         }).catch(error => {

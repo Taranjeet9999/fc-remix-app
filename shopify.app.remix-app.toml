@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "remix-app"
 handle = "remix-app-139"
-application_url = "https://work-hd-sapphire-powder.trycloudflare.com"
+application_url = "https://syracuse-embassy-tagged-amazing.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://work-hd-sapphire-powder.trycloudflare.com/auth/callback",
-  "https://work-hd-sapphire-powder.trycloudflare.com/auth/shopify/callback",
-  "https://work-hd-sapphire-powder.trycloudflare.com/api/auth/callback"
+  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/auth/callback",
+  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/auth/shopify/callback",
+  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
