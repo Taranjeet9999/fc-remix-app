@@ -19,6 +19,7 @@ export default function HomePage(props) {
   const location = useLocation();
   const fetch = useAuthenticatedFetch();
   const [isLoading, setIsLoading] = useState(false);
+  const [userSetupConfigured, setUserSetupConfigured] = useState(false)
    
   useEffect(() => {
     if(location.state?.redirectedtab){
@@ -35,7 +36,7 @@ export default function HomePage(props) {
 
   const getComponent = () => {
     if (activeNavItem == "configuration") {
-      return <Configuration {...props} />;
+      return <Configuration {...props} setUserSetupConfigured={setUserSetupConfigured}/>;
     } else if (activeNavItem == "newOrders") {
       return <NewOrders setActiveNavItem={setActiveNavItem} />
     } else if (activeNavItem == "processedOrders") {
@@ -130,6 +131,8 @@ export default function HomePage(props) {
           {/* <div className={activeNavItem == "about" ? "nav-bar-item-active" : "nav-bar-item"} onClick={() => setActiveNavItem("about")}>
             <span>About Plugin</span><span>{activeNavItem == "about" && ">>"}</span>
           </div> */}
+
+     {userSetupConfigured&&     <>
           <div className={activeNavItem == "newOrders" ? "nav-bar-item-active" : "nav-bar-item"} onClick={() => setActiveNavItem("newOrders")}>
             <span>New Orders</span><span>{activeNavItem == "newOrders" && ">>"}</span>
           </div>
@@ -145,6 +148,7 @@ export default function HomePage(props) {
           <div className={activeNavItem == "fallbackOrders" ? "nav-bar-item-active" : "nav-bar-item"} onClick={() => setActiveNavItem("fallbackOrders")}>
             <span>Fallback Orders</span><span>{activeNavItem == "fallbackOrders" && ">>"}</span>
           </div>
+          </>}
           <div className={activeNavItem == "changePassword" ? "nav-bar-item-active" : "nav-bar-item"} onClick={() => setActiveNavItem("changePassword")}>
             <span>Change Password</span><span>{activeNavItem == "changePassword" && ">>"}</span>
           </div>

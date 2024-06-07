@@ -60,6 +60,37 @@ export function HoldOrders() {
     });
   };
 
+  const getPickupLocations = () => {
+    setIsLoading(true);
+    const accessToken = localStorage.getItem("accessToken");
+    const merchantDomainId = localStorage.getItem("merchantDomainId");
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": process.env.REQUEST_TYPE,
+      version: "3.1.1",
+      Authorization: "Bearer " + accessToken,
+    };
+    axios
+      .get(
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        { headers: headers }
+      )
+      .then((response) => {
+        // setIsLoading(false);
+        
+        const defaultPickupLocation = response.data.data?.find(
+          (element) => element.is_default == 1
+        );
+        console.log("defaultPickupLocation", defaultPickupLocation);
+        setDefaultLocation(defaultPickupLocation);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log(error);
+      });
+  };
+
   const bookSelectedOrders = async () => {
     try {
       setIsLoading(true);
@@ -78,57 +109,66 @@ export function HoldOrders() {
       var bookOrders = [];
       for (const element of selectedOrderDetails) {
         const order = {
-          "quoteId": getMetaValue(element.node?.metafields?.edges, "quote_id"),
-          "orderHashId": getMetaValue(element.node?.metafields?.edges, "order_hash_id"),
-          "collectionDate": collectionDate,
-          "destinationEmail": element?.contact_email,
-          "destinationPhone": element?.shipping_address.phone,
-          "wpOrderId": element?.order_number,
-          "destinationFirstName": element?.shipping_address.first_name,
-          "destinationLastName": element?.shipping_address.last_name,
-          "destinationCompanyName": element?.shipping_address.company,
-          "destinationAddress1": element?.shipping_address.address1,
-          "destinationAddress2": element?.shipping_address.address2,
-          "pickupFirstName": defaultLocation?.first_name,
-          "pickupLastName": defaultLocation?.last_name,
-          "pickupCompanyName": null,
-          "pickupAddress1": defaultLocation?.address1,
-          "pickupAddress2": defaultLocation?.address2,
-          "pickupPhone": defaultLocation?.phone,
-          "pickupEmail": defaultLocation?.email,
-          "atl": false
-        }
+          quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
+          orderHashId: getMetaValue(
+            element.node?.metafields?.edges,
+            "order_hash_id"
+          ),
+          collectionDate: collectionDate,
+          destinationEmail: element?.contact_email,
+          destinationPhone:  element?.customer?.phone,
+          wpOrderId: element?.order_number,
+          destinationFirstName: element?.shipping_address.first_name,
+          destinationLastName: element?.shipping_address.last_name,
+          destinationCompanyName: element?.shipping_address.company,
+          destinationAddress1: element?.shipping_address.address1,
+          destinationAddress2: element?.shipping_address.address2,
+          pickupFirstName: defaultLocation?.first_name,
+          pickupLastName: defaultLocation?.last_name,
+          pickupCompanyName: null,
+          pickupAddress1: defaultLocation?.address1,
+          pickupAddress2: defaultLocation?.address2,
+          pickupPhone: defaultLocation?.phone,
+          pickupEmail: defaultLocation?.email,
+          atl: false,
+        };
 
         bookOrders.push(order);
       }
       const payload = {
-        "orders": bookOrders,
-        "isReprocessOrders": false,
-        "request_type": "wp"
-      }
+        orders: bookOrders,
+        isReprocessOrders: false,
+        request_type: "wp",
+      };
 
    
-     await axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`, payload, { "headers": headers }).then(async response => {
-      let res = await fetch('/api/book-orders', {
-          method: 'POST',
+      axios
+      .post(
+        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
+        payload,
+        { headers: headers }
+      )
+      .then((response) => {
+        let output = response.data.response;
+        fetch("/api/book-orders", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             collectionDate: collectionDate,
-            orderIds: selectedOrders
+            orderIds: selectedOrders,
+            orderStatuses:output
           }),
         });
-        if (res.ok) {
-          setIsLoading(false);
-          getPageData()
-          setShowBookOrderModal(false);
-          
-        }
-      }).catch(error => {
+        setIsLoading(false);
+        getPageData();
+        setShowBookOrderModal(false);
+      })
+      .catch((error) => {
         setIsLoading(false);
         console.log(error);
-      })
+      });
 
 
     } catch (err) {
@@ -213,6 +253,7 @@ export function HoldOrders() {
       });
   }
   useEffect(() => {
+    getPickupLocations()
     getPageData()
   }, []);
 
@@ -413,6 +454,7 @@ export function HoldOrders() {
                     style={{ background: i % 2 == 0 ? "#F5F8FA" : "#FFFFFF" }}
                   >
                     <td>
+
                       <input
                         type="checkbox"
                         value={element.id}
@@ -422,7 +464,9 @@ export function HoldOrders() {
                     </td>
                     <td
                       width="7%"
-                      onClick={() => navigate("/orderDetails")}
+                      onClick={() =>  navigate("/orderDetails", {
+                        state: { order: element, redirectedtab: "holdOrders" },
+                      })}
                       style={{ cursor: "pointer" }}
                     >
                       {element.order_number}

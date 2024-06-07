@@ -12,7 +12,7 @@ import Papa from "papaparse";
 import { csv } from "csvtojson";
 import { locationMetafields } from "../../globals";
 
-export function ProductMapping() {
+export function ProductMapping(props) {
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
   const [showAddShippingBoxModal, setShowAddShippingBoxModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -85,6 +85,7 @@ export function ProductMapping() {
       console.log("formattedproducts", formattedProducts);
 
       setProducts(formattedProducts);
+      props.setProducts(formattedProducts);
       setIsLoading(false);
     }
   };
@@ -724,7 +725,7 @@ export function ProductMapping() {
 
   function getProductDimentionArray(_productDimension) {
     try {
-      console.log(_productDimension, "productDimension");
+    
       return JSON.parse(_productDimension);
       
     } catch (error) {
@@ -1485,8 +1486,8 @@ export function ProductMapping() {
             <th>Price</th>
             <th>Category</th>
             <th>
-              {/* Tags */}
-              Virtual
+              Tags
+              {/* Virtual */}
               
               
               </th>
@@ -1531,7 +1532,7 @@ export function ProductMapping() {
                     <td width="20%">
                       {/* {element.tags} */}
                       
-                      <label className="switch">
+                 {false &&     <label className="switch">
                         <input
                           type="checkbox"
                           onChange={(e) =>
@@ -1547,7 +1548,7 @@ export function ProductMapping() {
                           }
                         />
                         <span className="slider round"></span>
-                      </label>
+                      </label>}
                       
                       
                       
@@ -1651,7 +1652,7 @@ export function ProductMapping() {
                       <td width="10%">{element.product_type}</td>
                       <td width="20%">
                         {/* {getLocationtagName(element.tags)} */}
-                        <label className="switch">
+                  {false &&      <label className="switch">
                         <input
                           type="checkbox"
                           onChange={(e) =>
@@ -1667,7 +1668,7 @@ export function ProductMapping() {
                           }
                         />
                         <span className="slider round"></span>
-                      </label>
+                      </label>}
                         
                         </td>
                       <td width="10%">{"-- --"}</td>

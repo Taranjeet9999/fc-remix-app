@@ -281,7 +281,7 @@ export function NewOrders(props) {
           ),
           collectionDate: collectionDate,
           destinationEmail: element?.contact_email,
-          destinationPhone: element?.shipping_address.phone,
+          destinationPhone: element?.customer?.phone,
           wpOrderId: element?.order_number,
           destinationFirstName: element?.shipping_address.first_name,
           destinationLastName: element?.shipping_address.last_name,
@@ -375,10 +375,10 @@ export function NewOrders(props) {
       getMetaValue(orderItem.node?.metafields?.edges, "fc_order_status") ===
       "Freeshipping"
     ) {
-      return `$${getMetaValue(
+      return `$${Number(getMetaValue(
         orderItem.node?.metafields?.edges,
         "courier_charges"
-      )}`;
+      )).toFixed(2)}`;
     }
   }
 
@@ -681,7 +681,7 @@ export function NewOrders(props) {
                         "fc_order_status"
                       ) === "Freeshipping"
                         ? getFreeShippingPrice(element)
-                        : "$" + element?.shipping_lines?.[0]?.price}{" "}
+                        : "$" + Number(element?.shipping_lines?.[0]?.price).toFixed(2)}{" "}
                       {element?.shipping_lines?.[0]?.title
                         ? `(${
                             element?.shipping_lines?.[0]?.title

@@ -257,7 +257,7 @@ export function MerchantBillingDetails(props) {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
+    const data = await response.json(); 
     setCarrierServices(data.data);
     //filter the fast courier carreir service and get Id and update the carrier service
     const filteredCarrierService = data.data.filter(
@@ -303,7 +303,7 @@ export function MerchantBillingDetails(props) {
     }
     // const tailLiftWeight = localStorage.getItem("tailLiftValue");
     // setTailLiftValue(tailLiftWeight);
-    setTailLiftValue(merchant.weight ?? 0);
+    setTailLiftValue(merchant.weight <30 ? 30 : merchant.weight);
   }
 
   const getSuburbs = () => {
@@ -423,6 +423,8 @@ export function MerchantBillingDetails(props) {
           .then((response) => {
             saveUpdateMerchant(response.data.data);
             setDataIntoData("merchant", response.data.data);
+            props.setMerchantDetails(response.data.data);
+
             console.log(response.data.data, "response.data.data");
             props.setActiveNavItem("paymentMethods");
             localStorage.setItem("tailLiftValue", tailLiftValue);
@@ -500,6 +502,26 @@ export function MerchantBillingDetails(props) {
       console.log(err);
     }
   };
+  const deleteCarrierService = async (_id) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/carrier-service/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          package_name: "Fast Courier",
+          id: _id,
+        }),
+      });
+      const data = await response.json();
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+    }
+  };
 
   const handleCourierChange = (e) => {
     const courierIds = selectedCourierPref.includes(e.target.value)
@@ -520,6 +542,7 @@ export function MerchantBillingDetails(props) {
     getCouriers();
     getSuburbs();
     getCarriers();
+    //deleteCarrierService()
     getCategoryOfGoods(); // LIST OF CATEGORY OF GOODS
     //updateCarrierService()
     // createCarrierService()

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "../login/style.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "../loader";
 import { useAuthenticatedFetch } from "../../hooks";
 

@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "48c11f190fe107153899a7f870f79215"
+client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier"
 handle = "fc-dev"
-application_url = "https://syracuse-embassy-tagged-amazing.trycloudflare.com"
+application_url = "https://fc-app.vuwork.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/auth/callback",
-  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/auth/shopify/callback",
-  "https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/auth/callback"
+  "https://fc-app.vuwork.com/auth/callback",
+  "https://fc-app.vuwork.com/auth/shopify/callback",
+  "https://fc-app.vuwork.com/api/auth/callback"
 ]
 
 [webhooks]

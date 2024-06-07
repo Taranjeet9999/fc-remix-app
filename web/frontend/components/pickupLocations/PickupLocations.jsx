@@ -45,6 +45,7 @@ export function PickupLocations(props) {
 
         })
         setPickupLocations(response.data.data);
+        props.setPickupLocations(response.data.data);
         setDataIntoData("merchant_locations",response.data.data)
       })
       .catch((error) => {

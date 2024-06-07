@@ -69,11 +69,11 @@ console.log("orderConfirmation", 'orderConfirmation');
     const carrierName = title.substring(startIndex + 1, endIndex);
     return carrierName;
   };
-  getOrderDetails = async () => {
+  getOrderDetails = async () => { 
     const token = await sessionToken.get();
     const orderId = getOrderId(orderConfirmation.current.order.id);
     const result = await fetch(
-      `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/get-order/${orderId}`,
+      `https://fc-app.vuwork.com/api/get-order/${orderId}`,
       {
         method: "GET",
         headers: {
@@ -83,12 +83,11 @@ console.log("orderConfirmation", 'orderConfirmation');
         },
       }
     );
-    const orderDetails = await result.json();
-    console.log("orderDetails", orderDetails);
+    const orderDetails = await result.json(); 
     const codes = getCodes(orderDetails.shipping_lines);
      
     if (codes != null) {
-      const valuesArray = codes.split("~"); // FORMAT=====YQOXXZXPVO~PAID~195.26
+      const valuesArray = codes.split("~"); // FORMAT ===== YQOXXZXPVO~PAID~195.26
 
       // Trim the quotes from each value and assign them to variables
       const {quoteIds} = extractIds(valuesArray[0]);
@@ -99,7 +98,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       console.log("carrierName", carrierName);
 
       const setMetafields = await fetch(
-        `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/set-order-metafields`,
+        `https://fc-app.vuwork.com/api/set-order-metafields`,
         {
           method: "POST",
           headers: {
@@ -124,7 +123,7 @@ console.log("orderConfirmation", 'orderConfirmation');
       );
     } else {
       const result = await fetch(
-        `https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/process-order/${orderId}`,
+        `https://fc-app.vuwork.com/api/process-order/${orderId}`,
         {
           method: "GET",
           headers: {

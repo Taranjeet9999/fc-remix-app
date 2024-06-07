@@ -86,7 +86,7 @@ export default function App() {
                     background: isLoggedIn ? "white" : "transparent",
                   }}
                 >
-                  <div className="mode-text">Test Mode</div>
+           {  isStaging&&     <div className="mode-text">Test Mode</div>}
                 </div>
               </div>
               {/* <BrowserRouter> */}

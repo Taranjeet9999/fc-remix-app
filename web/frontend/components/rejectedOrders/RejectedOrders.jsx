@@ -292,7 +292,7 @@ export function RejectedOrders(props) {
           ),
           collectionDate: collectionDate,
           destinationEmail: element?.contact_email,
-          destinationPhone: element?.shipping_address.phone,
+          destinationPhone:  element?.customer?.phone,
           wpOrderId: element?.order_number,
           destinationFirstName: element?.shipping_address.first_name,
           destinationLastName: element?.shipping_address.last_name,
@@ -584,8 +584,11 @@ export function RejectedOrders(props) {
         >
           Book Selected Orders
         </button>
-        {/* <button
+        <button
           className="submit-btn"
+          style={{
+            visibility: "hidden",
+          }}
           onClick={() =>
             selectedOrders.length > 0
               ? setShowHoldOrderModal(true)
@@ -594,7 +597,7 @@ export function RejectedOrders(props) {
           }
         >
           Hold Selected Orders
-        </button> */}
+        </button>
       </div>
       <div className="pickup-locations-table">
         <table>
@@ -654,7 +657,7 @@ export function RejectedOrders(props) {
                       width="7%"
                       onClick={() =>
                         navigate("/orderDetails", {
-                          state: { order: element, redirectedtab: "newOrders" },
+                          state: { order: element, redirectedtab: "rejectedOrders" },
                         })
                       }
                       style={{ cursor: "pointer" }}

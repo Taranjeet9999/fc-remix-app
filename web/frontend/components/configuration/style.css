@@ -6,7 +6,7 @@
 }
 
 .progress-bar {
-    margin: 30px 10px;
+    margin: 10px 10px;
     height: 20px;
     background-color: #eaebeb;
     border-radius: 4px;
@@ -34,6 +34,11 @@
     margin: 0 10px;
 
 }
+.top-nav-bar .nav-icon .svg-inline--fa {
+   width: 18px;
+   height: 18px;
+
+}
 
 .top-nav-bar .nav-bar-item {
     width: 25%;
@@ -41,7 +46,7 @@
     color: #555;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     border-radius: 0;
     font-size: 16px;
     font-weight: 600;
@@ -61,7 +66,7 @@
     color: #ff6900;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     border-radius: 0;
     border-radius: 8px;
     font-size: 16px;

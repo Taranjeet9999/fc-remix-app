@@ -63,7 +63,7 @@ const db = new sqlite3.Database(
 //   });
 // }
 
-function getSession(shop) { 
+function getSession(shop) {
   return new Promise((resolve, reject) => {
     const query = "SELECT * FROM shopify_sessions WHERE shop = ?";
     db.all(query, [shop], (err, rows) => {
@@ -157,17 +157,17 @@ const getCodes = (data) => {
 
 function extractQuoteIds(array) {
   let quoteIds = array[0]
-      .split(',')
-      .map(item => item.match(/\(([^-]+)-/)[1])
-      .join(',');
+    .split(",")
+    .map((item) => item?.match(/\(([^-]+)-/)[1])
+    .join(",");
   return quoteIds;
 }
 
 function extractOrderIds(array) {
   let orderIds = array[0]
-      .split(',')
-      .map(item => item.match(/-([^\)]+)\)/)[1])
-      .join(',');
+    .split(",")
+    .map((item) => item?.match(/-([^\)]+)\)/)[1])
+    .join(",");
   return orderIds;
 }
 
@@ -188,14 +188,13 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     );
     let orderDetails = _req.body;
     const codes = getCodes(orderDetails.shipping_lines);
-    logger.info("orderDetails.id", orderDetails.id);
+
     if (codes != null) {
       const valuesArray = codes.split("~"); // FORMAT=====YQOXXZXPVO~PAID~195.26
-      logger.info("valuesArray==", valuesArray);
 
       // Trim the quotes from each value and assign them to variables
-      const  quoteIds  = extractQuoteIds(valuesArray);
-      const  orderIds  = extractOrderIds(valuesArray);
+      const quoteIds = extractQuoteIds(valuesArray);
+      const orderIds = extractOrderIds(valuesArray);
       logger.info("quoteIds==", quoteIds);
       logger.info("orderIds==", orderIds);
 
@@ -277,6 +276,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       (element) => element.is_default == 1
     );
     const merchant_tags = JSON.parse(session[0].merchant_tags);
+
     let courierData = await Promise.all(
       _req.body.rate.items.map(async (element) => {
         const productMetafields = await shopify.api.rest.Metafield.all({
@@ -293,7 +293,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           getValueByKey(metaData, "is_free_shipping") === "1";
 
         let isVirtualProduct =
-          getValueByKey(metaData, "is_virtual") === "1" ?true :false;  
+          getValueByKey(metaData, "is_virtual") === "1" ? true : false;
         var locationData;
         var cal_locationData = JSON.parse(getValueByKey(metaData, "location"));
         if (cal_locationData.type === "tag") {
@@ -375,18 +375,19 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           location_lat: locationData?.latitude,
           location_long: locationData?.longitude,
           free_shipping_postcodes: locationData?.free_shipping_postcodes,
-          free: isVirtualProduct ?isVirtualProduct: !element.requires_shipping,
+          free: isVirtualProduct
+            ? isVirtualProduct
+            : !element.requires_shipping,
           pickupLocation: locationData,
         };
       })
     );
 
-    let courier_data_to_Show_end_user = { ...groupByLocation(courierData) };
-
     let total_cart_value = courierData.reduce(
       (acc, item) => acc + item.price,
       0
     );
+
     if (
       merchant.booking_preference === "free_for_basket_value_total" &&
       total_cart_value > merchant.conditional_price
@@ -398,6 +399,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         };
       });
     }
+    let courier_data_to_Show_end_user = { ...groupByLocation(courierData) };
 
     const quotes = await Promise.all(
       // Object.values(groupByLocation(courierData)).map(async (_items) => {
@@ -501,6 +503,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             valueOfContent: `${totalPriceOfItems}`,
             items: JSON.stringify(itemsArray),
             isDropOffTailLift: merchant?.is_drop_off_tail_lift,
+            orderType: "8",
           };
 
           const quote = await fetch(
@@ -561,6 +564,15 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           };
         }
       )
+    );
+
+    logger.info(
+      "courier_data_to_Show_end_user==",
+      JSON.stringify(courier_data_to_Show_end_user)
+    );
+    logger.info(
+      "getUniqueQuoteData(courier_data_to_Show_end_user)",
+      JSON.stringify(getUniqueQuoteData(courier_data_to_Show_end_user))
     );
 
     // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
@@ -836,7 +848,6 @@ app.get("/api/get-merchant-token", async (_req, res) => {
 });
 app.get("/api/get-current-session", async (_req, res) => {
   try {
-    
     let current_session = res.locals.shopify.session;
 
     // const session = await getSession(current_session.shop);
@@ -955,7 +966,6 @@ app.post("/api/add-data-into-table", bodyParser.json(), async (_req, res) => {
     res.status(500).send("Internal Server Error"); // Sending a generic error response
   }
 });
- 
 
 app.post("/api/shipping-box/create", async (_req, res) => {
   try {
@@ -1292,9 +1302,9 @@ app.post("/api/virtual-shipping", async (_req, res) => {
   try {
     const { productId, isVirtual } = _req.body;
     const session = res.locals.shopify.session;
-  
+
     const value = isVirtual === true ? "1" : "0";
-    
+
     const metafield = new shopify.api.rest.Metafield({
       session: session,
     });
@@ -1333,7 +1343,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/shipping-rates";
+      "https://fc-app.vuwork.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1357,22 +1367,72 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/shipping-rates";
+        "https://fc-app.vuwork.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Dummy Test START
-      const webhook = new shopify.api.rest.Webhook({
+      // Get All Webhooks List
+      const webhook_URL =
+        "https://fc-app.vuwork.com/api/webhook/order-create";
+      const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
-      webhook.address =
-        "https://syracuse-embassy-tagged-amazing.trycloudflare.com/api/webhook/order-create";
-      webhook.topic = "orders/paid";
-      webhook.format = "json";
-      await webhook.save({
-        update: true,
+
+      const unused_webhooks = webhooks.data.filter(
+        (webhook) =>
+          webhook.topic === "orders/paid" && webhook.address !== webhook_URL
+      );
+
+      // Delete All Unused Webhooks
+      unused_webhooks.forEach(async (_webhook) => {
+        await shopify.api.rest.Webhook.delete({
+          session: res.locals.shopify.session,
+          id: Number(_webhook.id),
+        });
       });
+      // Create Webhook if doesnt exist
+      const if_webhook_exist = webhooks.data.find(
+        (webhook) =>
+          webhook.topic === "orders/paid" && webhook.address === webhook_URL
+      );
+      if (if_webhook_exist) {
+        // logger.info("Webhook Already Exist==", if_webhook_exist);,,
+      } else {
+        const webhook = new shopify.api.rest.Webhook({
+          session: res.locals.shopify.session,
+        });
+        webhook.address = webhook_URL;
+        webhook.topic = "orders/paid";
+        webhook.format = "json";
+        await webhook.save({
+          update: true,
+        });
+      }
+
+      // Change URL Origins from all Webhooks
+      // const all_webhooks = await shopify.api.rest.Webhook.all({
+      //   session: res.locals.shopify.session,
+      // });
+      // // If any of the webhook adress origin is not as per the current URL origin then update it
+      // all_webhooks.data.forEach(async (_webhook) => {
+      //   let real_webook_origin= new URL(webhook_URL).origin;
+      //   let webhook_link = new URL(_webhook.address ?? "");
+      //   let webhook_origin =  new URL(webhook_link ?? "").origin;
+      //   if (webhook_origin !== real_webook_origin) {
+      //     webhook_link.origin =real_webook_origin
+      //     const webhook = new shopify.api.rest.Webhook({
+      //       session: res.locals.shopify.session,
+      //     });
+      //     webhook.id = Number(_webhook.id);
+      //     webhook.address = webhook_URL;
+      //     await webhook.save({
+      //       update: true,
+      //     });
+      //   }
+      // });
+
       // Dummy Test STOP
       res.status(200).send(carrier_service);
     } catch (error) {
@@ -1384,7 +1444,6 @@ app.post(
 
 app.get("/api/orders", async (_req, res) => {
   try {
-     
     const orders = await shopify.api.rest.Order.all({
       session: res.locals.shopify.session,
       status: "any",
@@ -1453,13 +1512,11 @@ app.post("/api/hold-orders", async (_req, res) => {
   res.status(200).send(orders);
 });
 
-app.post("/api/book-orders",bodyParser.json(), async (_req, res) => {
+app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
   try {
-    const { orderIds, collectionDate , orderStatuses} = _req.body;
+    const { orderIds, collectionDate, orderStatuses } = _req.body;
     const session = res.locals.shopify.session;
-    logger.info("orderStatuses",orderStatuses)
-    logger.info("orderStatuses TYPE",typeof orderStatuses)
-    
+
     var orders = [];
     let metaFields_list = ["Booked for collection", collectionDate];
     const metafields_Item = [
@@ -1480,7 +1537,7 @@ app.post("/api/book-orders",bodyParser.json(), async (_req, res) => {
     if (orderIds.length > 0) {
       for (const [parentIndex, productId] of orderIds.entries()) {
         const metafieldPromises = metafields_Item.map(async (item, index) => {
-          if (orderStatuses[parentIndex].status===true ) {
+          if (orderStatuses[parentIndex].status === true) {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.order_id = parseInt(productId);
             metafield.key = item.key;
@@ -1490,30 +1547,32 @@ app.post("/api/book-orders",bodyParser.json(), async (_req, res) => {
             // Assign value from metaFields_list
             await metafield.save({ update: true });
             return metafield;
-          }else if (orderStatuses[parentIndex].status===false) {
+          } else if (orderStatuses[parentIndex].status === false) {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.order_id = parseInt(productId);
             metafield.key = item.key;
-            metafield.value =item.key==="fc_order_status" ? "Rejected":metaFields_list[index];
+            metafield.value =
+              item.key === "fc_order_status"
+                ? "Rejected"
+                : metaFields_list[index];
             metafield.type = "single_line_text_field";
             metafield.namespace = "Order";
             // Assign value from metaFields_list
             await metafield.save({ update: true });
 
-
-
-            const metafield_for_errors = new shopify.api.rest.Metafield({ session });
+            const metafield_for_errors = new shopify.api.rest.Metafield({
+              session,
+            });
             metafield_for_errors.order_id = parseInt(productId);
-            metafield_for_errors.key = 'errors';
-            metafield_for_errors.value =orderStatuses[index]?.errors?.join(",");
+            metafield_for_errors.key = "errors";
+            metafield_for_errors.value =
+              orderStatuses[index]?.errors?.join(",");
             metafield_for_errors.type = "single_line_text_field";
             metafield_for_errors.namespace = "Order";
             // Assign value from metaFields_list
             await metafield_for_errors.save({ update: true });
             return metafield;
-            
           }
-         
         });
 
         const savedMetafields = await Promise.all(metafieldPromises);
@@ -1555,6 +1614,7 @@ app.post("/api/book-orders",bodyParser.json(), async (_req, res) => {
 app.get("/api/products", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
+
     const client = new shopify.api.clients.Graphql({ session });
     const queryString = `{
       products(first: 30) {
@@ -1562,7 +1622,7 @@ app.get("/api/products", async (_req, res) => {
           node {
             id
             title
-            metafields(first: 10) {
+            metafields(first: 15) {
             edges {
               node {
                 key
@@ -1576,7 +1636,7 @@ app.get("/api/products", async (_req, res) => {
                   id
                   title
                   price
-                  metafields(first: 10) {
+                  metafields(first: 15) {
                     edges {
                       node {
                         key
@@ -1709,10 +1769,12 @@ app.get("/api/get-checkout/:checkoutToken", async (_req, res) => {
 
 app.post("/api/carrier-service/delete", async (_req, res) => {
   try {
-    await shopify.api.rest.CarrierService.delete({
+    const deleted_data = await shopify.api.rest.CarrierService.delete({
       session: res.locals.shopify.session,
-      id: 66098495707,
+      id: 69001674971,
     });
+
+    res.status(200).send(deleted_data);
   } catch (error) {
     console.log("carrier-delete=", error);
   }
@@ -1825,22 +1887,20 @@ async function createColumnsIfNotExist(
   return new Promise((resolve, reject) => {
     // Check if the columns exist
     try {
-      
       const query = "SELECT * FROM shopify_sessions WHERE shop = ?";
-  
+
       db.all(query, [shop], async (err, rows) => {
         if (err) {
           logger.info("createColumnsIfNotExist-error==", err);
           reject(err);
           return;
         }
-        
-        
+
         const existingColumns = Object.keys(rows[0]);
         const columnsToCreate = columnNames.filter(
           (column) => !existingColumns.includes(column.name)
         );
-  
+
         for (const column of columnsToCreate) {
           try {
             await addColumn(column.name, column.type, column.defaultValue);
@@ -1849,12 +1909,10 @@ async function createColumnsIfNotExist(
             return;
           }
         }
-  
+
         resolve({ success: true, data: rows[0] });
       });
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   });
 }
 
@@ -1863,7 +1921,7 @@ function addColumn(name, type, defaultValue) {
     let sql = `ALTER TABLE shopify_sessions ADD COLUMN ${name} ${type}`;
     if (defaultValue) {
       sql += ` DEFAULT ${defaultValue}`;
-    } 
+    }
 
     db.run(sql, (err) => {
       if (err) {
