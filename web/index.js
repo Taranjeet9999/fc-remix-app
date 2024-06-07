@@ -1771,7 +1771,7 @@ app.post("/api/carrier-service/delete", async (_req, res) => {
   try {
     const deleted_data = await shopify.api.rest.CarrierService.delete({
       session: res.locals.shopify.session,
-      id: 69001674971,
+      id: 69140578549,
     });
 
     res.status(200).send(deleted_data);

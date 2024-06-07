@@ -263,8 +263,14 @@ export function MerchantBillingDetails(props) {
     const filteredCarrierService = data.data.filter(
       (item) => item.name === "Fast Courier"
     );
+    
     if (filteredCarrierService.length > 0) {
-      updateCarrierService(filteredCarrierService[0].id);
+      const maxIdObject = filteredCarrierService.reduce((max, item) => item.id > max.id ? item : max, filteredCarrierService[0]);
+     if (maxIdObject.callback_url ==="https://fc-app.vuwork.com/api/shipping-rates") {
+      return
+     }
+     
+      updateCarrierService(maxIdObject.id);
     } else {
       // create a coueir service and then update it
       createAndUpdateCarrierService();
@@ -482,10 +488,63 @@ export function MerchantBillingDetails(props) {
     });
   }
 
+  // const updateCarrierService = async (_id) => {
+
+    
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await fetch("/api/carrier-service/update", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         package_name: "Fast Courier",
+  //         id: _id,
+  //       }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       console.log(response, "response");
+  //       console.log(response, "response");
+  //       console.log(response, "response");
+  //       console.log(response, "response");
+  //       console.log(response, "response");
+  //       console.log(response, "response");
+      
+  //       throw new Error(`API call failed with status: ${response.status}`);
+  //     }
+  
+  //     const data = await response.json();
+  //     setIsLoading(false);
+  //   } catch (err) {
+  //     setIsLoading(false);
+  //     console.log(err);
+  //   }
+  // };
+
   const updateCarrierService = async (_id) => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+  
+    const fetchWithTimeout = (url, options, timeout = 10000) => {
+      return Promise.race([
+        fetch(url, { ...options, signal }),
+        new Promise((_, reject) =>
+          setTimeout(() => {
+            controller.abort();
+            reject(new Error("Request timed out"));
+        console.log("SUCCESS");
+        createAndUpdateCarrierService()
+        setIsLoading(false);
+          }, timeout)
+        ),
+      ]);
+    };
+  
     try {
       setIsLoading(true);
-      const response = await fetch("/api/carrier-service/update", {
+      const response = await fetchWithTimeout("/api/carrier-service/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -494,14 +553,25 @@ export function MerchantBillingDetails(props) {
           package_name: "Fast Courier",
           id: _id,
         }),
-      });
+      }, 10000);
+  
+      if (!response.ok) {
+        console.log("SUCCESS");
+        // await createAndUpdateCarrierService();
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
       const data = await response.json();
-      setIsLoading(false);
+      // Handle data if needed
     } catch (err) {
-      setIsLoading(false);
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
+  
+  
   const deleteCarrierService = async (_id) => {
     try {
       setIsLoading(true);
@@ -542,7 +612,7 @@ export function MerchantBillingDetails(props) {
     getCouriers();
     getSuburbs();
     getCarriers();
-    //deleteCarrierService()
+   // deleteCarrierService()
     getCategoryOfGoods(); // LIST OF CATEGORY OF GOODS
     //updateCarrierService()
     // createCarrierService()

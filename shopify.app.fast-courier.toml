@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier"
 handle = "fc-dev"
 application_url = "https://fc-app.vuwork.com"
