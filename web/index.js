@@ -1063,6 +1063,7 @@ app.post("/api/shipping-box/create", async (_req, res) => {
     res.status(200).send(new_package);
   } catch (error) {
     console.log("shipping-box/create=", error);
+    logger.info("shipping-box/create-error==", error);
     res.status(500).send({
       error
     });
