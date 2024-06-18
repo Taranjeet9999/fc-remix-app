@@ -2,13 +2,13 @@
 
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier"
-handle = "fc-dev"
-application_url = "https://fc-app.vuwork.com"
+handle = "fast-courier"
+application_url = "https://fc-app.vuwork.com/"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "staging-fc.myshopify.com"
+dev_store_url = "test-development-fc-app.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]

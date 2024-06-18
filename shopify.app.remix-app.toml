@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
-name = "remix-app"
+name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://possibilities-dave-cam-marvel.trycloudflare.com"
+application_url = "https://cr-dc-lunch-scientists.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,13 +17,18 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://possibilities-dave-cam-marvel.trycloudflare.com/auth/callback",
-  "https://possibilities-dave-cam-marvel.trycloudflare.com/auth/shopify/callback",
-  "https://possibilities-dave-cam-marvel.trycloudflare.com/api/auth/callback"
+  "https://cr-dc-lunch-scientists.trycloudflare.com/auth/callback",
+  "https://cr-dc-lunch-scientists.trycloudflare.com/auth/shopify/callback",
+  "https://cr-dc-lunch-scientists.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-04"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
+  customer_data_request_url = "https://fctest-api.fastcourier.com.au/api/wp/get_merchant"
+  shop_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
 
 [pos]
 embedded = false

@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
- 
+
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [locationName, setLocationName] = useState("");
@@ -76,9 +76,9 @@ export function AddLocation(props) {
 
   const downloadCSV = () => {
     const url = PostcodesCSV; // Use the imported CSV file
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', 'filename.csv'); // Set the desired filename
+    link.setAttribute("download", "filename.csv"); // Set the desired filename
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -94,7 +94,14 @@ export function AddLocation(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/suburbs`,
+        { headers: headers }
+      )
       .then((response) => {
         setSuburbData(response.data.data);
         var suburbList = [];
@@ -158,7 +165,7 @@ export function AddLocation(props) {
   const addLocation = () => {
     try {
       const isValid = validations();
-      console.log(isValid,"isValid Add location")
+      console.log(isValid, "isValid Add location");
       if (isValid) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -198,8 +205,16 @@ export function AddLocation(props) {
         };
 
         const url = props.editLocation
-          ? `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/location/edit/${props.editLocation.id}`
-          : `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/add`;
+          ? `${
+              localStorage.getItem("isProduction") === "1"
+                ? process.env.PROD_API_ENDPOINT
+                : process.env.API_ENDPOINT
+            }/api/wp/merchant_domain/location/edit/${props.editLocation.id}`
+          : `${
+              localStorage.getItem("isProduction") === "1"
+                ? process.env.PROD_API_ENDPOINT
+                : process.env.API_ENDPOINT
+            }/api/wp/merchant_domain/locations/add`;
         axios
           .post(url, payload, { headers: headers })
           .then((response) => {
@@ -304,9 +319,14 @@ export function AddLocation(props) {
           value: props.editLocation.tail_lift,
           label: props.editLocation.tail_lift == 0 ? "No" : "Yes",
         }
-      : {
+      : props.isDefaultLocationExist
+      ? {
           value: "0",
           label: "No",
+        }
+      : {
+          value: "1",
+          label: "Yes",
         };
 
     return defaultValue;
@@ -347,7 +367,7 @@ export function AddLocation(props) {
       : null;
     return defaultValue;
   };
-  console.log(tagOptions, "tagOptions");
+
   const getDefaultTags = (_merchantTags) => {
     if (props?.editLocation) {
       let selected_tags = props.editLocation?.tag
@@ -383,7 +403,11 @@ export function AddLocation(props) {
 
       axios
         .get(
-          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/wp/merchant_location_tags/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -474,20 +498,19 @@ export function AddLocation(props) {
     });
   }, []);
 
-
   const handleDownload = () => {
     // Define the filename of the CSV file to be downloaded
-    const filename = 'sample.csv';
+    const filename = "sample.csv";
     // Construct the URL to the CSV file in the public folder
-    const fileUrl =  '/' + filename;
+    const fileUrl = "/" + filename;
     // Trigger the download by creating a temporary link element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = fileUrl;
-    link.setAttribute('download', filename);
+    link.setAttribute("download", filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  };
   return (
     <div className="add-location-modal">
       {isLoading && <Loader />}
@@ -581,9 +604,13 @@ export function AddLocation(props) {
             <div className="input-lebel1">
               <span> Phone Number&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
-              {errorMessage != "" && (phoneNumber == "" || phoneNumber?.length<10) && (
-                <span style={{ color: "red" }}> &nbsp; {"(Min 10 chars)"}</span>
-              )}
+              {errorMessage != "" &&
+                (phoneNumber == "" || phoneNumber?.length < 10) && (
+                  <span style={{ color: "red" }}>
+                    {" "}
+                    &nbsp; {"(Min 10 chars)"}
+                  </span>
+                )}
             </div>
             <div className="input-field">
               <input
@@ -689,7 +716,7 @@ export function AddLocation(props) {
               options={tailLiftList}
               onChange={(e) => setIsDefaultLocation(e.value)}
               defaultValue={getDefaultLocation()}
-              isDisabled={props.editLocation && isDefaultLocation == "1"}
+              isDisabled={props.editLocation || isDefaultLocation == "1"}
             />
           </div>
 
@@ -702,6 +729,7 @@ export function AddLocation(props) {
               isMulti
               options={tagOptions}
               value={selectedTags}
+              placeholder="Select or Create Tags"
               // onCreateOption={(value) => {
 
               //   console.log(value,'onCreateOption')
@@ -766,19 +794,13 @@ export function AddLocation(props) {
               onChange={(e) => handleCsvInputChange(e)}
             />
           </div>
-          <div className="sample-download"
-          onClick={()=>{
-            handleDownload()
-          }}
-          
+          <div
+            className="sample-download"
+            onClick={() => {
+              handleDownload();
+            }}
           >
-            <a
-              href="#"
-            
-            >
-              {" "}
-              Sample CSV{" "}
-            </a>
+            <a href="#"> Sample CSV </a>
           </div>
         </div>
       </div>

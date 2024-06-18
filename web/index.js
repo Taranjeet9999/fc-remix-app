@@ -1,28 +1,35 @@
-// @ts-check
-import { join } from "path";
-import { readFileSync } from "fs";
+  
+// import { join } from "path";
+// import { readFileSync } from "fs";
 
-import express from "express";
-import serveStatic from "serve-static";
-import { MongoClient, ObjectId } from "mongodb";
-import "dotenv/config";
-import Bottleneck from "bottleneck";
-import shopify from "./shopify.js";
-import productCreator from "./product-creator.js";
-import PrivacyWebhookHandlers from "./privacy.js";
-import bodyParser from "body-parser";
-import sqlite3 from "sqlite3";
-import log4js from "log4js";
-// import * as BinPacking3D from "binpackingjs";
-// import  BP3D  from 'binpackingjs';
-// const { Item, Bin, Packer } = BP3D;
+// import express from "express";
+// import serveStatic from "serve-static";
+// import { MongoClient, ObjectId } from "mongodb";
+// import "dotenv/config";
+// import Bottleneck from "bottleneck";
+// import shopify from "./shopify.js";
+// import productCreator from "./product-creator.js";
+// import PrivacyWebhookHandlers from "./privacy.js";
+// import bodyParser from "body-parser";
+// import sqlite3 from "sqlite3";
+// import log4js from "log4js";
+const { join } = require("path");
+const { readFileSync } = require("fs");
 
-// // import BinPacking3D from "binpackingjs";
-// // // const BinPacking3D = require("binpackingjs").BP3D;
-// const {  Bin, Packer } = BinPacking3D.BinPacking;
+const express = require("express");
+const serveStatic = require("serve-static");
+const { MongoClient, ObjectId } = require("mongodb");
+require("dotenv/config");
+const Bottleneck = require("bottleneck");
+const shopify = require("./shopify.js");
+const productCreator = require("./product-creator.js");
+const PrivacyWebhookHandlers = require("./privacy.js");
+const bodyParser = require("body-parser");
+const sqlite3 = require("sqlite3");
+const log4js = require("log4js");
+const BinPacking3D = require("binpackingjs").BP3D;
 
-// Create a logger object
-// const logger = log4js.getLogger();
+const { Item, Bin, Packer } = BinPacking3D;
 
 log4js.configure({
   appenders: {
@@ -195,12 +202,11 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
       // Trim the quotes from each value and assign them to variables
       const quoteIds = extractQuoteIds(valuesArray);
       const orderIds = extractOrderIds(valuesArray);
-      logger.info("quoteIds==", quoteIds);
-      logger.info("orderIds==", orderIds);
+ 
 
       const carrierName = getCarrier(orderDetails.shipping_lines);
       console.log("carrierName", carrierName);
-      logger.info("carrierName==", carrierName);
+      
 
       const order = new shopify.api.rest.Order({
         session: session[0],
@@ -269,6 +275,11 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     }
 
     const merchant = JSON.parse(session[0].merchant);
+    const shipping_boxes = ParseShippingBoxes(session[0].shipping_boxes);
+    if (!shipping_boxes || shipping_boxes?.length === 0) {
+      res.status(500).json({ error: "Shipping boxes not found" });
+      return;
+    }
 
     const destination = _req.body.rate.destination;
     const merchant_locations = JSON.parse(session[0].merchant_locations);
@@ -418,37 +429,76 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
               totalPrice: 0,
             };
           }
+           
+          // let itemsArray = [];
+          // items.forEach((entry) => {
+          //   let product_parts = entry.productDimentions;
+          //   product_parts.forEach((__item) => {
+          //     itemsArray.push({
+          //       type: __item.packageType,
+          //       weight: __item.weight,
+          //       width: __item.width,
+          //       height: __item.height,
+          //       length: __item.length,
+          //       isIndividual: __item.isIndividual,
+          //       quantity: 1,
+          //     });
+          //   });
+          // });
           let itemsArray = [];
           items.forEach((entry) => {
             let product_parts = entry.productDimentions;
+            let quantity = entry.quantity;
+
             product_parts.forEach((__item) => {
-              itemsArray.push({
-                type: __item.packageType,
-                weight: __item.weight,
-                width: __item.width,
-                height: __item.height,
-                length: __item.length,
-                isIndividual: __item.isIndividual,
-                quantity: 1,
-              });
+              for (let i = 0; i < quantity; i++) {
+                itemsArray.push({
+                  type: __item.packageType,
+                  weight: __item.weight,
+                  width: __item.width,
+                  height: __item.height,
+                  length: __item.length,
+                  isIndividual: __item.isIndividual,
+                  quantity: 1,
+                });
+              }
             });
           });
 
           // SHipping Box Functionality START
-          // let individual_items = itemsArray.filter((item) => item.isIndividual ==="Yes");
-          // let non_individual_items = itemsArray.filter((item) => item.isIndividual ==="No");
+          let individual_items = itemsArray.filter(
+            (item) => item.isIndividual === "Yes"
+          );
+          let non_individual_items = itemsArray.filter(
+            (item) => item.isIndividual === "No"
+          );
           // const _bins = [
           //   {
           //     name: "Le petite box",
           //     width: 296,
           //     height: 296,
-          //     length: 8,
+          //     length: 80,
           //   },
           // ];
-          // let individual_items_packed = packItems(_bins,non_individual_items);
-          // individual_items_packed = processBoxes(JSON.parse(JSON.stringify(individual_items_packed)))
-          // let itemsArray_to_send_to_courier = [...individual_items_packed,...individual_items];
+          const _bins = shipping_boxes.map((box,idx) => {
+            return {
+              // name: box.package_name,
+              name: `Le petite box-${idx}`,
+              width: Number(box.width),
+              height: Number(box.height),
+              length: Number(box.length),
+            };
+          });
+          let individual_items_packed = packItems(_bins, non_individual_items);
+          individual_items_packed = processBoxes(
+            JSON.parse(JSON.stringify(individual_items_packed))
+          );
+          let itemsArray_to_send_to_courier = [
+            ...individual_items_packed,
+            ...individual_items,
+          ];
           // SHipping Box Functionality STOP
+          
 
           let totalWeightOfItems = 0;
 
@@ -501,7 +551,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             destinationPhone: destination.phone,
             parcelContent: "Order from Main Hub",
             valueOfContent: `${totalPriceOfItems}`,
-            items: JSON.stringify(itemsArray),
+            items: JSON.stringify(itemsArray_to_send_to_courier),
             isDropOffTailLift: merchant?.is_drop_off_tail_lift,
             orderType: "8",
           };
@@ -566,14 +616,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       )
     );
 
-    logger.info(
-      "courier_data_to_Show_end_user==",
-      JSON.stringify(courier_data_to_Show_end_user)
-    );
-    logger.info(
-      "getUniqueQuoteData(courier_data_to_Show_end_user)",
-      JSON.stringify(getUniqueQuoteData(courier_data_to_Show_end_user))
-    );
+     
 
     // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
@@ -969,11 +1012,57 @@ app.post("/api/add-data-into-table", bodyParser.json(), async (_req, res) => {
 
 app.post("/api/shipping-box/create", async (_req, res) => {
   try {
-    const db = await getConnection();
-    const body = _req.body;
-    let collection = db.collection("shipping_boxes");
-    const response = await collection.insertOne(body);
-    res.status(200).send(response);
+    let current_session = res.locals.shopify.session;
+    const query = "SELECT shipping_boxes FROM shopify_sessions WHERE shop = ?";
+    let shipping_boxes = await new Promise((resolve, reject) => {
+      db.all(query, [current_session.shop], (err, rows) => {
+        if (err) {
+          logger.info("createColumnsIfNotExist-error==", err);
+          reject(err);
+          return;
+        }
+        resolve(rows.length > 0 ? rows[0].shipping_boxes : []);
+      });
+    });
+    const boxes = shipping_boxes.length > 0 ? JSON.parse(shipping_boxes) : [];
+
+    let new_package = {
+      package_name: _req.body.package_name,
+      package_type: _req.body.package_type,
+      height: _req.body.height,
+      width: _req.body.width,
+      length: _req.body.length,
+      is_default: _req.body.is_default,
+    };
+
+    // Generate a new unique ID for the new box
+    let newId;
+    do {
+      newId = Math.floor(Math.random() * 1000000); // Example ID generation logic
+    } while (boxes.some(box => box.id === newId));
+
+    new_package.id = newId;
+    boxes.push(new_package);
+
+    // Update the database with the new list of shipping boxes
+    const updateQuery = "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
+    const updatedBoxesString = JSON.stringify(boxes);
+    await new Promise((resolve, reject) => {
+      db.run(updateQuery, [updatedBoxesString, current_session.shop], (err) => {
+        if (err) {
+          logger.info("updateShippingBoxes-error==", err);
+          reject(err);
+          return;
+        }
+
+        resolve();
+      });
+    });
+
+    res.status(200).send(new_package);
+
+   
+     
   } catch (error) {
     console.log("shipping-box/create=", error);
   }
@@ -981,24 +1070,73 @@ app.post("/api/shipping-box/create", async (_req, res) => {
 
 app.delete("/api/shipping-box/delete", async (_req, res) => {
   try {
-    const db = await getConnection();
-    const id = _req.body._id;
-    let collection = db.collection("shipping_boxes");
-    const response = await collection.deleteOne({ _id: new ObjectId(id) });
-    res.status(200).send(response);
+    let current_session = res.locals.shopify.session;
+    const boxToDelete = _req.body;
+
+    const query = "SELECT shipping_boxes FROM shopify_sessions WHERE shop = ?";
+
+    const shipping_boxes = await new Promise((resolve, reject) => {
+      db.all(query, [current_session.shop], (err, rows) => {
+        if (err) {
+          logger.info("createColumnsIfNotExist-error==", err);
+          reject(err);
+          return;
+        }
+
+        resolve(rows.length > 0 ? rows[0].shipping_boxes : []);
+      });
+    });
+
+    // Parse existing shipping boxes (assuming they are stored as JSON in the database)
+    const boxes = shipping_boxes.length > 0 ? JSON.parse(shipping_boxes) : [];
+
+    // Find and remove the box to delete
+    const updatedBoxes = boxes.filter(box => box.id !== boxToDelete.id);
+
+    // Update the database with the new list of shipping boxes
+    const updateQuery = "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
+    const updatedBoxesString = JSON.stringify(updatedBoxes);
+
+    await new Promise((resolve, reject) => {
+      db.run(updateQuery, [updatedBoxesString, current_session.shop], (err) => {
+        if (err) {
+          logger.info("updateShippingBoxes-error==", err);
+          reject(err);
+          return;
+        }
+
+        resolve();
+      });
+    });
+
+    res.status(200).send(updatedBoxes);
   } catch (error) {
-    console.log("shipping-box/delete=", error);
+    console.log("delete-shipping-box-error=", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
 app.get("/api/shipping-boxes", async (_req, res) => {
   try {
-    const db = await getConnection();
-    let collection = db.collection("shipping_boxes");
-    const response = await collection.find({}).toArray();
-    res.status(200).send(response);
+    let current_session = res.locals.shopify.session;
+
+    const query = "SELECT shipping_boxes FROM shopify_sessions WHERE shop = ?";
+
+    db.all(query, [current_session.shop], (err, rows) => {
+      if (err) {
+        logger.info("createColumnsIfNotExist-error==", err);
+        res.status(500).send([]);
+        return;
+      }
+
+      const shipping_boxes = rows[0].shipping_boxes
+        ? rows[0].shipping_boxes
+        : [];
+      res.status(200).send(shipping_boxes);
+    });
   } catch (error) {
     console.log("shipping-box=", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -1621,7 +1759,7 @@ app.get("/api/products", async (_req, res) => {
         edges {
           node {
             id
-            title
+            title 
             metafields(first: 15) {
             edges {
               node {
@@ -1636,6 +1774,7 @@ app.get("/api/products", async (_req, res) => {
                   id
                   title
                   price
+                  sku
                   metafields(first: 15) {
                     edges {
                       node {
@@ -1875,13 +2014,13 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
 async function createColumnsIfNotExist(
   shop,
   columnNames = [
-    { name: "merchant_token", type: "TEXT" },
-    { name: "merchant_id", type: "TEXT" },
-    { name: "merchant_locations", type: "TEXT" },
-    { name: "merchant_tags", type: "TEXT" },
-    { name: "merchant", type: "TEXT" },
+    { name: "merchant_token", type: "TEXT", defaultValue: null },
+    { name: "merchant_id", type: "TEXT", defaultValue: null },
+    { name: "merchant_locations", type: "TEXT", defaultValue: null },
+    { name: "merchant_tags", type: "TEXT", defaultValue: null },
+    { name: "merchant", type: "TEXT", defaultValue: null },
     { name: "is_production", type: "TEXT", defaultValue: false },
-    { name: "shipping_boxes", type: "TEXT" },
+    { name: "shipping_boxes", type: "TEXT", defaultValue: null },
   ]
 ) {
   return new Promise((resolve, reject) => {
@@ -1980,6 +2119,17 @@ async function deleteMerchantTokenAndId(
 function sumArray(array) {
   return array.reduce((total, currentValue) => total + currentValue, 0);
 }
+
+function ParseShippingBoxes(_value) {
+try {
+  return JSON.parse(_value);
+  
+} catch (error) {
+  return "";
+  
+}
+  
+}
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const toRad = (x) => (x * Math.PI) / 180;
   const R = 6371; // Radius of the Earth in km
@@ -2009,56 +2159,56 @@ function groupByLocation(products) {
 
   return locationItems;
 }
-// function packItems(_bins, _items, level = 0) {
-//   // logger.info("Packing items",BinPacking3D.BinPacking);
-//   // logger.info("Packing items 2",BinPacking3D.BP3D);
-// logger.info("dsvdsv",typeof Packer);
+function packItems(_bins, _items, level = 0) {
+  // logger.info("Packing items",BinPacking3D.BinPacking);
+  // logger.info("Packing items 2",BinPacking3D.BP3D);
+  logger.info(_bins, "_bins", level);
 
-//   let packer = new Packer();
-//   let bin_itemsto_send = [];
+  let packer = new Packer();
+  let bin_itemsto_send = [];
 
-//   let bins = _bins.map(
-//     (bin) =>
-//       new Bin(
-//         `${bin?.name ?? "Box"}-${level}`,
-//         bin.width,
-//         bin.height,
-//         bin.length,
-//         1000000000000
-//       )
-//   );
-//   let items = _items.map(
-//     (item) =>
-//       new Item(item.name, item.width, item.height, item.length, item.weight)
-//   );
-//   bins.forEach((bin) => packer.addBin(bin));
-//   items.forEach((item) => packer.addItem(item));
-//   packer.pack();
-//   let packedItems = bins.map((bin) => ({
-//     ...bin,
-//     length: bin.depth,
-//     sub_packs: bin.items,
-//   }));
+  let bins = _bins.map(
+    (bin) =>
+      new Bin(
+        `${bin?.name ?? "Box"}-${level}`,
+        bin.width,
+        bin.height,
+        bin.length,
+        1000000000000
+      )
+  );
+  let items = _items.map(
+    (item) =>
+      new Item(item.name, item.width, item.height, item.length, item.weight)
+  );
+  bins.forEach((bin) => packer.addBin(bin));
+  items.forEach((item) => packer.addItem(item));
+  packer.pack();
+  let packedItems = bins.map((bin) => ({
+    ...bin,
+    length: bin.depth,
+    sub_packs: bin.items,
+  }));
 
-//   packedItems.forEach((bin) => {
-//     if (bin.sub_packs.length > 0) {
-//       bin_itemsto_send.push(bin);
-//     }
-//   });
-//   if (packer.unfitItems.length > 0) {
-//     let updatedItems = packer.unfitItems.map((item) => ({
-//       ...item,
-//       width: item.height / 100000,
-//       height: item.width / 100000,
-//       length: item.depth / 100000,
-//       weight: item.weight / 100000,
-//     }));
-//     let newItems = packItems(_bins, updatedItems, level + 1);
-//     bin_itemsto_send = bin_itemsto_send.concat(newItems);
-//   }
+  packedItems.forEach((bin) => {
+    if (bin.sub_packs.length > 0) {
+      bin_itemsto_send.push(bin);
+    }
+  });
+  if (packer.unfitItems.length > 0) {
+    let updatedItems = packer.unfitItems.map((item) => ({
+      ...item,
+      width: item.height / 100000,
+      height: item.width / 100000,
+      length: item.depth / 100000,
+      weight: item.weight / 100000,
+    }));
+    let newItems = packItems(_bins, updatedItems, level + 1);
+    bin_itemsto_send = bin_itemsto_send.concat(newItems);
+  }
 
-//   return bin_itemsto_send;
-// }
+  return bin_itemsto_send;
+}
 function processBoxes(boxes) {
   return boxes.map((box) => ({
     name: box.name,

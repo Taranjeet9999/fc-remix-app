@@ -32,21 +32,25 @@ export function PickupLocations(props) {
     };
     axios
       .get(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
         setIsLoading(false);
-        getMerchantTags().then(()=>{
-          setIsLoading(false);
-          
-        }).catch(()=>{
-          setIsLoading(false);
-
-        })
+        getMerchantTags()
+          .then(() => {
+            setIsLoading(false);
+          })
+          .catch(() => {
+            setIsLoading(false);
+          });
         setPickupLocations(response.data.data);
         props.setPickupLocations(response.data.data);
-        setDataIntoData("merchant_locations",response.data.data)
+        setDataIntoData("merchant_locations", response.data.data);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -66,13 +70,20 @@ export function PickupLocations(props) {
         version: "3.1.1",
         Authorization: "Bearer " + accessToken,
       };
-  
+
       axios
-        .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`, { headers: headers })
+        .get(
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/wp/merchant_location_tags/${merchantDomainId}`,
+          { headers: headers }
+        )
         .then((response) => {
           setIsLoading(false);
           setMerchantTags(response.data.data);
-          setDataIntoData("merchant_tags",response.data.data)
+          setDataIntoData("merchant_tags", response.data.data);
           resolve(response.data.data);
         })
         .catch((error) => {
@@ -81,9 +92,6 @@ export function PickupLocations(props) {
         });
     });
   };
-
- 
-  
 
   const deleteLocation = (element) => {
     setIsLoading(true);
@@ -99,7 +107,11 @@ export function PickupLocations(props) {
     const payload = {};
     axios
       .post(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/location/delete/${element.id}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_domain/location/delete/${element.id}`,
         payload,
         { headers: headers }
       )
@@ -159,27 +171,26 @@ export function PickupLocations(props) {
         },
         body: JSON.stringify({
           columnName: columnName,
-          data: data
+          data: data,
         }),
       })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(error => {
-            throw new Error(`Error: ${error.message}`);
-          });
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        resolve(responseData);
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        reject(error);
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((error) => {
+              throw new Error(`Error: ${error.message}`);
+            });
+          }
+          return response.json();
+        })
+        .then((responseData) => {
+          resolve(responseData);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
     });
   }
-  
 
   return (
     <div className="pickup-locations">
@@ -189,16 +200,22 @@ export function PickupLocations(props) {
           Add New Location
         </button>
       </div>
-   {showModal&&   <Modal showModal={showModal} width="60%">
-        <AddLocation
-          setShowModal={setShowModal}
-          getPickupLocations={getPickupLocations}
-          {...props}
-        />
-      </Modal>}
+      {showModal && (
+        <Modal showModal={showModal} width="60%">
+          <AddLocation
+            setShowModal={setShowModal}
+            getPickupLocations={getPickupLocations}
+            isDefaultLocationExist={
+              pickupLocations?.filter((location) => location.is_default == 1)
+                .length > 0
+            }
+            {...props}
+          />
+        </Modal>
+      )}
 
       <div className="pickup-locations-table">
-        <table>
+        <table> 
           <tr className="table-head">
             <th>ID</th>
             <th>Name</th>
@@ -232,11 +249,13 @@ export function PickupLocations(props) {
                     style={{ cursor: "pointer" }}
                   >
                     <CustomTooltip
-                    disabled={JSON.parse(element?.free_shipping_postcodes)?.length==0}
-                    text={element?.free_shipping_postcodes}
+                      disabled={
+                        JSON.parse(element?.free_shipping_postcodes)?.length ==
+                        0
+                      }
+                      text={element?.free_shipping_postcodes}
                     >
-
-                    {JSON.parse(element?.free_shipping_postcodes)?.length}
+                      {JSON.parse(element?.free_shipping_postcodes)?.length}
                     </CustomTooltip>
                   </td>
                   <td>{element.is_default == 1 ? "Yes" : "No"}</td>

@@ -2,19 +2,26 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "../login/style.css";
 import "./style.css";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { Modal } from "../modal";
 import { Loader } from "../loader";
 import { SuccessModal } from "../successModal";
+import { useAuthenticatedFetch } from "../../hooks";
+import { ErrorModal } from "../errorModal";
 
-export function ForgotPassword() {
+export function ForgotPassword(props) {
     const [email, setEmail] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const fetch = useAuthenticatedFetch();
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
+    const [openErrorModal, setOpenErrorModal] = useState(false);
 
     const forgotPassword = () => {
+        if (!validations()) {
+            return;
+        }
         setIsLoading(true);
         const payload = {
             "email": email,
@@ -31,9 +38,25 @@ export function ForgotPassword() {
         }).catch(error => {
             setIsLoading(false);
             console.log(error);
+            setOpenErrorModal(true);
+            setErrorMessage(error?.response?.data?.message ?? "Something went wrong");
         })
     }
 
+    function validations() {
+      
+      if (email == "" || !validateEmail(email)) {
+        setErrorMessage("Please enter valid email");
+        return false;
+      }
+     
+      
+      return true;
+    }
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
     async function logOutUser( ) {
         try {
             setIsLoading(true);
@@ -108,6 +131,12 @@ export function ForgotPassword() {
                 message="We have sent you a password reset email."
                 onConfirm={() => navigate("/login")}
             />
+
+<ErrorModal
+        showModal={openErrorModal}
+        message={errorMessage}
+        onConfirm={() => setOpenErrorModal(false)}
+      />
             <div className="logo-image">
                 <img src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png" />
             </div>
@@ -122,6 +151,12 @@ export function ForgotPassword() {
                 <div className="input-container">
                     <div className="input-lebel">
                         <span> Email&nbsp;</span><span style={{ color: "red" }}> *</span>
+                        {errorMessage != "" && email == "" && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+            {errorMessage != "" && !validateEmail(email) && (
+              <span style={{ color: "red" }}> &nbsp; {"- Enter valid email"}</span>
+            )}
                     </div>
                     <div className="input-field">
                         <input className="input-field-text" type="text" onChange={(e) => setEmail(e.target.value)} />

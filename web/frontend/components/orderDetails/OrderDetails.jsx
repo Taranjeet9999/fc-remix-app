@@ -617,8 +617,8 @@ export function OrderDetails(props) {
                 <td>{order.shipping_lines?.[0]?.title}</td>
                 <td>
                   {" "}
-                  {order.shipping_lines?.[0]?.price
-                    ? `$${order.shipping_lines?.[0]?.price}`
+                  {order.shipping_lines?.[0]?.code?.split("~")?.[2]
+                    ? `$${order.shipping_lines?.[0]?.code?.split("~")?.[2]}`
                     : ""}
                 </td>
                 <td>

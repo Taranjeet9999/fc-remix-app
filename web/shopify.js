@@ -1,8 +1,8 @@
-import { BillingInterval, LATEST_API_VERSION } from "@shopify/shopify-api";
-import { shopifyApp } from "@shopify/shopify-app-express";
-import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
-import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
-import "dotenv/config";
+const { BillingInterval, LATEST_API_VERSION } = require("@shopify/shopify-api");
+const { shopifyApp } = require("@shopify/shopify-app-express");
+const { SQLiteSessionStorage } = require("@shopify/shopify-app-session-storage-sqlite");
+const { restResources } = require("@shopify/shopify-api/rest/admin/2023-04");
+require("dotenv/config");
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
@@ -41,4 +41,5 @@ const shopify = shopifyApp({
   sessionStorage: new SQLiteSessionStorage(DB_PATH),
 });
 
-export default shopify;
+// export default shopify;
+module.exports = shopify;

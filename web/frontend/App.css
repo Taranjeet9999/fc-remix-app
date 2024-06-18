@@ -3,6 +3,11 @@
   height: 100%;
   font-family: "Poppins";
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 .top-bar {
   width: 100%;
@@ -127,6 +132,10 @@ input:checked+.slider:before {
 }
 .align-items-end{
   align-items: end;
+}
+.flex-1{
+  flex: 1;
+
 }
 
 .mr-2{

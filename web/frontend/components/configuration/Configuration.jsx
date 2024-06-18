@@ -15,6 +15,7 @@ export function Configuration(props) {
   const [merchantDetails, setMerchantDetails] = useState({});
   const [pickupLocations, setPickupLocations] = useState([])
   const [products, setProducts] = useState([])
+  const [shippingBoxes, setShippingBoxes] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   
   const getComponent = () => {
@@ -29,17 +30,20 @@ export function Configuration(props) {
         />
       );
     } else if (activeNavItem == "pickupLocations") {
-      return <PickupLocations setActiveNavItem={setActiveNavItem}
-      
-      
-      setPickupLocations={setPickupLocations}
-      
-      {...props} />;
+      return (
+        <PickupLocations
+          setActiveNavItem={setActiveNavItem}
+          setPickupLocations={setPickupLocations}
+          {...props}
+        />
+      );
     } else if (activeNavItem == "productMapping") {
-      return <ProductMapping 
-      setProducts={setProducts}
-      
-      />;
+      return (
+        <ProductMapping
+          setProducts={setProducts}
+          setShippingBoxes={setShippingBoxes}
+        />
+      );
     }
     return (
       <MerchantBillingDetails
@@ -138,22 +142,28 @@ export function Configuration(props) {
       merchantDetails.billing_suburb &&
       JSON.parse(merchantDetails.courier_preferences)?.length > 0
     ) {
+      localStorage.setItem("isMerchantDetailsFilled", true);
       return true;
     }
+    localStorage.setItem("isMerchantDetailsFilled", false);
     return false;
   }
 
   function isPaymentMethodsFilled() {
     if (merchantDetails.payment_method) {
+      localStorage.setItem("isPaymentMethodsFilled", true);
       return true;
     }
+    localStorage.setItem("isPaymentMethodsFilled", false);
     return false;
   }
 
   function isPickupLocationsFilled() {
     if (pickupLocations.length > 0) {
+      localStorage.setItem("isPickupLocationsFilled", true);
       return true;
     }
+    localStorage.setItem("isPickupLocationsFilled", false);
     return false;
   }
 
@@ -164,15 +174,34 @@ export function Configuration(props) {
       for (let metafield of product.metafields) {
         
         // Check if the metafield key is 'product_dimentions'
-        if (metafield.key === "product_dimentions" && metafield.value) {
+        if (metafield.key === "product_dimentions" && metafield.value && shippingBoxes.length > 0) {
+          window.localStorage.setItem("isProductMappingFilled", true);
           return true;
         }
       }
     }
+    window.localStorage.setItem("isProductMappingFilled", false);
+
     return false
   }
+  const getShippingBoxes = async () => {
+     
+    const response = await fetch(`/api/shipping-boxes`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+
+      },
+    });
+
+    const data = await response.json();
+
+    setShippingBoxes(data);
+     
+  };
 
   useEffect(() => {
+    getShippingBoxes()
     getPickupLocations()
     getAllProducts()
     
@@ -200,6 +229,10 @@ export function Configuration(props) {
   useEffect(() => {
     if(isMerchantDetailsFilled() && isPaymentMethodsFilled() && isPickupLocationsFilled() && isProductMappingFilled()){
       props.setUserSetupConfigured(true)
+      window.localStorage.setItem("isUserSetupConfigured", true);
+    }else{
+      props.setUserSetupConfigured(false)
+      window.localStorage.setItem("isUserSetupConfigured", false);
     }
   }, [
     isMerchantDetailsFilled(),
@@ -230,10 +263,12 @@ export function Configuration(props) {
           <span className="nav-icon">{isMerchantDetailsFilled() ?   <FontAwesomeIcon
                       icon="fa-solid fa-check-circle"
                       size="2xs"
+                      color="green"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     /> :   <FontAwesomeIcon
                       icon="fa-solid fa-exclamation-circle"
                       size="2xs"
+                      color="red"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />}</span>
         </div>
@@ -250,10 +285,12 @@ export function Configuration(props) {
           <span>Payment Methods</span>
           <span className="nav-icon">{isPaymentMethodsFilled() ?   <FontAwesomeIcon
                       icon="fa-solid fa-check-circle"
+                      color="green"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     /> :   <FontAwesomeIcon
                       icon="fa-solid fa-exclamation-circle"
+                      color="red"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />}</span>
@@ -270,10 +307,12 @@ export function Configuration(props) {
           <span>Pickup Locations</span>
           <span className="nav-icon">{isPickupLocationsFilled() ?   <FontAwesomeIcon
                       icon="fa-solid fa-check-circle"
+                      color="green"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     /> :   <FontAwesomeIcon
                       icon="fa-solid fa-exclamation-circle"
+                      color="red"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />}</span>
@@ -291,11 +330,13 @@ export function Configuration(props) {
           <span>Product Mapping</span>
           <span className="nav-icon">{isProductMappingFilled() ?   <FontAwesomeIcon
                       icon="fa-solid fa-check-circle"
+                      color="green"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     /> :   <FontAwesomeIcon
                       icon="fa-solid fa-exclamation-circle"
                       size="2xs"
+                      color="red"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />}</span>
         </div>

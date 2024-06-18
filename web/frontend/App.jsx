@@ -86,7 +86,7 @@ export default function App() {
                     background: isLoggedIn ? "white" : "transparent",
                   }}
                 >
-           {  isStaging&&     <div className="mode-text">Test Mode</div>}
+                  {isStaging && <div className="mode-text">Test Mode</div>}
                 </div>
               </div>
               {/* <BrowserRouter> */}
@@ -106,70 +106,89 @@ export default function App() {
                 <Route
                   path="/homepage"
                   element={
-                    <HomePage userDetails={userDetails} isStaging={isStaging} 
-                    
-                    executeSandboxStatus={executeSandboxStatus}
-                    
+                    <HomePage
+                      userDetails={userDetails}
+                      isStaging={isStaging}
+                      executeSandboxStatus={executeSandboxStatus}
                     />
                   }
                 />
-                <Route path="/orderDetails" element={<OrderDetails executeSandboxStatus={executeSandboxStatus}/>} />
+                <Route
+                  path="/orderDetails"
+                  element={
+                    <OrderDetails executeSandboxStatus={executeSandboxStatus} />
+                  }
+                />
                 <Route
                   path="/signup"
-                  element={<Signup setUserDetails={setUserDetails} executeSandboxStatus={executeSandboxStatus}/>}
+                  element={
+                    <Signup
+                      setUserDetails={setUserDetails}
+                      executeSandboxStatus={executeSandboxStatus}
+                    />
+                  }
                 />
-                <Route path="/forgotPassword" element={<ForgotPassword executeSandboxStatus={executeSandboxStatus}/>} />
+                <Route
+                  path="/forgotPassword"
+                  element={
+                    <ForgotPassword
+                      executeSandboxStatus={executeSandboxStatus}
+                    />
+                  }
+                />
                 <Route
                   path="/merchantBillingDetails"
-                  element={<MerchantBillingDetails executeSandboxStatus={executeSandboxStatus}/>}
+                  element={
+                    <MerchantBillingDetails
+                      executeSandboxStatus={executeSandboxStatus}
+                    />
+                  }
                 />
-                
               </Routes>
               {/* </BrowserRouter > */}
               {/* SandBox Modal */}
               <Modal showModal={showSandBoxModal} width="30%">
-                  {isLoading && <Loader />}
-                  <div className="assign-location">
-                    <div className="modal-header">Change Sandbox Status</div>
-                    <div className="modal-body">
-                      <div className="input-container">
-                        <div className="input-lebel">
-                          <div> Are you sure?</div>
-                        </div>
-                        <div className="input-lebel">
-                          <div>It will take a while to change status.</div>
-                        </div>
+                {isLoading && <Loader />}
+                <div className="assign-location">
+                  <div className="modal-header">Change Sandbox Status</div>
+                  <div className="modal-body">
+                    <div className="input-container">
+                      <div className="input-lebel">
+                        <div> Are you sure?</div>
+                      </div>
+                      <div className="input-lebel">
+                        <div>It will take a while to change status.</div>
                       </div>
                     </div>
-                    <div className="modal-footer">
-                      <button
-                        className="cancel-btn"
-                        onClick={() => setShowSandBoxModal(false)}
-                      >
-                        Close
-                      </button>
-                      <button
-                        className="submit-btn"
-                        onClick={() => {
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      className="cancel-btn"
+                      onClick={() => setShowSandBoxModal(false)}
+                    >
+                      Close
+                    </button>
+                    <button
+                      className="submit-btn"
+                      onClick={() => {
+                        setExecuteSandboxStatus({
+                          execute: "sandbox",
+                          value: isStaging ? "1" : "0",
+                        });
+                        setTimeout(() => {
+                          setShowSandBoxModal(false);
                           setExecuteSandboxStatus({
-                            execute: "sandbox",
+                            execute: null,
                             value: isStaging ? "1" : "0",
                           });
-                          setTimeout(() => {
-                            setShowSandBoxModal(false);
-                            setExecuteSandboxStatus({
-                              execute: null,
-                              value: isStaging ? "1" : "0",
-                            });
-                          }, 1000);
-                        }}
-                      >
-                        Change
-                      </button>
-                    </div>
+                        }, 1000);
+                      }}
+                    >
+                      Change
+                    </button>
                   </div>
-                </Modal>
-              
+                </div>
+              </Modal>
             </div>
           </QueryProvider>
         </AppBridgeProvider>

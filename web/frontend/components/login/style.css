@@ -144,3 +144,10 @@ a {
     align-items: center;
     justify-content: center;
 }
+
+.eye-icon {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}

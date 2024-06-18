@@ -1,14 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
-name = "remix-app"
-handle = "remix-app-139"
-application_url = "https://belt-wooden-arthur-pace.trycloudflare.com"
+name = "Fast Courier"
+handle = "fast-courier"
+application_url = "https://fc-app.vuwork.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "test-development-fc-app.myshopify.com"
+dev_store_url = "staging-fc.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -17,13 +17,18 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://belt-wooden-arthur-pace.trycloudflare.com/auth/callback",
-  "https://belt-wooden-arthur-pace.trycloudflare.com/auth/shopify/callback",
-  "https://belt-wooden-arthur-pace.trycloudflare.com/api/auth/callback"
+  "https://fc-app.vuwork.com/auth/callback",
+  "https://fc-app.vuwork.com/auth/shopify/callback",
+  "https://fc-app.vuwork.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-04"
+api_version = "2024-01"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
+  customer_data_request_url = "https://fctest-api.fastcourier.com.au/api/wp/get_merchant"
+  shop_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
 
 [pos]
 embedded = false

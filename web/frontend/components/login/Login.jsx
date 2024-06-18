@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAuthenticatedFetch } from "../../hooks";
+import PasswordInput from "./PasswordInput";
 
 export function Login(props) {
   const [email, setEmail] = useState("");
@@ -291,9 +292,7 @@ export function Login(props) {
         </div>
         <div className="input-container">
           <div className="input-field">
-            <input
-              className="input-field-text"
-              type="password"
+            <PasswordInput 
               name="password"
               onChange={(e) => setPassword(e.target.value)}
             />

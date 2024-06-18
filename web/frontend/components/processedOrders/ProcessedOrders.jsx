@@ -59,8 +59,8 @@ export function ProcessedOrders(props) {
     // ];
   
     useEffect(() => {
-      getPickupLocations();
       getHolidays();
+      getPickupLocations();
     }, []);
   
     const getPickupLocations = () => {
@@ -637,6 +637,11 @@ export function ProcessedOrders(props) {
                         //     state: { order: element, redirectedtab: "newOrders" },
                         //   })
                         // }
+                        onClick={() =>
+                          navigate("/orderDetails", {
+                            state: { order: element, redirectedtab: "processedOrders" },
+                          })
+                        }
                         style={{ cursor: "pointer" }}
                       >
                         {element.order_number}

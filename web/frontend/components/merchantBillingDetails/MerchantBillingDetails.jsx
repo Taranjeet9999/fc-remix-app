@@ -127,6 +127,37 @@ export function MerchantBillingDetails(props) {
     return count_of_errros;
   }
 
+  function getSelectedCategoryOfGoods() {
+    console.log(selectedGoods,"selectedGoods")
+    return selectedGoods ?? []
+  }
+  const [timeoutId, setTimeoutId] = useState(null);
+  const [suburbsLoading, setSuburbsLoading] = useState(false)
+  const handleInputChange = (e) => {
+    const query = e.target.value;
+    
+
+    // Clear the previous timeout
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Set a new timeout
+    const newTimeoutId = setTimeout(async () => {
+      setSuburbsLoading(true)
+      getSuburbs(query).then((data) => {
+        // setSuburbs(data);
+      }).catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setSuburbsLoading(false)
+
+      });
+    }, 500); // 500ms delay
+
+    setTimeoutId(newTimeoutId);
+  }
+
   const fetch = useAuthenticatedFetch();
   async function setDataIntoData(columnName, data) {
     const response = await fetch("/api/add-data-into-table", {
@@ -145,6 +176,7 @@ export function MerchantBillingDetails(props) {
   const [showSuburbModal, setShowSuburbModal] = useState(false);
 
   const getMerchantDetails = (categories) => {
+    
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
@@ -181,10 +213,10 @@ export function MerchantBillingDetails(props) {
         }
         setShowCategoryGoods(false);
         // Set default selected goods
-        let selected_value = JSON.parse(response.data.data.categories_of_goods);
-
-        setSelectedGoods(
-          categories.filter((item) => selected_value?.includes(item.value))
+        let selected_value = JSON.parse(response?.data.data.categories_of_goods);
+        // selected_value = selected_value?.map(_category => _category.value)
+         setSelectedGoods(
+          categories.filter(category => selected_value?.includes(category.value))
         );
         setMerchantDetails(response.data.data);
         props.setMerchantDetails(response.data.data);
@@ -216,7 +248,7 @@ export function MerchantBillingDetails(props) {
         setShowCategoryGoods(false);
         var categories = [];
         response.data.data.forEach((element) => {
-          var category = { value: element.id, label: element.category };
+          let category = { value: element.id, label: element.category };
           categories.push(category);
         });
 
@@ -312,44 +344,73 @@ export function MerchantBillingDetails(props) {
     setTailLiftValue(merchant.weight <30 ? 30 : merchant.weight);
   }
 
-  const getSuburbs = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
-    axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/suburbs`, { headers: headers })
-      .then((response) => {
-        var suburbData = [];
-        response.data.data.forEach((element) => {
-          var suburb = {
-            value:
-              element.name +
-              ", " +
-              element.postcode +
-              " (" +
-              element.state +
-              ")",
-            label:
-              element.name +
-              ", " +
-              element.postcode +
-              "(" +
-              element.state +
-              ")",
-          };
-          suburbData.push(suburb);
-        });
+  // const getSuburbs = (search="") => {
+  //   const accessToken = localStorage.getItem("accessToken");
+  //   const headers = {
+  //     Accept: "application/json",
+  //     "Content-Type": "application/json",
+  //     "request-type": process.env.REQUEST_TYPE,
+  //     version: "3.1.1",
+  //     Authorization: "Bearer " + accessToken,
+  //   };
+  //   axios
+  //     .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/suburbs?term=${search}`, { headers: headers })
+  //     .then((response) => {
+  //       var suburbData = [];
+  //       response.data.data.forEach((element) => {
+  //         var suburb = {
+  //           value:
+  //             element.name +
+  //             ", " +
+  //             element.postcode +
+  //             " (" +
+  //             element.state +
+  //             ")",
+  //           label:
+  //             element.name +
+  //             ", " +
+  //             element.postcode +
+  //             "(" +
+  //             element.state +
+  //             ")",
+  //         };
+  //         suburbData.push(suburb);
+  //       });
 
-        setSuburbs(suburbData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  //       setSuburbs(suburbData);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
+async  function getSuburbs (search = "")  {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": process.env.REQUEST_TYPE,
+        version: "3.1.1",
+        Authorization: "Bearer " + accessToken,
+      };
+  
+      const apiUrl = localStorage.getItem("isProduction") === "1" 
+        ? process.env.PROD_API_ENDPOINT 
+        : process.env.API_ENDPOINT;
+  
+      const response = await axios.get(`${apiUrl}/api/wp/suburbs?term=${search}`, { headers: headers });
+      
+      const suburbData = response.data.data.map(element => ({
+        value: `${element.name}, ${element.postcode} (${element.state})`,
+        label: `${element.name}, ${element.postcode} (${element.state})`
+      }));
+  setSuburbs(suburbData);
+      return suburbData;
+    } catch (error) {
+      console.error(error);
+      throw error;  // Re-throw the error to allow the caller to handle it
+    }
   };
 
   const getCouriers = () => {
@@ -430,8 +491,7 @@ export function MerchantBillingDetails(props) {
             saveUpdateMerchant(response.data.data);
             setDataIntoData("merchant", response.data.data);
             props.setMerchantDetails(response.data.data);
-
-            console.log(response.data.data, "response.data.data");
+ 
             props.setActiveNavItem("paymentMethods");
             localStorage.setItem("tailLiftValue", tailLiftValue);
             const carrierService = getCarrierSerice(carrierServices);
@@ -471,8 +531,7 @@ export function MerchantBillingDetails(props) {
           }),
         });
         const data = await response.json();
-        setIsLoading(false);
-        console.log(data, "data");
+        setIsLoading(false); 
         resolve(data);
       } catch (err) {
         setIsLoading(false);
@@ -534,7 +593,7 @@ export function MerchantBillingDetails(props) {
           setTimeout(() => {
             controller.abort();
             reject(new Error("Request timed out"));
-        console.log("SUCCESS");
+        
         createAndUpdateCarrierService()
         setIsLoading(false);
           }, timeout)
@@ -556,7 +615,7 @@ export function MerchantBillingDetails(props) {
       }, 10000);
   
       if (!response.ok) {
-        console.log("SUCCESS");
+      
         // await createAndUpdateCarrierService();
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -927,6 +986,13 @@ export function MerchantBillingDetails(props) {
           {showSuburbModal && (
             <Select
               options={suburbs}
+              onInputChange={(e)=>{
+handleInputChange({target:{value:e}})
+              }}
+              loadingMessage={() => "Loading..."}
+              isLoading={
+                suburbsLoading
+              }
               onChange={(e) => {
                 const [, extractedCity, extractedPostcode, extractedState] =
                   e.value.match(/^(.*), (\d+) \((.*)\)$/);
@@ -1071,7 +1137,8 @@ export function MerchantBillingDetails(props) {
           </div>
           {showCategoryGoods && (
             <Select
-              defaultValue={selectedGoods ?? []}
+              // defaultValue={selectedGoods ?? []}
+              defaultValue={getSelectedCategoryOfGoods()}
               isMulti
               name="colors"
               options={categoryOfGoods}

@@ -51,6 +51,7 @@ export function ProductMapping(props) {
   const [openProductIds, setOpenProductIds] = useState([]);
   const [showImportDimensionsModal, setShowImportDimensionsModal] =
     useState(false);
+  const [productDimentionsError, setProductDimentionsError] = useState(false);
   const [productDimentions, setProductDimentions] = useState([
     {
       packageType: "box",
@@ -82,7 +83,6 @@ export function ProductMapping(props) {
 
     if (data) {
       const formattedProducts = formatProductData(data.body.data.products);
-      console.log("formattedproducts", formattedProducts);
 
       setProducts(formattedProducts);
       props.setProducts(formattedProducts);
@@ -107,6 +107,7 @@ export function ProductMapping(props) {
             id: getProductIdFromGID(variantEdge.node.id),
             title: variantEdge.node.title,
             price: variantEdge.node.price,
+            sku: variantEdge.node.sku,
             metafields: variantEdge.node.metafields.edges.map(
               (_edge) => _edge.node
             ),
@@ -146,9 +147,7 @@ export function ProductMapping(props) {
   //     console.log("variantmetafields", data.data);
   //     setVariantMetafields(data.data);
   // }
-
   const getShippingBoxes = async () => {
-    return
     const response = await fetch(`/api/shipping-boxes`, {
       method: "GET",
       headers: {
@@ -227,6 +226,43 @@ export function ProductMapping(props) {
     setImportDimensionError("");
     setErrorMessage("");
   }, [showImportDimensionsModal]);
+  function transformImportDimentionArray(inputArray) {
+    const outputArray = [];
+    let currentProduct = null;
+
+    inputArray.forEach((item) => {
+      if (item["Product Name"] || item["SKU"]) {
+        // Create a new product if "Product Name" or "SKU" is present
+        currentProduct = {
+          "Product Name": item["Product Name"],
+          SKU: item["SKU"],
+          productDimentions: [],
+        };
+        outputArray.push(currentProduct);
+      }
+
+      // Add the dimensions to the current product
+      if (
+        currentProduct &&
+        item["Length"] &&
+        item["Width"] &&
+        item["Height"] &&
+        item["Weight"] &&
+        item["Package Type"]
+      ) {
+        currentProduct.productDimentions.push({
+          packageType: item["Package Type"],
+          height: item["Height"],
+          width: item["Width"],
+          length: item["Length"],
+          weight: item["Weight"],
+          isIndividual: item["Individual"],
+        });
+      }
+    });
+
+    return outputArray;
+  }
 
   const importDimensions = async () => {
     setIsLoading(true);
@@ -235,52 +271,64 @@ export function ProductMapping(props) {
         header: true,
         skipEmptyLines: false,
         complete: async (result) => {
-          setDataArray(result.data);
-          const importData = result.data;
-          const productIds = importData.map((element) => {
-            const product = products?.find((element1) => {
-              return element?.SKU == element1?.variants?.[0]?.sku;
-            });
-            if (product?.id) {
-              return product?.id;
+          try {
+            setDataArray(result.data);
+            const importData = result.data;
+            let importDataArray = transformImportDimentionArray(importData);
+            console.log("importData", importDataArray);
+            const allProductDimentions = importDataArray?.flatMap(
+              (product) => product.productDimentions
+            );
+            const isAllItemsFitable = canFitAllProducts(
+              shippingBoxes,
+              allProductDimentions?.filter(
+                (_product) => _product?.isIndividual?.toLowerCase() === "no"
+              )
+            );
+            if (!isAllItemsFitable) {
+              setImportDimensionError("Some products are not fit in any box");
+              setIsLoading(false);
+              return;
             }
-          });
-          if (productIds?.length > 0) {
-            const element = importData[0];
-            // importData.map(async (element) => {
-            const response = await fetch("/api/product/add-dimensions", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                package_type: element["Package Type"],
-                height: element.Height,
-                width: element.Width,
-                length: element.Length,
-                weight: element.Weight,
-                isIndividual: element.Individual,
-                productDimentions:[
-                  {
-                    packageType: element["Package Type"],
-                    height: element.Height,
-                    width: element.Width,
-                    length: element.Length,
-                    weight: element.Weight,
-                    isIndividual: element.Individual,
-                  }
-                ],
-                product_ids: productIds,
-              }),
-            });
 
-            // })
-            getAllProducts();
-            setIsLoading(false);
-            setShowImportDimensionsModal(false);
-          } else {
-            setImportDimensionError("No Products found");
-            setIsLoading(false);
+            const productIds = await Promise.all(
+              importDataArray.map(async (element) => {
+                const product = products?.find(
+                  (product) => product?.variants?.[0]?.sku === element?.SKU
+                );
+
+                console.log("product", product);
+
+                if (product?.id) {
+                  await fetch("/api/product/add-dimensions", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      productDimentions: element.productDimentions,
+                      product_ids: [product.id],
+                      variant_ids: [],
+                    }),
+                  });
+
+                  return product.id;
+                }
+
+                // return null;
+              })
+            );
+
+            if (productIds?.length > 0) {
+              getAllProducts();
+              setIsLoading(false);
+              setShowImportDimensionsModal(false);
+            } else {
+              setImportDimensionError("No Products found");
+              setIsLoading(false);
+            }
+          } catch (error) {
+            console.log("import dmensions error", error);
           }
         },
       });
@@ -302,7 +350,11 @@ export function ProductMapping(props) {
     };
     axios
       .get(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -328,7 +380,11 @@ export function ProductMapping(props) {
     };
     axios
       .get(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_location_tags/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -353,9 +409,16 @@ export function ProductMapping(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/package_types`, {
-        headers: headers,
-      })
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/package_types`,
+        {
+          headers: headers,
+        }
+      )
       .then((response) => {
         setIsLoading(false);
         setPackageTypes(response.data.data);
@@ -408,7 +471,6 @@ export function ProductMapping(props) {
       });
 
       if (response) {
-        console.log(response, "responseeeeeee");
       }
       getAllProducts();
       setIsLoading(false);
@@ -446,8 +508,13 @@ export function ProductMapping(props) {
   }
 
   const assignDimensions = async () => {
+    let isAllItemsFitable = canFitAllProducts(shippingBoxes, productDimentions);
+    if (!isAllItemsFitable) {
+      setProductDimentionsError("Some products are not fit in any box");
+      return;
+    }
     try {
-      const isValid =  !hasEmptyFields(productDimentions);
+      const isValid = !hasEmptyFields(productDimentions);
       if (isValid) {
         setIsLoading(true);
         await fetch("/api/product/add-dimensions", {
@@ -725,14 +792,49 @@ export function ProductMapping(props) {
 
   function getProductDimentionArray(_productDimension) {
     try {
-    
       return JSON.parse(_productDimension);
-      
     } catch (error) {
-      return []
-      
+      return [];
     }
-    
+  }
+
+  function canFitAllProducts(boxes, products) {
+    // Convert dimensions to numbers for comparison
+    boxes = boxes.map((box) => ({
+      ...box,
+      height: Number(box.height),
+      width: Number(box.width),
+      length: Number(box.length),
+    }));
+
+    products = products
+      ?.filter((_product) => _product?.isIndividual?.toLowerCase() === "no")
+      .map((product) => ({
+        ...product,
+        height: Number(product.height),
+        width: Number(product.width),
+        length: Number(product.length),
+      }));
+
+    // Function to check if a product fits in a box
+    function fitsInBox(product, box) {
+      return (
+        product.height <= box.height &&
+        product.width <= box.width &&
+        product.length <= box.length
+      );
+    }
+
+    // Check each product against each box
+    for (let product of products) {
+      // if (product.packageType === "box") {
+      let fits = boxes.some((box) => fitsInBox(product, box));
+      if (!fits) {
+        return false; // If any product doesn't fit in any box, return false
+      }
+      // }
+    }
+    return true; // All products fit in some box
   }
   return (
     <div className="product-mapping">
@@ -833,12 +935,12 @@ export function ProductMapping(props) {
         </div>
 
         <div className="product-actions">
-          {/* <button
+          <button
             className="submit-btn"
             onClick={() => setShowShippingBoxesModal(true)}
           >
             Shipping Boxes
-          </button> */}
+          </button>
           <button
             className="submit-btn"
             onClick={() =>
@@ -900,7 +1002,7 @@ export function ProductMapping(props) {
             </div>
 
             {importDimensionError && (
-              <div className="error-message">{importDimensionError}</div>
+              <div className="error-message mt-2">{importDimensionError}</div>
             )}
           </div>
           <div className="modal-footer">
@@ -1054,44 +1156,48 @@ export function ProductMapping(props) {
                     </div>
                   </div>
                   <div className="input-row">
-                    <div className="input-container1">
-                      <div className="input-lebel1">
-                        <span> Default&nbsp;</span>
-                        <span style={{ color: "red" }}> *</span>
+                    {!shippingBoxes?.some(
+                      (item) => item.is_default === "Yes"
+                    ) && (
+                      <div className="input-container1">
+                        <div className="input-lebel1">
+                          <span> Default&nbsp;</span>
+                          <span style={{ color: "red" }}> *</span>
+                        </div>
+                        <div
+                          className=" "
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            /* justify-content: center, */
+                            marginTop: "10px",
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            name={"isDefault"}
+                            id={"yes"}
+                            value="Yes"
+                            onChange={(e) =>
+                              setIsDefaultShippingPackage(e.target.value)
+                            }
+                            checked={isDefaultShippingPackage == "Yes"}
+                          />
+                          <label htmlFor={"yes"}>&nbsp;Yes</label>
+                          <input
+                            type="radio"
+                            name={"isDefault"}
+                            id={"no"}
+                            value="No"
+                            onChange={(e) =>
+                              setIsDefaultShippingPackage(e.target.value)
+                            }
+                            checked={isDefaultShippingPackage == "No"}
+                          />
+                          <label htmlFor={"no"}>&nbsp;No</label>
+                        </div>
                       </div>
-                      <div
-                        className=" "
-                        style={{
-                          width: "100%",
-                          display: "flex",
-                          /* justify-content: center, */
-                          marginTop: "10px",
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name={"isDefault"}
-                          id={"yes"}
-                          value="Yes"
-                          onChange={(e) =>
-                            setIsDefaultShippingPackage(e.target.value)
-                          }
-                          checked={isDefaultShippingPackage == "Yes"}
-                        />
-                        <label htmlFor={"yes"}>&nbsp;Yes</label>
-                        <input
-                          type="radio"
-                          name={"isDefault"}
-                          id={"no"}
-                          value="No"
-                          onChange={(e) =>
-                            setIsDefaultShippingPackage(e.target.value)
-                          }
-                          checked={isDefaultShippingPackage == "No"}
-                        />
-                        <label htmlFor={"no"}>&nbsp;No</label>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <div className="modal-footer">
@@ -1136,10 +1242,14 @@ export function ProductMapping(props) {
                       <td>{element.height}</td>
                       <td>{element.is_default}</td>
                       <td className="location-actions">
-                        <FontAwesomeIcon
-                          icon="fa-solid fa-trash-can"
-                          onClick={() => setShowConfirmModal(true)}
-                        />
+                        {element.is_default === "No" ? (
+                          <FontAwesomeIcon
+                            icon="fa-solid fa-trash-can"
+                            onClick={() => setShowConfirmModal(true)}
+                          />
+                        ) : (
+                          "NA"
+                        )}
                         <ConfirmModal
                           showModal={showConfirmModal}
                           onConfirm={() => deleteShippingBox(element)}
@@ -1166,6 +1276,11 @@ export function ProductMapping(props) {
         showModal={showError}
         onConfirm={setShowError}
         message="Please select at least 1 product for mapping."
+      />
+      <ErrorModal
+        showModal={productDimentionsError}
+        onConfirm={setProductDimentionsError}
+        message="Shipping box is not available for this product. Please add shipping box first."
       />
       <Modal showModal={showAssignLocationModal} width="30%">
         {isLoading && <Loader />}
@@ -1209,7 +1324,6 @@ export function ProductMapping(props) {
                         <option
                           value={JSON.stringify(element)}
                           onChange={(e) => {
-                            console.log(e.target.value, "dd");
                             setLocationName(e.target.value);
                           }}
                         >
@@ -1488,9 +1602,7 @@ export function ProductMapping(props) {
             <th>
               Tags
               {/* Virtual */}
-              
-              
-              </th>
+            </th>
             <th>Package Type</th>
             <th>L x W x H </th>
             <th>Weight</th>
@@ -1531,28 +1643,27 @@ export function ProductMapping(props) {
                     <td width="10%">{element.product_type}</td>
                     <td width="20%">
                       {/* {element.tags} */}
-                      
-                 {false &&     <label className="switch">
-                        <input
-                          type="checkbox"
-                          onChange={(e) =>
-                            handleVirtualShipping(e, element.id)
-                          }
-                          checked={
-                            getProductMetaField(
-                              element.metafields,
-                              "is_virtual"
-                            ) == "1"
-                              ? true
-                              : false
-                          }
-                        />
-                        <span className="slider round"></span>
-                      </label>}
-                      
-                      
-                      
-                      </td>
+
+                      {false && (
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            onChange={(e) =>
+                              handleVirtualShipping(e, element.id)
+                            }
+                            checked={
+                              getProductMetaField(
+                                element.metafields,
+                                "is_virtual"
+                              ) == "1"
+                                ? true
+                                : false
+                            }
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                      )}
+                    </td>
                     <td width="10%">
                       {getProductDimentionArray(
                         getProductMetaField(
@@ -1652,25 +1763,26 @@ export function ProductMapping(props) {
                       <td width="10%">{element.product_type}</td>
                       <td width="20%">
                         {/* {getLocationtagName(element.tags)} */}
-                  {false &&      <label className="switch">
-                        <input
-                          type="checkbox"
-                          onChange={(e) =>
-                            handleVirtualShipping(e, element.id)
-                          }
-                          checked={
-                            getProductMetaField(
-                              element.metafields,
-                              "is_virtual"
-                            ) == "1"
-                              ? true
-                              : false
-                          }
-                        />
-                        <span className="slider round"></span>
-                      </label>}
-                        
-                        </td>
+                        {false && (
+                          <label className="switch">
+                            <input
+                              type="checkbox"
+                              onChange={(e) =>
+                                handleVirtualShipping(e, element.id)
+                              }
+                              checked={
+                                getProductMetaField(
+                                  element.metafields,
+                                  "is_virtual"
+                                ) == "1"
+                                  ? true
+                                  : false
+                              }
+                            />
+                            <span className="slider round"></span>
+                          </label>
+                        )}
+                      </td>
                       <td width="10%">{"-- --"}</td>
                       <td width="20%">{"-- --"}</td>
                       <td width="10%">{"-- --"}</td>
