@@ -1065,7 +1065,7 @@ app.post("/api/shipping-box/create", async (_req, res) => {
     console.log("shipping-box/create=", error);
     logger.info("shipping-box/create-error==", error);
     res.status(500).send({
-      error
+      error :JSON.stringify(error)
     });
   }
 });
