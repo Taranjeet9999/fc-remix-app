@@ -1,4 +1,3 @@
-  
 // import { join } from "path";
 // import { readFileSync } from "fs";
 
@@ -202,11 +201,9 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
       // Trim the quotes from each value and assign them to variables
       const quoteIds = extractQuoteIds(valuesArray);
       const orderIds = extractOrderIds(valuesArray);
- 
 
       const carrierName = getCarrier(orderDetails.shipping_lines);
       console.log("carrierName", carrierName);
-      
 
       const order = new shopify.api.rest.Order({
         session: session[0],
@@ -429,7 +426,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
               totalPrice: 0,
             };
           }
-           
+
           // let itemsArray = [];
           // items.forEach((entry) => {
           //   let product_parts = entry.productDimentions;
@@ -480,7 +477,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           //     length: 80,
           //   },
           // ];
-          const _bins = shipping_boxes.map((box,idx) => {
+          const _bins = shipping_boxes.map((box, idx) => {
             return {
               // name: box.package_name,
               name: `Le petite box-${idx}`,
@@ -498,7 +495,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             ...individual_items,
           ];
           // SHipping Box Functionality STOP
-          
 
           let totalWeightOfItems = 0;
 
@@ -615,8 +611,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         }
       )
     );
-
-     
 
     // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
@@ -897,7 +891,7 @@ app.get("/api/get-current-session", async (_req, res) => {
 
     let updated_data = await createColumnsIfNotExist(current_session.shop);
 
-    res.status(200).send({ data: updated_data.data });
+    res.status(200).send({ data: updated_data.data ,newlyCreatedColumns:updated_data.newlyCreatedColumns,existingColumns:updated_data.existingColumns });
   } catch (error) {
     console.log("get-current-session-error=", error);
   }
@@ -1019,6 +1013,9 @@ app.post("/api/shipping-box/create", async (_req, res) => {
         if (err) {
           logger.info("createColumnsIfNotExist-error==", err);
           reject(err);
+          res.status(500).send({
+            err
+          });
           return;
         }
         resolve(rows.length > 0 ? rows[0].shipping_boxes : []);
@@ -1039,18 +1036,22 @@ app.post("/api/shipping-box/create", async (_req, res) => {
     let newId;
     do {
       newId = Math.floor(Math.random() * 1000000); // Example ID generation logic
-    } while (boxes.some(box => box.id === newId));
+    } while (boxes.some((box) => box?.id === newId));
 
     new_package.id = newId;
     boxes.push(new_package);
 
     // Update the database with the new list of shipping boxes
-    const updateQuery = "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
+    const updateQuery =
+      "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
     const updatedBoxesString = JSON.stringify(boxes);
     await new Promise((resolve, reject) => {
       db.run(updateQuery, [updatedBoxesString, current_session.shop], (err) => {
         if (err) {
           logger.info("updateShippingBoxes-error==", err);
+          res.status(500).send({
+            err
+          });
           reject(err);
           return;
         }
@@ -1060,11 +1061,11 @@ app.post("/api/shipping-box/create", async (_req, res) => {
     });
 
     res.status(200).send(new_package);
-
-   
-     
   } catch (error) {
     console.log("shipping-box/create=", error);
+    res.status(500).send({
+      error
+    });
   }
 });
 
@@ -1091,10 +1092,11 @@ app.delete("/api/shipping-box/delete", async (_req, res) => {
     const boxes = shipping_boxes.length > 0 ? JSON.parse(shipping_boxes) : [];
 
     // Find and remove the box to delete
-    const updatedBoxes = boxes.filter(box => box.id !== boxToDelete.id);
+    const updatedBoxes = boxes.filter((box) => box.id !== boxToDelete.id);
 
     // Update the database with the new list of shipping boxes
-    const updateQuery = "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
+    const updateQuery =
+      "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
     const updatedBoxesString = JSON.stringify(updatedBoxes);
 
     await new Promise((resolve, reject) => {
@@ -1512,8 +1514,7 @@ app.post(
 
       // Dummy Test START
       // Get All Webhooks List
-      const webhook_URL =
-        "https://fc-app.vuwork.com/api/webhook/order-create";
+      const webhook_URL = "https://fc-app.vuwork.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -2039,17 +2040,24 @@ async function createColumnsIfNotExist(
         const columnsToCreate = columnNames.filter(
           (column) => !existingColumns.includes(column.name)
         );
+        const newlyCreatedColumns = [];
 
         for (const column of columnsToCreate) {
           try {
             await addColumn(column.name, column.type, column.defaultValue);
+            newlyCreatedColumns.push(column.name);
           } catch (error) {
             reject(error);
             return;
           }
         }
 
-        resolve({ success: true, data: rows[0] });
+        resolve({
+          success: true,
+          data: rows[0],
+          existingColumns: existingColumns,
+          newlyCreatedColumns: newlyCreatedColumns,
+        });
       });
     } catch (error) {}
   });
@@ -2121,14 +2129,11 @@ function sumArray(array) {
 }
 
 function ParseShippingBoxes(_value) {
-try {
-  return JSON.parse(_value);
-  
-} catch (error) {
-  return "";
-  
-}
-  
+  try {
+    return JSON.parse(_value);
+  } catch (error) {
+    return "";
+  }
 }
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const toRad = (x) => (x * Math.PI) / 180;
