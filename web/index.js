@@ -1018,10 +1018,10 @@ app.post("/api/shipping-box/create", async (_req, res) => {
           });
           return;
         }
-        resolve(rows.length > 0 ? rows[0].shipping_boxes : []);
+        resolve(rows?.length > 0 ? rows?.[0]?.shipping_boxes : []);
       });
     });
-    const boxes = shipping_boxes.length > 0 ? JSON.parse(shipping_boxes) : [];
+    const boxes = shipping_boxes?.length > 0 ? JSON.parse(shipping_boxes ?? "[]") : [];
 
     let new_package = {
       package_name: _req.body.package_name,
