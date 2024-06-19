@@ -238,7 +238,11 @@ export function Configuration(props) {
     isMerchantDetailsFilled(),
     isPaymentMethodsFilled(),
     isPickupLocationsFilled(),
-    isProductMappingFilled()
+    isProductMappingFilled(),
+    shippingBoxes,
+    products,
+    pickupLocations,
+    merchantDetails,
   ])
   
   

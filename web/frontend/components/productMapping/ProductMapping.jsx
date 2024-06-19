@@ -158,6 +158,7 @@ export function ProductMapping(props) {
     const data = await response.json();
 
     setShippingBoxes(data);
+    props.setShippingBoxes(data);
   };
 
   useEffect(() => {
