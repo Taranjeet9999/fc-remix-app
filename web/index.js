@@ -2110,7 +2110,7 @@ async function createColumnsIfNotExist(
     { name: "merchant_locations", type: "TEXT", defaultValue: null },
     { name: "merchant_tags", type: "TEXT", defaultValue: null },
     { name: "merchant", type: "TEXT", defaultValue: null },
-    { name: "is_production", type: "TEXT", defaultValue: false },
+    { name: "is_production", type: "TEXT", defaultValue: true },
     { name: "shipping_boxes", type: "TEXT", defaultValue: null },
   ]
 ) {
