@@ -41,12 +41,14 @@ export function ProductMapping(props) {
   const [selectedProductType, setSelectedProductType] = useState("all");
   const [productData, setProductData] = useState([]);
   const [shippingPackageName, setShippingPackageName] = useState("");
+  const [shippingBoxToDelete, setShippingBoxToDelete] = useState()
   const [shippingPackageType, setShippingPackageType] = useState("");
   const [shippingPackageHeight, setShippingPackageHeight] = useState("");
   const [shippingPackageLength, setShippingPackageLength] = useState("");
   const [shippingPackageWidth, setShippingPackageWidth] = useState("");
   const [isDefaultShippingPackage, setIsDefaultShippingPackage] =
     useState("No");
+    const [shippingBoxId, setShippingBoxId] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [openProductIds, setOpenProductIds] = useState([]);
   const [showImportDimensionsModal, setShowImportDimensionsModal] =
@@ -620,10 +622,13 @@ export function ProductMapping(props) {
             width: shippingPackageWidth,
             length: shippingPackageLength,
             is_default: isDefaultShippingPackage,
+            id: shippingBoxId,
           }),
         });
         setIsLoading(false);
         getShippingBoxes();
+        // setShippingBoxId(null);
+
         closeAddShippingBoxModal();
       }
     } catch (err) {
@@ -632,7 +637,7 @@ export function ProductMapping(props) {
     }
   };
 
-  const deleteShippingBox = async (shippingBox) => {
+  const deleteShippingBox = async ( ) => {
     try {
       setIsLoading(true);
       await fetch("/api/shipping-box/delete", {
@@ -640,7 +645,7 @@ export function ProductMapping(props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(shippingBox),
+        body: JSON.stringify(shippingBoxToDelete),
       });
       setIsLoading(false);
       getShippingBoxes();
@@ -1026,7 +1031,9 @@ export function ProductMapping(props) {
             <div className="shipping-heading">Shipping Boxes</div>
             <div
               className="submit-btn"
-              onClick={() => setShowAddShippingBoxModal(true)}
+              onClick={() =>{
+                setShippingBoxId(null);
+                setShowAddShippingBoxModal(true)}}
             >
               Add Shipping Box
             </div>
@@ -1071,6 +1078,7 @@ export function ProductMapping(props) {
                       <select
                         className="input-field-text1"
                         type="text"
+                        value={shippingPackageType}
                         onChange={(e) => setShippingPackageType(e.target.value)}
                       >
                         <option>Select package type</option>
@@ -1157,9 +1165,9 @@ export function ProductMapping(props) {
                     </div>
                   </div>
                   <div className="input-row">
-                    {!shippingBoxes?.some(
+                    {/* {!shippingBoxes?.some(
                       (item) => item.is_default === "Yes"
-                    ) && (
+                    ) && ( */}
                       <div className="input-container1">
                         <div className="input-lebel1">
                           <span> Default&nbsp;</span>
@@ -1189,6 +1197,18 @@ export function ProductMapping(props) {
                             type="radio"
                             name={"isDefault"}
                             id={"no"}
+                            // it should be disabled if its id machtes with any of the shipping box id and its default is yes
+                            disabled={
+                              shippingBoxes?.some(
+                                (item) => item.id === shippingBoxId
+                              ) &&
+                             shippingBoxes?.find(
+                                (item) => item.id === shippingBoxId
+                              ).is_default === "Yes"
+                            }
+
+                           
+
                             value="No"
                             onChange={(e) =>
                               setIsDefaultShippingPackage(e.target.value)
@@ -1198,7 +1218,7 @@ export function ProductMapping(props) {
                           <label htmlFor={"no"}>&nbsp;No</label>
                         </div>
                       </div>
-                    )}
+                    {/* // )} */}
                   </div>
                 </div>
                 <div className="modal-footer">
@@ -1246,14 +1266,31 @@ export function ProductMapping(props) {
                         {element.is_default === "No" ? (
                           <FontAwesomeIcon
                             icon="fa-solid fa-trash-can"
-                            onClick={() => setShowConfirmModal(true)}
+                            onClick={() =>{
+                              setShippingBoxToDelete(element)
+                              setShowConfirmModal(true)}}
                           />
                         ) : (
-                          "NA"
+                          <></>
                         )}
+                         
+                        <FontAwesomeIcon
+                      icon="fa-solid fa-pen-to-square"
+                      // size="2xs"
+                      onClick={() => {
+                        setShippingPackageName(element.package_name);
+                        setShippingPackageType(element.package_type);
+                        setShippingPackageHeight(element.height);
+                        setShippingPackageLength(element.length);
+                        setShippingPackageWidth(element.width);
+                        setIsDefaultShippingPackage(element.is_default);
+                        setShippingBoxId(element.id);
+                        setShowAddShippingBoxModal(true);
+                      }}
+                    />
                         <ConfirmModal
                           showModal={showConfirmModal}
-                          onConfirm={() => deleteShippingBox(element)}
+                          onConfirm={() => deleteShippingBox()}
                           onCancel={() => setShowConfirmModal(false)}
                           message="you want to delete shipping box."
                         />

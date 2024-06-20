@@ -375,10 +375,10 @@ export function ProcessedOrders(props) {
         getMetaValue(orderItem.node?.metafields?.edges, "fc_order_status") ===
         "Freeshipping"
       ) {
-        return `$${getMetaValue(
+        return `$${Number(getMetaValue(
           orderItem.node?.metafields?.edges,
           "courier_charges"
-        )}`;
+        )).toFixed(2)}`;
       }
     }
   
@@ -671,21 +671,21 @@ export function ProcessedOrders(props) {
                         {element.line_items[0].fulfillable_quantity}
                       </td>
                       <td width="15%">
-                        {getMetaValue(
-                          element.node?.metafields?.edges,
-                          "fc_order_status"
-                        ) === "Freeshipping"
-                          ? getFreeShippingPrice(element)
-                          : "$" + element?.shipping_lines?.[0]?.price}{" "}
-                        {element?.shipping_lines?.[0]?.title
-                          ? `(${
-                              element?.shipping_lines?.[0]?.title
-                                ?.replace("Fast Courier", "")
-                                ?.replace("[", "")
-                                ?.replace("]", "")
-                                ?.replace(" ", "") ?? "Free"
-                            })`
-                          : ""}
+                      {getMetaValue(
+                        element.node?.metafields?.edges,
+                        "fc_order_status"
+                      ) === "Freeshipping"
+                        ? getFreeShippingPrice(element)
+                        : "$" + Number(element?.shipping_lines?.[0]?.code?.split("~")?.[2]).toFixed(2)}{" "}
+                      {element?.shipping_lines?.[0]?.title
+                        ? `(${
+                            element?.shipping_lines?.[0]?.title
+                              ?.replace("Fast Courier", "")
+                              ?.replace("[", "")
+                              ?.replace("]", "")
+                              ?.replace(" ", "") ?? "Free"
+                          })`
+                        : ""}
                       </td>
                       <td width="10%">{element.financial_status}</td>
                       <td width="8%">{"NA"}</td>

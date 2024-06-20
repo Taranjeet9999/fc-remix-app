@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
+import { toast } from "react-toastify";
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -164,8 +165,7 @@ export function AddLocation(props) {
 
   const addLocation = () => {
     try {
-      const isValid = validations();
-      console.log(isValid, "isValid Add location");
+      const isValid = validations(); 
       if (isValid) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -173,7 +173,7 @@ export function AddLocation(props) {
         const freeShippingCodes = selectedFreeShippingCodes.map(
           (element) => element.value
         );
-        console.log("freeShippingCodes=", freeShippingCodes);
+       
         const payload = {
           location_name: locationName,
           first_name: firstName,
@@ -221,10 +221,22 @@ export function AddLocation(props) {
             props.getPickupLocations();
             props.setShowModal(false);
             setIsLoading(false);
+            if (props.editLocation) {
+              // toast.success('Location updated successfully', {
+              //   autoClose: 4000,
+              // });
+            }else{
+              // toast.success('Location created successfully', {
+              //   autoClose: 4000,
+              // });
+            }
           })
           .catch((error) => {
             setIsLoading(false);
             console.log(error);
+            toast.error('Something went wrong', {
+       
+            });
           });
       } else {
         setOpenErrorModal(true);
@@ -584,8 +596,8 @@ export function AddLocation(props) {
             <div className="input-lebel1">
               <span> Email&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
-              {errorMessage != "" && email == "" && (
-                <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+              {errorMessage != "" && (email == ""|| !isValidEmail(email) ) && (
+                <span style={{ color: "red" }}> &nbsp; {"(Invalid email)"}</span>
               )}
             </div>
             <div className="input-field">
@@ -712,11 +724,12 @@ export function AddLocation(props) {
               <span> Default&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
             </div>
+       
             <Select
               options={tailLiftList}
               onChange={(e) => setIsDefaultLocation(e.value)}
               defaultValue={getDefaultLocation()}
-              isDisabled={props.editLocation || isDefaultLocation == "1"}
+              isDisabled={props?.editLocation?.is_default == "1"}
             />
           </div>
 

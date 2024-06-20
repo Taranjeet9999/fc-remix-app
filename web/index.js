@@ -203,7 +203,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
       const orderIds = extractOrderIds(valuesArray);
 
       const carrierName = getCarrier(orderDetails.shipping_lines);
-      console.log("carrierName", carrierName);
+      
 
       const order = new shopify.api.rest.Order({
         session: session[0],
@@ -246,6 +246,8 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
           namespace: "Order",
         },
       ];
+
+      logger.info("order-metafields-on-webhook==", order);
 
       await order.save({
         update: true,
@@ -1004,6 +1006,72 @@ app.post("/api/add-data-into-table", bodyParser.json(), async (_req, res) => {
   }
 });
 
+// app.post("/api/shipping-box/create", async (_req, res) => {
+//   try {
+//     let current_session = res.locals.shopify.session;
+//     const query = "SELECT shipping_boxes FROM shopify_sessions WHERE shop = ?";
+//     let shipping_boxes = await new Promise((resolve, reject) => {
+//       db.all(query, [current_session.shop], (err, rows) => {
+//         if (err) {
+//           logger.info("createColumnsIfNotExist-error==", err);
+//           reject(err);
+//           res.status(500).send({
+//             err
+//           });
+//           return;
+//         }
+//         resolve(rows?.length > 0 ? rows?.[0]?.shipping_boxes : []);
+//       });
+//     });
+//     const boxes = shipping_boxes?.length > 0 ? JSON.parse(shipping_boxes ?? "[]") : [];
+
+//     let new_package = {
+//       package_name: _req.body.package_name,
+//       package_type: _req.body.package_type,
+//       height: _req.body.height,
+//       width: _req.body.width,
+//       length: _req.body.length,
+//       is_default: _req.body.is_default,
+//       id: _req.body.id,
+//     };
+
+//     // Generate a new unique ID for the new box
+//     let newId;
+//     do {
+//       newId = Math.floor(Math.random() * 1000000); // Example ID generation logic
+//     } while (boxes.some((box) => box?.id === newId));
+
+//     new_package.id = newId;
+//     boxes.push(new_package);
+
+//     // Update the database with the new list of shipping boxes
+//     const updateQuery =
+//       "UPDATE shopify_sessions SET shipping_boxes = ? WHERE shop = ?";
+//     const updatedBoxesString = JSON.stringify(boxes);
+//     await new Promise((resolve, reject) => {
+//       db.run(updateQuery, [updatedBoxesString, current_session.shop], (err) => {
+//         if (err) {
+//           logger.info("updateShippingBoxes-error==", err);
+//           res.status(500).send({
+//             err
+//           });
+//           reject(err);
+//           return;
+//         }
+
+//         resolve();
+//       });
+//     });
+
+//     res.status(200).send(new_package);
+//   } catch (error) {
+//     console.log("shipping-box/create=", error);
+//     logger.info("shipping-box/create-error==", error);
+//     res.status(500).send({
+//       error :JSON.stringify(error)
+//     });
+//   }
+// });
 app.post("/api/shipping-box/create", async (_req, res) => {
   try {
     let current_session = res.locals.shopify.session;
@@ -1030,16 +1098,35 @@ app.post("/api/shipping-box/create", async (_req, res) => {
       width: _req.body.width,
       length: _req.body.length,
       is_default: _req.body.is_default,
+      id: _req.body.id,
     };
 
-    // Generate a new unique ID for the new box
-    let newId;
-    do {
-      newId = Math.floor(Math.random() * 1000000); // Example ID generation logic
-    } while (boxes.some((box) => box?.id === newId));
+    if (_req.body.is_default === "Yes") {
+      // Make all other boxes not default
+      boxes.forEach((box) => {
+        box.is_default = "No";
+      });
+    }
 
-    new_package.id = newId;
-    boxes.push(new_package);
+    if (new_package.id) {
+      // Edit existing package
+      let index = boxes.findIndex((box) => box.id === new_package.id);
+      if (index !== -1) {
+        boxes[index] = new_package;
+      } else {
+        return res.status(404).send({ error: "Box not found" });
+      }
+    } else {
+      // Create new package
+      // Generate a new unique ID for the new box
+      let newId;
+      do {
+        newId = Math.floor(Math.random() * 1000000); // Example ID generation logic
+      } while (boxes.some((box) => box?.id === newId));
+
+      new_package.id = newId;
+      boxes.push(new_package);
+    }
 
     // Update the database with the new list of shipping boxes
     const updateQuery =
@@ -1065,10 +1152,11 @@ app.post("/api/shipping-box/create", async (_req, res) => {
     console.log("shipping-box/create=", error);
     logger.info("shipping-box/create-error==", error);
     res.status(500).send({
-      error :JSON.stringify(error)
+      error: JSON.stringify(error)
     });
   }
 });
+
 
 app.delete("/api/shipping-box/delete", async (_req, res) => {
   try {
@@ -1599,11 +1687,11 @@ app.get("/api/order-metafields", async (_req, res) => {
     const session = res.locals.shopify.session;
     const client = new shopify.api.clients.Graphql({ session });
     const queryString = `{
-    orders(first: 80) {
+    orders(first: 130) {
       edges {
         node {
           id
-          metafields(first: 10) {
+          metafields(first: 13) {
             edges {
               node {
                 key
@@ -1677,7 +1765,7 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
     if (orderIds.length > 0) {
       for (const [parentIndex, productId] of orderIds.entries()) {
         const metafieldPromises = metafields_Item.map(async (item, index) => {
-          if (orderStatuses[parentIndex].status === true) {
+          if (orderStatuses[parentIndex]?.status === true) {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.order_id = parseInt(productId);
             metafield.key = item.key;
@@ -1687,7 +1775,7 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
             // Assign value from metaFields_list
             await metafield.save({ update: true });
             return metafield;
-          } else if (orderStatuses[parentIndex].status === false) {
+          } else if (orderStatuses[parentIndex]?.status === false) {
             const metafield = new shopify.api.rest.Metafield({ session });
             metafield.order_id = parseInt(productId);
             metafield.key = item.key;
@@ -1748,6 +1836,7 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
   } catch (error) {
     console.log("book-orders=", error);
     logger.info("book-orders-error==", error);
+    res.status(200).send({ error: error });
   }
 });
 

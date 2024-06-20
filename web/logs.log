@@ -1,50 +1,49 @@
-[2024-06-11T13:51:30.782] [INFO] default - items==0000000000000 [{"product_id":8191706890459,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":629.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"}}]
-[2024-06-11T13:51:30.785] [INFO] default - [ { name: 'Le petite box-0', width: 30, height: 30, length: 30 } ] _bins 0
-[2024-06-11T13:51:30.791] [INFO] default - itemsArray_to_send_to_courier== [{"name":"Le petite box-0-0","type":"box","quantity":1,"width":30,"height":30,"length":30,"weight":2,"sub_packs":[{"width":20,"height":20,"length":20,"weight":2,"type":"box","quantity":1}]},{"type":"box","weight":"1","width":"10","height":"10","length":"10","isIndividual":"Yes","quantity":1}]
-[2024-06-11T13:51:35.584] [INFO] default - courier_data_to_Show_end_user== {"214":[{"product_id":8191706890459,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":629.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"},"quoteData":{"id":999,"amount":0}}]}
-[2024-06-11T13:51:35.584] [INFO] default - getUniqueQuoteData(courier_data_to_Show_end_user) [{"id":999,"amount":0}]
-[2024-06-11T13:51:50.334] [INFO] default - items==0000000000000 [{"product_id":8191706890459,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":629.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"}}]
-[2024-06-11T13:51:50.335] [INFO] default - [ { name: 'Le petite box-0', width: 30, height: 30, length: 30 } ] _bins 0
-[2024-06-11T13:51:50.336] [INFO] default - itemsArray_to_send_to_courier== [{"name":"Le petite box-0-0","type":"box","quantity":1,"width":30,"height":30,"length":30,"weight":2,"sub_packs":[{"width":20,"height":20,"length":20,"weight":2,"type":"box","quantity":1}]},{"type":"box","weight":"1","width":"10","height":"10","length":"10","isIndividual":"Yes","quantity":1}]
-[2024-06-11T13:51:54.195] [INFO] default - courier_data_to_Show_end_user== {"214":[{"product_id":8191706890459,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":629.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"},"quoteData":{"id":999,"amount":0}}]}
-[2024-06-11T13:51:54.196] [INFO] default - getUniqueQuoteData(courier_data_to_Show_end_user) [{"id":999,"amount":0}]
-[2024-06-11T13:52:18.744] [INFO] default - quoteIds== WKQLDVELEQ
-[2024-06-11T13:52:18.744] [INFO] default - orderIds== JPOWPYAXDM
-[2024-06-11T13:52:18.744] [INFO] default - carrierName== AlliedExpress
-[2024-06-11T17:21:24.626] [INFO] default - items==0000000000000 [{"product_id":8191706726619,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":729.95,"is_free_shipping":false,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"}}]
-[2024-06-11T17:21:24.628] [INFO] default - [
+[2024-06-20T11:43:22.500] [INFO] default - [
   { name: 'Le petite box-0', width: 25, height: 25, length: 25 },
-  { name: 'Le petite box-1', width: 10, height: 10, length: 10 }
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
 ] _bins 0
-[2024-06-11T17:21:24.631] [INFO] default - itemsArray_to_send_to_courier== [{"name":"Le petite box-0-0","type":"box","quantity":1,"width":25,"height":25,"length":25,"weight":2,"sub_packs":[{"width":20,"height":20,"length":20,"weight":2,"type":"box","quantity":1}]},{"type":"box","weight":"1","width":"10","height":"10","length":"10","isIndividual":"Yes","quantity":1}]
-[2024-06-11T17:21:29.015] [INFO] default - courier_data_to_Show_end_user== {"214":[{"product_id":8191706726619,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":729.95,"is_free_shipping":false,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"},"quoteData":{"id":0,"amount":"133.35"}}]}
-[2024-06-11T17:21:29.015] [INFO] default - getUniqueQuoteData(courier_data_to_Show_end_user) [{"id":0,"amount":"133.35"}]
-[2024-06-11T17:21:31.156] [INFO] default - items==0000000000000 [{"product_id":8191706726619,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":729.95,"is_free_shipping":false,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"}}]
-[2024-06-11T17:21:31.156] [INFO] default - [
-  { name: 'Le petite box-0', width: 25, height: 25, length: 25 },
-  { name: 'Le petite box-1', width: 10, height: 10, length: 10 }
-] _bins 0
-[2024-06-11T17:21:31.157] [INFO] default - itemsArray_to_send_to_courier== [{"name":"Le petite box-0-0","type":"box","quantity":1,"width":25,"height":25,"length":25,"weight":2,"sub_packs":[{"width":20,"height":20,"length":20,"weight":2,"type":"box","quantity":1}]},{"type":"box","weight":"1","width":"10","height":"10","length":"10","isIndividual":"Yes","quantity":1}]
-[2024-06-11T17:21:33.322] [INFO] default - courier_data_to_Show_end_user== {"214":[{"product_id":8191706726619,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":729.95,"is_free_shipping":false,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"},"quoteData":{"id":0,"amount":"133.35"}}]}
-[2024-06-11T17:21:33.323] [INFO] default - getUniqueQuoteData(courier_data_to_Show_end_user) [{"id":0,"amount":"133.35"}]
-[2024-06-11T17:22:05.683] [INFO] default - quoteIds== LJQPPVBANQ
-[2024-06-11T17:22:05.683] [INFO] default - orderIds== RNMEQLJNBM
-[2024-06-11T17:22:05.684] [INFO] default - carrierName== AlliedExpress
-[2024-06-12T09:24:08.980] [INFO] default - items==0000000000000 [{"product_id":8191706628315,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":699.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"}}]
-[2024-06-12T09:24:08.981] [INFO] default - [
-  { name: 'Le petite box-0', width: 25, height: 25, length: 25 },
-  { name: 'Le petite box-1', width: 10, height: 10, length: 10 }
-] _bins 0
-[2024-06-12T09:24:08.984] [INFO] default - itemsArray_to_send_to_courier== [{"name":"Le petite box-0-0","type":"box","quantity":1,"width":25,"height":25,"length":25,"weight":2,"sub_packs":[{"width":20,"height":20,"length":20,"weight":2,"type":"box","quantity":1}]},{"type":"box","weight":"1","width":"10","height":"10","length":"10","isIndividual":"Yes","quantity":1}]
-[2024-06-12T09:24:13.380] [INFO] default - courier_data_to_Show_end_user== {"214":[{"product_id":8191706628315,"type":"box","height":"10","length":"10","width":"10","weight":"1","productDimentions":[{"packageType":"box","height":"10","width":"10","length":"10","weight":"1","isIndividual":"Yes"},{"packageType":"box","height":"20","width":"20","length":"20","weight":"2","isIndividual":"No"}],"quantity":1,"price":699.95,"is_free_shipping":true,"location_id":214,"location_name":"Main Hub","location_address":"199  BRISBANE QLD 4000","location_lat":"-37.817403","location_long":"144.956776","free_shipping_postcodes":"[]","free":false,"pickupLocation":{"id":214,"merchant_domain_id":215,"location_name":"Main Hub","first_name":"Lorem","last_name":"Ipsum","email":"loremipsum@testmail.com","phone":"9876543210","address1":"199","address2":null,"building_type":"commercial","tail_lift":0,"time_window":"9am to 5pm","suburb":"BRISBANE","state":"QLD","postcode":"4000","latitude":"-37.817403","longitude":"144.956776","tag":null,"free_shipping_postcodes":"[]","is_deleted":0,"is_default":1,"created_at":"2024-06-07T12:25:13.000000Z","updated_at":"2024-06-07T12:25:13.000000Z"},"quoteData":{"id":999,"amount":0}}]}
-[2024-06-12T09:24:13.380] [INFO] default - getUniqueQuoteData(courier_data_to_Show_end_user) [{"id":999,"amount":0}]
-[2024-06-18T13:28:34.675] [INFO] default - carrier-update-== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
-{
-  "address": [
-    "cannot be in domains 'shopify.com', 'myshopify.com', or 'shopifypreview.com'"
+[2024-06-20T11:43:51.918] [INFO] default - order-metafields-on-webhook== Order {
+  id: 5799415677147,
+  metafields: [
+    {
+      key: 'quote_id',
+      value: 'YXQNPXJBZQ',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'order_hash_id',
+      value: 'YEOQQRJJAO',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'carrier_name',
+      value: 'AlliedExpress',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'fc_order_status',
+      value: 'Freeshipping',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'courier_charges',
+      value: '133.35',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    }
   ]
 }
-If you report this error, please include this id: 86630d52-af3c-4ba3-b722-7460ca50c99a-1718697513
+[2024-06-20T12:25:00.025] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
+{
+  "value": [
+    "can't be blank."
+  ]
+}
+If you report this error, please include this id: 10036c5f-5352-49eb-ad7e-8dba20494f7c-1718866499
     at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
     at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
     at Generator.next (<anonymous>)
@@ -90,4 +89,307 @@ If you report this error, please include this id: 86630d52-af3c-4ba3-b722-7460ca
     }
   }
 }
-[2024-06-18T15:09:08.217] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T12:32:23.585] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
+{
+  "value": [
+    "can't be blank."
+  ]
+}
+If you report this error, please include this id: cff1037d-e5af-4700-8e7f-445f56e2b28f-1718866943
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 422,
+    statusText: 'Unprocessable Entity',
+    body: { errors: [Object] },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
+    }
+  }
+}
+[2024-06-20T13:34:05.952] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:36:24.998] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:36:33.968] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:37:17.274] [INFO] default - order-metafields-on-webhook== Order {
+  id: 5799481409755,
+  metafields: [
+    {
+      key: 'quote_id',
+      value: 'NPOAYEXPKO',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'order_hash_id',
+      value: 'GRMRPGKBPM',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'carrier_name',
+      value: 'TNT',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'fc_order_status',
+      value: 'Freeshipping',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'courier_charges',
+      value: '42.65',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    }
+  ]
+}
+[2024-06-20T13:37:52.704] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:38:32.197] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:39:07.015] [INFO] default - order-metafields-on-webhook== Order {
+  id: 5799482294491,
+  metafields: [
+    {
+      key: 'quote_id',
+      value: 'XEQZBVMLZQ',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'order_hash_id',
+      value: 'WKOVEZWBJM',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'carrier_name',
+      value: 'TNT',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'fc_order_status',
+      value: 'Paid',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'courier_charges',
+      value: '40.35',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    }
+  ]
+}
+[2024-06-20T13:40:21.655] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:41:43.175] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:42:14.853] [INFO] default - order-metafields-on-webhook== Order {
+  id: 5799483736283,
+  metafields: [
+    {
+      key: 'quote_id',
+      value: 'XEQZBVMWZQ',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'order_hash_id',
+      value: 'ZPOLRPEXAO',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'carrier_name',
+      value: 'Zoom2u',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'fc_order_status',
+      value: 'Paid',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'courier_charges',
+      value: '36.85',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    }
+  ]
+}
+[2024-06-20T13:43:01.366] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
+{
+  "value": [
+    "can't be blank."
+  ]
+}
+If you report this error, please include this id: c8d748e6-a844-4bfb-ae72-5a145a2d183d-1718871181
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 422,
+    statusText: 'Unprocessable Entity',
+    body: { errors: [Object] },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
+    }
+  }
+}
+[2024-06-20T13:45:28.816] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
+{
+  "value": [
+    "can't be blank."
+  ]
+}
+If you report this error, please include this id: afdeb4bc-e632-461b-9267-ee0cf3e0c639-1718871328
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 422,
+    statusText: 'Unprocessable Entity',
+    body: { errors: [Object] },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
+    }
+  }
+}
+[2024-06-20T13:47:22.847] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
+[2024-06-20T13:47:48.872] [INFO] default - order-metafields-on-webhook== Order {
+  id: 5799486816475,
+  metafields: [
+    {
+      key: 'quote_id',
+      value: 'REOEAKGBPO',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'order_hash_id',
+      value: 'BLMPVREBZM',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'carrier_name',
+      value: 'TNT',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'fc_order_status',
+      value: 'Freeshipping',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    },
+    {
+      key: 'courier_charges',
+      value: '42.65',
+      type: 'single_line_text_field',
+      namespace: 'Order'
+    }
+  ]
+}

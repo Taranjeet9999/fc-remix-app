@@ -8,7 +8,7 @@ import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import CustomTooltip from "../customToolTip/CustomToolTip";
 import { useAuthenticatedFetch } from "../../hooks";
-
+import {   toast } from 'react-toastify';
 export function PickupLocations(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -131,6 +131,7 @@ export function PickupLocations(props) {
     }
     getPickupLocations();
     getMerchantTags();
+    
   }, [showEditModal]);
 
   function handleEditClick(location) {
@@ -195,6 +196,7 @@ export function PickupLocations(props) {
   return (
     <div className="pickup-locations">
       {isLoading && <Loader />}
+   
       <div className="pickup-head">
         <button className="submit-btn" onClick={() => setShowModal(true)}>
           Add New Location

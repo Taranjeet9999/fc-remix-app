@@ -85,7 +85,7 @@ export function NewOrders(props) {
         const defaultPickupLocation = response.data.data?.find(
           (element) => element.is_default == 1
         );
-        console.log("defaultPickupLocation", defaultPickupLocation);
+     
         setDefaultLocation(defaultPickupLocation);
       })
       .catch((error) => {
@@ -107,8 +107,7 @@ export function NewOrders(props) {
       .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
         headers: headers,
       })
-      .then((response) => {
-        console.log("holidays", response);
+      .then((response) => { 
         setDisabledDates(response.data.data);
       })
       .catch((error) => {
@@ -180,7 +179,8 @@ export function NewOrders(props) {
           const matchingItem2 = orderMetaData?.body?.data?.orders?.edges.find(
             (item2) => item2.node.id.includes(item1.id)
           );
-          return { ...item1, ...matchingItem2 };
+          console.log(matchingItem2,"matchingItem2")
+          return { ...item1,node: matchingItem2?.node ?? {} };
         });
 
         setOrders(getOrders);
@@ -197,6 +197,8 @@ export function NewOrders(props) {
         console.error("error:", error);
       });
   }
+ 
+  
 
   const getMetaValue = (metafields, keyValue) => {
     var location = metafields?.find((element) => element.node.key == keyValue);
@@ -247,7 +249,7 @@ export function NewOrders(props) {
           orderIds: selectedOrders,
         }),
       });
-      console.log(response);
+     
       setIsLoading(false);
       getAllOrdersData();
       setShowHoldOrderModal(false);
@@ -604,6 +606,7 @@ export function NewOrders(props) {
             <th>Shipping type</th>
             <th>Actions</th>
           </tr>
+           
           {orders?.length > 0 &&
             orders?.map((element, i) => {
               if (
@@ -626,6 +629,7 @@ export function NewOrders(props) {
                   "fc_order_status"
                 ) != "Rejected"
               ) {
+                
                 return (
                   <tr
                     key={i}

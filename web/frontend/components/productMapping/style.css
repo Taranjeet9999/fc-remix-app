@@ -181,7 +181,7 @@
 }
 
 .shipping-boxes .modal-body {
-    overflow: scroll;
+    overflow-y: auto;
 }
 
 .shipping-boxes .modal-body table{
