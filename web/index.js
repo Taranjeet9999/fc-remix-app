@@ -2041,7 +2041,7 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
           addColumn("merchant_locations", "TEXT"), // Add other columns as needed
           addColumn("merchant_tags", "TEXT"),
           addColumn("merchant", "TEXT"),
-          addColumn("is_production", "TEXT", "false"),
+          addColumn("is_production", "TEXT", "true"),
           // Add more columns here
         ])
           .then(() => {
