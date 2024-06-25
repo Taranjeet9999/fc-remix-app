@@ -130,6 +130,10 @@ input:checked+.slider:before {
 .align-items-center{
   align-items: center;
 }
+.justify-content-center{
+  justify-content: center;
+
+}
 .align-items-end{
   align-items: end;
 }

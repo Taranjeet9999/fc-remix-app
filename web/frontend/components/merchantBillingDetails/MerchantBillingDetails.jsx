@@ -128,14 +128,13 @@ export function MerchantBillingDetails(props) {
   }
 
   function getSelectedCategoryOfGoods() {
-    console.log(selectedGoods,"selectedGoods")
-    return selectedGoods ?? []
+    console.log(selectedGoods, "selectedGoods");
+    return selectedGoods ?? [];
   }
   const [timeoutId, setTimeoutId] = useState(null);
-  const [suburbsLoading, setSuburbsLoading] = useState(false)
+  const [suburbsLoading, setSuburbsLoading] = useState(false);
   const handleInputChange = (e) => {
     const query = e.target.value;
-    
 
     // Clear the previous timeout
     if (timeoutId) {
@@ -144,19 +143,21 @@ export function MerchantBillingDetails(props) {
 
     // Set a new timeout
     const newTimeoutId = setTimeout(async () => {
-      setSuburbsLoading(true)
-      getSuburbs(query).then((data) => {
-        // setSuburbs(data);
-      }).catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setSuburbsLoading(false)
-
-      });
+      setSuburbsLoading(true);
+      getSuburbs(query)
+        .then((data) => {
+          // setSuburbs(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setSuburbsLoading(false);
+        });
     }, 500); // 500ms delay
 
     setTimeoutId(newTimeoutId);
-  }
+  };
 
   const fetch = useAuthenticatedFetch();
   async function setDataIntoData(columnName, data) {
@@ -176,7 +177,6 @@ export function MerchantBillingDetails(props) {
   const [showSuburbModal, setShowSuburbModal] = useState(false);
 
   const getMerchantDetails = (categories) => {
-    
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
@@ -187,9 +187,16 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/get_merchant`, {
-        headers: headers,
-      })
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/get_merchant`,
+        {
+          headers: headers,
+        }
+      )
       .then((response) => {
         setDataIntoData("merchant", response.data.data);
         if (response.data.data.billing_suburb) {
@@ -213,10 +220,23 @@ export function MerchantBillingDetails(props) {
         }
         setShowCategoryGoods(false);
         // Set default selected goods
-        let selected_value = JSON.parse(response?.data.data.categories_of_goods);
+        let selected_value = JSON.parse(
+          response?.data.data.categories_of_goods
+        );
+
         // selected_value = selected_value?.map(_category => _category.value)
-         setSelectedGoods(
-          categories.filter(category => selected_value?.includes(category.value))
+        if (
+          selected_value.length > 0 &&
+          typeof selected_value[0] === "object" &&
+          "value" in selected_value[0]
+        ) {
+          selected_value = selected_value.map((item) => item.value);
+        }
+
+        setSelectedGoods(
+          categories.filter((category) =>
+            selected_value?.includes(category.value)
+          )
         );
         setMerchantDetails(response.data.data);
         props.setMerchantDetails(response.data.data);
@@ -230,6 +250,28 @@ export function MerchantBillingDetails(props) {
       });
   };
 
+  function convertToValueArray(input) {
+    // Check if input is an array
+    if (!Array.isArray(input)) {
+      return [];
+    }
+
+    if (
+      input.length > 0 &&
+      typeof input[0] === "object" &&
+      "value" in input[0]
+    ) {
+      return input.map((item) => item.value);
+    }
+
+    // Check if the input is already in the structure [2, 4, 5]
+    if (input.length > 0 && typeof input[0] === "number") {
+      return input;
+    }
+
+    return [];
+  }
+
   const getCategoryOfGoods = () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
@@ -241,9 +283,16 @@ export function MerchantBillingDetails(props) {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/categories_of_goods`, {
-        headers: headers,
-      })
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/categories_of_goods`,
+        {
+          headers: headers,
+        }
+      )
       .then((response) => {
         setShowCategoryGoods(false);
         var categories = [];
@@ -289,19 +338,25 @@ export function MerchantBillingDetails(props) {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json(); 
+    const data = await response.json();
     setCarrierServices(data.data);
     //filter the fast courier carreir service and get Id and update the carrier service
     const filteredCarrierService = data.data.filter(
       (item) => item.name === "Fast Courier"
     );
-    
+
     if (filteredCarrierService.length > 0) {
-      const maxIdObject = filteredCarrierService.reduce((max, item) => item.id > max.id ? item : max, filteredCarrierService[0]);
-     if (maxIdObject.callback_url ==="https://fc-app.vuwork.com/api/shipping-rates") {
-      return
-     }
-     
+      const maxIdObject = filteredCarrierService.reduce(
+        (max, item) => (item.id > max.id ? item : max),
+        filteredCarrierService[0]
+      );
+      if (
+        maxIdObject.callback_url ===
+        "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/shipping-rates"
+      ) {
+        return;
+      }
+
       updateCarrierService(maxIdObject.id);
     } else {
       // create a coueir service and then update it
@@ -341,7 +396,7 @@ export function MerchantBillingDetails(props) {
     }
     // const tailLiftWeight = localStorage.getItem("tailLiftValue");
     // setTailLiftValue(tailLiftWeight);
-    setTailLiftValue(merchant.weight <30 ? 30 : merchant.weight);
+    setTailLiftValue(merchant.weight < 30 ? 30 : merchant.weight);
   }
 
   // const getSuburbs = (search="") => {
@@ -384,7 +439,7 @@ export function MerchantBillingDetails(props) {
   //     });
   // };
 
-async  function getSuburbs (search = "")  {
+  async function getSuburbs(search = "") {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const headers = {
@@ -394,24 +449,28 @@ async  function getSuburbs (search = "")  {
         version: "3.1.1",
         Authorization: "Bearer " + accessToken,
       };
-  
-      const apiUrl = localStorage.getItem("isProduction") === "1" 
-        ? process.env.PROD_API_ENDPOINT 
-        : process.env.API_ENDPOINT;
-  
-      const response = await axios.get(`${apiUrl}/api/wp/suburbs?term=${search}`, { headers: headers });
-      
-      const suburbData = response.data.data.map(element => ({
+
+      const apiUrl =
+        localStorage.getItem("isProduction") === "1"
+          ? process.env.PROD_API_ENDPOINT
+          : process.env.API_ENDPOINT;
+
+      const response = await axios.get(
+        `${apiUrl}/api/wp/suburbs?term=${search}`,
+        { headers: headers }
+      );
+
+      const suburbData = response.data.data.map((element) => ({
         value: `${element.name}, ${element.postcode} (${element.state})`,
-        label: `${element.name}, ${element.postcode} (${element.state})`
+        label: `${element.name}, ${element.postcode} (${element.state})`,
       }));
-  setSuburbs(suburbData);
+      setSuburbs(suburbData);
       return suburbData;
     } catch (error) {
       console.error(error);
-      throw error;  // Re-throw the error to allow the caller to handle it
+      throw error; // Re-throw the error to allow the caller to handle it
     }
-  };
+  }
 
   const getCouriers = () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -423,7 +482,14 @@ async  function getSuburbs (search = "")  {
       Authorization: "Bearer " + accessToken,
     };
     axios
-      .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/couriers`, { headers: headers })
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/couriers`,
+        { headers: headers }
+      )
       .then((response) => {
         setCouriers(response.data.data);
         var courierIds = [];
@@ -484,14 +550,22 @@ async  function getSuburbs (search = "")  {
           Authorization: "Bearer " + accessToken,
         };
         await axios
-          .post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/activate`, payload, {
-            headers: headers,
-          })
+          .post(
+            `${
+              localStorage.getItem("isProduction") === "1"
+                ? process.env.PROD_API_ENDPOINT
+                : process.env.API_ENDPOINT
+            }/api/wp/activate`,
+            payload,
+            {
+              headers: headers,
+            }
+          )
           .then((response) => {
             saveUpdateMerchant(response.data.data);
             setDataIntoData("merchant", response.data.data);
             props.setMerchantDetails(response.data.data);
- 
+
             props.setActiveNavItem("paymentMethods");
             localStorage.setItem("tailLiftValue", tailLiftValue);
             const carrierService = getCarrierSerice(carrierServices);
@@ -531,7 +605,7 @@ async  function getSuburbs (search = "")  {
           }),
         });
         const data = await response.json();
-        setIsLoading(false); 
+        setIsLoading(false);
         resolve(data);
       } catch (err) {
         setIsLoading(false);
@@ -549,7 +623,6 @@ async  function getSuburbs (search = "")  {
 
   // const updateCarrierService = async (_id) => {
 
-    
   //   try {
   //     setIsLoading(true);
   //     const response = await fetch("/api/carrier-service/update", {
@@ -562,7 +635,7 @@ async  function getSuburbs (search = "")  {
   //         id: _id,
   //       }),
   //     });
-  
+
   //     if (!response.ok) {
   //       console.log(response, "response");
   //       console.log(response, "response");
@@ -570,10 +643,10 @@ async  function getSuburbs (search = "")  {
   //       console.log(response, "response");
   //       console.log(response, "response");
   //       console.log(response, "response");
-      
+
   //       throw new Error(`API call failed with status: ${response.status}`);
   //     }
-  
+
   //     const data = await response.json();
   //     setIsLoading(false);
   //   } catch (err) {
@@ -585,7 +658,7 @@ async  function getSuburbs (search = "")  {
   const updateCarrierService = async (_id) => {
     const controller = new AbortController();
     const signal = controller.signal;
-  
+
     const fetchWithTimeout = (url, options, timeout = 10000) => {
       return Promise.race([
         fetch(url, { ...options, signal }),
@@ -593,33 +666,36 @@ async  function getSuburbs (search = "")  {
           setTimeout(() => {
             controller.abort();
             reject(new Error("Request timed out"));
-        
-        createAndUpdateCarrierService()
-        setIsLoading(false);
+
+            createAndUpdateCarrierService();
+            setIsLoading(false);
           }, timeout)
         ),
       ]);
     };
-  
+
     try {
       setIsLoading(true);
-      const response = await fetchWithTimeout("/api/carrier-service/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetchWithTimeout(
+        "/api/carrier-service/update",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            package_name: "Fast Courier",
+            id: _id,
+          }),
         },
-        body: JSON.stringify({
-          package_name: "Fast Courier",
-          id: _id,
-        }),
-      }, 10000);
-  
+        10000
+      );
+
       if (!response.ok) {
-      
         // await createAndUpdateCarrierService();
         throw new Error(`Error: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
       // Handle data if needed
     } catch (err) {
@@ -628,9 +704,7 @@ async  function getSuburbs (search = "")  {
       setIsLoading(false);
     }
   };
-  
-  
-  
+
   const deleteCarrierService = async (_id) => {
     try {
       setIsLoading(true);
@@ -671,12 +745,12 @@ async  function getSuburbs (search = "")  {
     getCouriers();
     getSuburbs();
     getCarriers();
-   // deleteCarrierService()
+    // deleteCarrierService()
     getCategoryOfGoods(); // LIST OF CATEGORY OF GOODS
     //updateCarrierService()
     // createCarrierService()
     setMerchantTags();
-    setPickupLocations()
+    setPickupLocations();
   }, []);
 
   async function saveUpdateMerchant(merchantDetails) {
@@ -691,7 +765,6 @@ async  function getSuburbs (search = "")  {
 
   const setMerchantTags = () => {
     return new Promise((resolve, reject) => {
-    
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
 
@@ -708,7 +781,11 @@ async  function getSuburbs (search = "")  {
 
       axios
         .get(
-          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_location_tags/${merchantDomainId}`,
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/wp/merchant_location_tags/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -722,7 +799,6 @@ async  function getSuburbs (search = "")  {
   };
 
   const setPickupLocations = () => {
-    
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
 
@@ -738,7 +814,11 @@ async  function getSuburbs (search = "")  {
     };
     axios
       .get(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_domain/locations/${merchantDomainId}`,
         { headers: headers }
       )
       .then((response) => {
@@ -752,7 +832,7 @@ async  function getSuburbs (search = "")  {
 
   async function logOutUser() {
     try {
-        setIsLoading(true);
+      setIsLoading(true);
       const response = await fetch("/api/remove-merchant-token", {
         method: "GET",
         headers: {
@@ -760,15 +840,16 @@ async  function getSuburbs (search = "")  {
         },
       });
       const data = await response.json();
-      
+
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
         navigate("/login");
-        props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
+        props.setIsStaging(
+          props.executeSandboxStatus.value === "1" ? false : true
+        );
         setIsLoading(false);
       } else {
-        
         setIsLoading(false);
       }
     } catch (err) {
@@ -785,36 +866,41 @@ async  function getSuburbs (search = "")  {
         },
         body: JSON.stringify({
           columnName: columnName,
-          data: data
+          data: data,
         }),
       })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(error => {
-            throw new Error(`Error: ${error.message}`);
-          });
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        resolve(responseData);
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        reject(error);
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((error) => {
+              throw new Error(`Error: ${error.message}`);
+            });
+          }
+          return response.json();
+        })
+        .then((responseData) => {
+          resolve(responseData);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
     });
   }
   useEffect(() => {
     if (props.executeSandboxStatus.execute == "sandbox") {
       setIsLoading(true);
-      setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
-        localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
-        logOutUser()
-      })
+      setDataIntoData(
+        "is_production",
+        JSON.parse(props.executeSandboxStatus.value)
+      ).then(() => {
+        localStorage.setItem(
+          "isProduction",
+          JSON.parse(props.executeSandboxStatus.value)
+        );
+        logOutUser();
+      });
     }
-   
-  }, [props.executeSandboxStatus])
+  }, [props.executeSandboxStatus]);
 
   return (
     <div className="merchant-main">
@@ -986,13 +1072,11 @@ async  function getSuburbs (search = "")  {
           {showSuburbModal && (
             <Select
               options={suburbs}
-              onInputChange={(e)=>{
-handleInputChange({target:{value:e}})
+              onInputChange={(e) => {
+                handleInputChange({ target: { value: e } });
               }}
               loadingMessage={() => "Loading..."}
-              isLoading={
-                suburbsLoading
-              }
+              isLoading={suburbsLoading}
               onChange={(e) => {
                 const [, extractedCity, extractedPostcode, extractedState] =
                   e.value.match(/^(.*), (\d+) \((.*)\)$/);
@@ -1086,11 +1170,10 @@ handleInputChange({target:{value:e}})
               type="number"
               value={fallbackAmount}
               onChange={(e) => setFallbackAmount(e.target.value)}
-              onBlur={()=>{
-                if(fallbackAmount<50){
-                  setFallbackAmount(50)
+              onBlur={() => {
+                if (fallbackAmount < 50) {
+                  setFallbackAmount(50);
                 }
-              
               }}
             />
           </div>
@@ -1262,16 +1345,18 @@ handleInputChange({target:{value:e}})
               className="input-field-text1"
               value={tailLiftValue}
               onChange={(e) => setTailLiftValue(e.target.value)}
-              onBlur={()=>{
-                if(tailLiftValue<30){
-                  setTailLiftValue(30)
+              onBlur={() => {
+                if (tailLiftValue < 30) {
+                  setTailLiftValue(30);
                 }
-              
               }}
             />{" "}
             {" Kgs."}
           </span>
         )}
+      </div>
+      <div className="d-flex align-items-center justify-content-center">
+        (Minimum weight for tail lift is 30 Kgs)
       </div>
 
       <div className="submit">

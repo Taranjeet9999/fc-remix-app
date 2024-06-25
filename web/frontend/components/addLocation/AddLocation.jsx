@@ -32,6 +32,7 @@ export function AddLocation(props) {
   const [freeShippingPoscodeOptions, setFreeShippingPoscodeOptions] = useState(
     []
   );
+  const [suburbsLoading, setSuburbsLoading] = useState(false);
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
   const [suburbData, setSuburbData] = useState([]);
@@ -85,7 +86,7 @@ export function AddLocation(props) {
     document.body.removeChild(link);
   };
 
-  const getSuburbs = () => {
+  async function getSuburbs (search= "")  {
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
       Accept: "application/json",
@@ -94,13 +95,13 @@ export function AddLocation(props) {
       version: "3.1.1",
       Authorization: "Bearer " + accessToken,
     };
-    axios
+   await axios
       .get(
         `${
           localStorage.getItem("isProduction") === "1"
             ? process.env.PROD_API_ENDPOINT
             : process.env.API_ENDPOINT
-        }/api/wp/suburbs`,
+        }/api/wp/suburbs?term=${search}`,
         { headers: headers }
       )
       .then((response) => {
@@ -131,6 +132,33 @@ export function AddLocation(props) {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  const handleInputChange = (e) => {
+    const query = e.target.value;
+
+    // Clear the previous timeout
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // Set a new timeout
+    const newTimeoutId = setTimeout(async () => {
+      setSuburbsLoading(true);
+      getSuburbs(query)
+        .then((data) => {
+          // setSuburbs(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setSuburbsLoading(false);
+        });
+    }, 500); // 500ms delay
+
+    setTimeoutId(newTimeoutId);
   };
 
   function isValidEmail(email) {
@@ -715,6 +743,11 @@ export function AddLocation(props) {
                 setLatitude(element.latitude);
               }}
               defaultValue={getDefaultSuburbValue()}
+              onInputChange={(e) => {
+                handleInputChange({ target: { value: e } });
+              }}
+              loadingMessage={() => "Loading..."}
+              isLoading={suburbsLoading}
             />
           </div>
         </div>

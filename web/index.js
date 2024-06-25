@@ -1572,7 +1572,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://fc-app.vuwork.com/api/shipping-rates";
+      "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1596,14 +1596,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier";
       carrier_service.callback_url =
-        "https://fc-app.vuwork.com/api/shipping-rates";
+        "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Dummy Test START
       // Get All Webhooks List
-      const webhook_URL = "https://fc-app.vuwork.com/api/webhook/order-create";
+      const webhook_URL = "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -2041,7 +2041,7 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
           addColumn("merchant_locations", "TEXT"), // Add other columns as needed
           addColumn("merchant_tags", "TEXT"),
           addColumn("merchant", "TEXT"),
-          addColumn("is_production", "TEXT", "true"),
+          addColumn("is_production", "TEXT", "false"),
           // Add more columns here
         ])
           .then(() => {
@@ -2064,44 +2064,7 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
     });
   });
 }
-// async function createColoumnIfNotExist() {
-//   return new Promise((resolve, reject) => {
-//     // Check if the column exists
-//     db.get("PRAGMA table_info(shopify_sessions)", async (err, rows) => {
-//       if (err) {
-//         reject(err);
-//         return;
-//       }
-//       let columnExists = await isMerchantColumnExist("merchant_token");
-
-//       if (!columnExists) {
-//         Promise.all([
-//           addColumn("merchant_token", "TEXT"),
-//           addColumn("merchant_id", "TEXT"),
-//           addColumn("merchant_locations", "TEXT"), // Add other columns as needed
-//           addColumn("merchant_tags", "TEXT"),
-//           addColumn("merchant", "TEXT"),
-//           addColumn("is_production", "TEXT", "false"),
-//           addColumn("shipping_boxes", "TEXT", "false"),
-//           // Add more columns here
-//         ])
-//           .then(() => {
-//             return {
-//               success: true,
-//             };
-//           })
-//           .catch((err) => {
-//             reject(err);
-//           });
-//       } else {
-//         // If the column exists, directly insert the merchant ID
-//         return {
-//           success: true,
-//         };
-//       }
-//     });
-//   });
-// }
+ 
 async function createColumnsIfNotExist(
   shop,
   columnNames = [
@@ -2110,7 +2073,7 @@ async function createColumnsIfNotExist(
     { name: "merchant_locations", type: "TEXT", defaultValue: null },
     { name: "merchant_tags", type: "TEXT", defaultValue: null },
     { name: "merchant", type: "TEXT", defaultValue: null },
-    { name: "is_production", type: "TEXT", defaultValue: true },
+    { name: "is_production", type: "TEXT", defaultValue: false },
     { name: "shipping_boxes", type: "TEXT", defaultValue: null },
   ]
 ) {
