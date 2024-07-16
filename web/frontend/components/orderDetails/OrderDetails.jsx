@@ -4,7 +4,7 @@ import "./style.css";
 import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { useAuthenticatedFetch } from "../../hooks";
-import { headers } from "../../globals";
+;
 
 export function OrderDetails(props) {
   const [email, setEmail] = useState("");
@@ -238,7 +238,14 @@ export function OrderDetails(props) {
   async function getMerchantLocationDataFromTagId(tagId) {
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
 
     const response = await axios.get(
       `${
@@ -261,7 +268,14 @@ export function OrderDetails(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-    
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
 
       axios
         .get(

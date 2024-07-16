@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "48c11f190fe107153899a7f870f79215"
+client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://zealand-alerts-upset-proposals.trycloudflare.com"
+application_url = "https://proof-genome-jacket-abandoned.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://zealand-alerts-upset-proposals.trycloudflare.com/auth/callback",
-  "https://zealand-alerts-upset-proposals.trycloudflare.com/auth/shopify/callback",
-  "https://zealand-alerts-upset-proposals.trycloudflare.com/api/auth/callback"
+  "https://proof-genome-jacket-abandoned.trycloudflare.com/auth/callback",
+  "https://proof-genome-jacket-abandoned.trycloudflare.com/auth/shopify/callback",
+  "https://proof-genome-jacket-abandoned.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -23,7 +23,7 @@ import { Loader } from "./components/loader";
 import { Modal } from "./components/modal";
 import React from "react"; 
 import { ToastContainer  } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'; 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
   // See documentation for <Routes /> for more info
@@ -161,6 +161,8 @@ pauseOnHover
 theme="light" 
 transition={"Bounce"}
 />
+
+ 
               
               <Modal showModal={showSandBoxModal} width="30%">
                 {isLoading && <Loader />}

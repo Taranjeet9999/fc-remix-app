@@ -9,7 +9,7 @@ import { ConfirmModal } from "../confirmModal";
 import CustomTooltip from "../customToolTip/CustomToolTip";
 import { useAuthenticatedFetch } from "../../hooks";
 import {   toast } from 'react-toastify';
-import { headers } from "../../globals";
+;
 export function PickupLocations(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +24,14 @@ export function PickupLocations(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -58,7 +65,14 @@ export function PickupLocations(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
 
       axios
         .get(
@@ -78,6 +92,7 @@ export function PickupLocations(props) {
         .catch((error) => {
           setIsLoading(false);
           reject(error);
+          console.log(error,"pick up errro");
         });
     });
   };
@@ -86,7 +101,14 @@ export function PickupLocations(props) {
     setIsLoading(true);
     console.log("locationId==", element.id);
     const accessToken = localStorage.getItem("accessToken");
-   
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     const payload = {};
     axios
       .post(

@@ -11,7 +11,7 @@ import { ConfirmModal } from "../confirmModal";
 
      
 import { Link, useNavigate } from "react-router-dom";
-import { headers } from "../../globals";
+;
 
 export function FallbackOrders() {
     const fetch = useAuthenticatedFetch();
@@ -70,7 +70,14 @@ export function FallbackOrders() {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
       axios
         .get(
           `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
@@ -93,7 +100,14 @@ export function FallbackOrders() {
   
     const getHolidays = () => {
       const accessToken = localStorage.getItem("accessToken");
-      
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
       axios
         .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
           headers: headers,
@@ -290,7 +304,14 @@ export function FallbackOrders() {
           isReprocessOrders: false,
           request_type: "wp",
         };
-  
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "request-type": "shopify_development",
+          version: "3.1.1",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+        }
         axios
           .post(
             `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,

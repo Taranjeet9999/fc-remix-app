@@ -8,7 +8,7 @@ import { ProductMapping } from "../productMapping";
 import axios from "axios";
 import { useAuthenticatedFetch } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { headers } from "../../globals";
+;
 
 export function Configuration(props) {
   const [activeNavItem, setActiveNavItem] = useState("basic");
@@ -59,7 +59,14 @@ export function Configuration(props) {
      
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,

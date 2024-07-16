@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Loader } from "../loader";
 import { useAuthenticatedFetch } from "../../hooks";
 import PasswordInput from "../login/PasswordInput";
-import { headers } from "../../globals";
+;
 
 export function Signup(props) {
   const [firstName, setFirstName] = useState("");
@@ -85,7 +85,14 @@ export function Signup(props) {
       password: password,
       confirmPassword: confirmPassword,
     };
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
 
     axios
       .post(

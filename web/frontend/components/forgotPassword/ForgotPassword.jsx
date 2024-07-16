@@ -8,7 +8,7 @@ import { Loader } from "../loader";
 import { SuccessModal } from "../successModal";
 import { useAuthenticatedFetch } from "../../hooks";
 import { ErrorModal } from "../errorModal";
-import { headers } from "../../globals";
+;
 
 export function ForgotPassword(props) {
     const [email, setEmail] = useState("");
@@ -26,6 +26,14 @@ export function ForgotPassword(props) {
         setIsLoading(true);
         const payload = {
             "email": email,
+        }
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "request-type": "shopify_development",
+          version: "3.1.1",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
         }
         
         axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/forgot_password`, payload, { "headers": headers }).then(response => {

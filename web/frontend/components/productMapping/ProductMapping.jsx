@@ -345,7 +345,14 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -369,7 +376,14 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -393,7 +407,14 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${

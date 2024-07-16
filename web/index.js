@@ -1660,7 +1660,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/shipping-rates";
+      "https://fc-app.vuwork.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1684,14 +1684,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/shipping-rates";
+        "https://fc-app.vuwork.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/webhook/order-create";
+        "https://fc-app.vuwork.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
-import { headers } from "../../globals";
+;
 
 export function PaymentMethods(props) {
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -25,7 +25,14 @@ export function PaymentMethods(props) {
   const getMerchantDetails = async () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     await axios
       .get(
         `${
@@ -61,7 +68,14 @@ export function PaymentMethods(props) {
 
       console.log("selectedMethod=", selectedMethod);
       console.log("payload=", updatedPayload);
-      
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
       await axios
         .post(
           `${
@@ -143,6 +157,14 @@ export function PaymentMethods(props) {
           name: name,
           company: companyName,
         };
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "request-type": "shopify_development",
+          version: "3.1.1",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+        }
         axios
           .post(
             `${
@@ -174,7 +196,14 @@ export function PaymentMethods(props) {
   const getPaymentMethods = () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsLoading(true);
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${

@@ -10,7 +10,7 @@ import { ErrorModal } from "../errorModal";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
 import { getOrderDataMetaField } from "../newOrders/NewOrders";
-import { headers } from "../../globals";
+;
 
 export function RejectedOrders(props) {
   const fetch = useAuthenticatedFetch();
@@ -69,7 +69,14 @@ export function RejectedOrders(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -96,7 +103,14 @@ export function RejectedOrders(props) {
 
   const getHolidays = () => {
     const accessToken = localStorage.getItem("accessToken");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -350,7 +364,14 @@ export function RejectedOrders(props) {
         isReprocessOrders: true,
         request_type: "wp",
       };
-
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
       axios
         .post(
           `${

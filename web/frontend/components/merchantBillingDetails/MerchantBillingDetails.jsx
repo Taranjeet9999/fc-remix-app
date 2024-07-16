@@ -5,7 +5,7 @@ import "./style.css";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
-import { headers } from "../../globals";
+;
 
 export function MerchantBillingDetails(props) {
   const [billingFirstName, setBillingFirstName] = useState("");
@@ -179,7 +179,14 @@ export function MerchantBillingDetails(props) {
   const getMerchantDetails = (categories) => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -220,7 +227,7 @@ export function MerchantBillingDetails(props) {
 
         // selected_value = selected_value?.map(_category => _category.value)
         if (
-          selected_value.length > 0 &&
+          selected_value?.length > 0 &&
           typeof selected_value[0] === "object" &&
           "value" in selected_value[0]
         ) {
@@ -269,7 +276,14 @@ export function MerchantBillingDetails(props) {
   const getCategoryOfGoods = () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-   
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -340,7 +354,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/shipping-rates"
+        "https://fc-app.vuwork.com/api/shipping-rates"
       ) {
         return;
       }
@@ -430,7 +444,14 @@ export function MerchantBillingDetails(props) {
   async function getSuburbs(search = "") {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
 
       const apiUrl =
         localStorage.getItem("isProduction") === "1"
@@ -456,7 +477,14 @@ export function MerchantBillingDetails(props) {
 
   const getCouriers = () => {
     const accessToken = localStorage.getItem("accessToken");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${
@@ -518,7 +546,14 @@ export function MerchantBillingDetails(props) {
           categoriesOfGoods: selectedGoods ?? [],
         };
         props.setActiveApiPayload(payload);
-        
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "request-type": "shopify_development",
+          version: "3.1.1",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+        }
         await axios
           .post(
             `${
@@ -741,7 +776,14 @@ export function MerchantBillingDetails(props) {
       if (!accessToken || !merchantDomainId) {
         return;
       }
-     
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
 
       axios
         .get(
@@ -769,7 +811,14 @@ export function MerchantBillingDetails(props) {
     if (!accessToken || !merchantDomainId) {
       return;
     }
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
     axios
       .get(
         `${

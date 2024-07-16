@@ -7,7 +7,7 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
-import { headers } from "../../globals";
+
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +89,14 @@ export function AddLocation(props) {
 
   async function getSuburbs (search= "")  {
     const accessToken = localStorage.getItem("accessToken");
-    
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+    }
    await axios
       .get(
         `${
@@ -218,7 +225,14 @@ export function AddLocation(props) {
           longitude: "144.956776",
           latitude: "-37.817403",
         };
-
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "request-type": "shopify_development",
+          version: "3.1.1",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+        }
         
 
         const url = props.editLocation
@@ -422,7 +436,14 @@ export function AddLocation(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-     
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+      }
 
       axios
         .get(

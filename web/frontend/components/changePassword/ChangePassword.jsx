@@ -7,7 +7,7 @@ import { Loader } from "../loader";
 import { SuccessModal } from "../successModal";
 import { ErrorModal } from "../errorModal";
 import PasswordInput from "../login/PasswordInput";
-import { headers } from "../../globals";
+;
 
 export function ChangePassword(props) {
     const [password, setPassword] = useState("");
@@ -51,6 +51,14 @@ export function ChangePassword(props) {
             "new_password": newPassword,
             "confirm_password": confirmPassword,
         }
+        const headers = {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "request-type": "shopify_development",
+            version: "3.1.1",
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
+          }
        
         axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/change_password`, payload, { "headers": headers }).then(response => {
              
