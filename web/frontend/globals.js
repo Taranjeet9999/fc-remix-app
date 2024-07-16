@@ -14,7 +14,7 @@ export const headers = {
   "request-type": "shopify_development",
   version: "3.1.1",
   Authorization: "Bearer " + localStorage.getItem("accessToken"),
-  "shopify_domain": localStorage.getItem("userData") ?  getStore(localStorage.getItem("userData"))    :"",
+  "store_domain": localStorage.getItem("userData") ?  getStore(localStorage.getItem("userData"))    :"",
 };
 
 
