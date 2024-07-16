@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
+import { headers } from "../../globals";
 
 export function PaymentMethods(props) {
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -24,13 +25,7 @@ export function PaymentMethods(props) {
   const getMerchantDetails = async () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     await axios
       .get(
         `${
@@ -66,13 +61,7 @@ export function PaymentMethods(props) {
 
       console.log("selectedMethod=", selectedMethod);
       console.log("payload=", updatedPayload);
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+      
       await axios
         .post(
           `${
@@ -81,7 +70,7 @@ export function PaymentMethods(props) {
               : process.env.API_ENDPOINT
           }/api/wp/activate`,
           updatedPayload,
-          { headers: headers }
+          { headers: headers  }
         )
         .then((response) => {
           props.setActiveNavItem("pickupLocations");
@@ -143,13 +132,7 @@ export function PaymentMethods(props) {
       if (isValid) {
         const accessToken = localStorage.getItem("accessToken");
         setIsLoading(true);
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-          Authorization: "Bearer " + accessToken,
-        };
+       
 
         const payload = {
           number: cardNumber,
@@ -191,13 +174,7 @@ export function PaymentMethods(props) {
   const getPaymentMethods = () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsLoading(true);
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${

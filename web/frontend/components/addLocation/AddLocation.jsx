@@ -7,6 +7,7 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
+import { headers } from "../../globals";
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -88,13 +89,7 @@ export function AddLocation(props) {
 
   async function getSuburbs (search= "")  {
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
    await axios
       .get(
         `${
@@ -224,13 +219,7 @@ export function AddLocation(props) {
           latitude: "-37.817403",
         };
 
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-          Authorization: "Bearer " + accessToken,
-        };
+        
 
         const url = props.editLocation
           ? `${
@@ -433,13 +422,7 @@ export function AddLocation(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+     
 
       axios
         .get(

@@ -4,6 +4,7 @@ import "./style.css";
 import { useState, useEffect } from "react";
 import { Loader } from "../loader";
 import { useAuthenticatedFetch } from "../../hooks";
+import { headers } from "../../globals";
 
 export function OrderDetails(props) {
   const [email, setEmail] = useState("");
@@ -15,19 +16,41 @@ export function OrderDetails(props) {
   const [products, setProducts] = useState([]);
   const fetch = useAuthenticatedFetch();
   const [pickupLocations, setPickupLocations] = useState([]);
-  console.log("order", order);
+  const [orderList, setOrderList] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
-    Promise.all([getAllProducts(), getPickupLocations()]).then(
-      ([products, pickupLocations]) => {
-        setIsLoading(false);
-        getLocationDataObj();
-      }
-    );
-  }, []);
+    Promise.all([
+      getAllProducts(),
+      getPickupLocations(),
+      getOrderMetaFields(order.id),
+    ]).then(([products, pickupLocations, orderMetaFields]) => {
+      setIsLoading(false);
+      getLocationDataObj();
+      console.log(orderMetaFields, "orderMetaFields")
+      let orders = orderMetaFields
+        .find((item) => item.key === "order_hash_id")?.value
+        ?.split(",")?.length;
 
+      let _orderList = [];
+      for (let i = 0; i < orders; i++) {
+        let orderData = {};
+        orderData.metafields = convertArrayToObject(orderMetaFields);
+        orderData.courierName = getCourierName(
+          order.shipping_lines?.[0]?.title,
+          i
+        );
+        orderData.orderId = orderData.metafields.order_hash_id.split(",")[i];
+        orderData.price = JSON.parse(orderData.metafields.courier_charges)[i];
+        _orderList.push(orderData);
+      }
+      setOrderList(_orderList);
+    });
+  }, []);
+  console.log("order", order);
+  console.log("orderList", orderList);
   const getAllProducts = () => {
     return new Promise((resolve, reject) => {
       fetch(`/api/products`, {
@@ -61,6 +84,43 @@ export function OrderDetails(props) {
         });
     });
   };
+  function getOrderMetaFields(_orderId) {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/get-order-metafields`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: _orderId,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch products");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data) {
+            let updated_data = data.data.map((item) => {
+              return {
+                key: item.key,
+                value: item.value,
+              };
+            });
+
+            resolve(updated_data);
+          } else {
+            reject("No data found");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+          reject(error);
+        });
+    });
+  }
 
   function formatProductData(products) {
     let formattedResponse = [];
@@ -178,16 +238,14 @@ export function OrderDetails(props) {
   async function getMerchantLocationDataFromTagId(tagId) {
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
 
     const response = await axios.get(
-      `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_locations/${merchantDomainId}/${tagId}`,
+      `${
+        localStorage.getItem("isProduction") === "1"
+          ? process.env.PROD_API_ENDPOINT
+          : process.env.API_ENDPOINT
+      }/api/wp/merchant_locations/${merchantDomainId}/${tagId}`,
       { headers: headers }
     );
 
@@ -203,17 +261,15 @@ export function OrderDetails(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+    
 
       axios
         .get(
-          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/wp/merchant_domain/locations/${merchantDomainId}`,
           { headers: headers }
         )
         .then((response) => {
@@ -229,8 +285,6 @@ export function OrderDetails(props) {
   };
   function getLocationDataObj() {
     if (products?.length > 0 && pickupLocations?.length > 0) {
-       
-
       const merchant_default_location = pickupLocations.find(
         (element) => element.is_default == 1
       );
@@ -320,14 +374,38 @@ export function OrderDetails(props) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
+
+  function getCourierName(text, index) {
+    // Extracting the part within the square brackets
+    const matches = text.match(/\[(.*?)\]/);
+
+    // If there are no matches, return an empty string or handle as needed
+    if (!matches) return "";
+
+    // Split the matched string to get individual courier names
+    const couriers = matches[1].split(",");
+
+    // If the index is out of range, return an empty string or handle as needed
+    if (index < 0 || index >= couriers.length) return "";
+
+    // Get the courier name at the given index
+    const selectedCourier = couriers[index];
+
+    // Check if the text includes "Shipping" and the courier name
+    const isShipping = text?.toLowerCase()?.includes(`shipping`);
+
+    // Return "Shipping" if the condition is met, otherwise return the courier name
+    return isShipping ? "Shipping" : `Fast Courier[${selectedCourier}]`;
+  }
+
   // getLocationDataObj()
   useEffect(() => {
     getLocationDataObj();
-  }, [products,pickupLocations])
+  }, [products, pickupLocations]);
 
-  async function logOutUser( ) {
+  async function logOutUser() {
     try {
-        setIsLoading(true);
+      setIsLoading(true);
       const response = await fetch("/api/remove-merchant-token", {
         method: "GET",
         headers: {
@@ -335,15 +413,16 @@ export function OrderDetails(props) {
         },
       });
       const data = await response.json();
-      
+
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
         navigate("/login");
-        props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
+        props.setIsStaging(
+          props.executeSandboxStatus.value === "1" ? false : true
+        );
         setIsLoading(false);
       } else {
-        
         setIsLoading(false);
       }
     } catch (err) {
@@ -361,37 +440,42 @@ export function OrderDetails(props) {
         },
         body: JSON.stringify({
           columnName: columnName,
-          data: data
+          data: data,
         }),
       })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(error => {
-            throw new Error(`Error: ${error.message}`);
-          });
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        resolve(responseData);
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        reject(error);
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((error) => {
+              throw new Error(`Error: ${error.message}`);
+            });
+          }
+          return response.json();
+        })
+        .then((responseData) => {
+          resolve(responseData);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
     });
   }
   useEffect(() => {
     if (props.executeSandboxStatus.execute == "sandbox") {
       setIsLoading(true);
-      setDataIntoData("is_production", JSON.parse(props.executeSandboxStatus.value)).then(()=>{
-        localStorage.setItem("isProduction", JSON.parse(props.executeSandboxStatus.value));
-        logOutUser()
-      })
+      setDataIntoData(
+        "is_production",
+        JSON.parse(props.executeSandboxStatus.value)
+      ).then(() => {
+        localStorage.setItem(
+          "isProduction",
+          JSON.parse(props.executeSandboxStatus.value)
+        );
+        logOutUser();
+      });
     }
-   
-  }, [props.executeSandboxStatus])
-  
+  }, [props.executeSandboxStatus]);
+
   return (
     <div className="order-details-main">
       {isLoading && <Loader />}
@@ -612,14 +696,22 @@ export function OrderDetails(props) {
                 <th>Address</th>
                 <th>Suburb, Postcode, State</th>
               </tr>
+              {
+                orderList.map((orderItem) => {
+                  return(
               <tr className="table-body">
-                <td>{order.confirmation_number} </td>
-                <td>{order.shipping_lines?.[0]?.title}</td>
+                <td>
+                  {
+                    orderItem.orderId
+                  }
+                  
+                   </td>
+                <td>
+                  {orderItem.courierName}
+                </td>
                 <td>
                   {" "}
-                  {order.shipping_lines?.[0]?.code?.split("~")?.[2]
-                    ? `$${order.shipping_lines?.[0]?.code?.split("~")?.[2]}`
-                    : ""}
+                  ${orderItem.price}
                 </td>
                 <td>
                   {order?.line_items[0]?.requires_shipping
@@ -635,25 +727,34 @@ export function OrderDetails(props) {
                     .join(", ")}
                 </td>
                 <td>
-
                   {locationListData
-  ?.map((location) => {
-    console.log(location, "location"); 
-    const address1 = location?.address1 || "";
-    const address2 = location?.address2 || "";
-    return `${address1} ${address2}`.trim();  
-  })
-  .join(", ")} 
-
-
-                
-                 </td>
-                <td>   {locationListData
                     ?.map((location) => {
-                      return  location.suburb +" "+ location.postcode +" "+ location.state;
+                      console.log(location, "location");
+                      const address1 = location?.address1 || "";
+                      const address2 = location?.address2 || "";
+                      return `${address1} ${address2}`.trim();
                     })
-                    .join(", ")} </td>
+                    .join(", ")}
+                </td>
+                <td>
+                  {" "}
+                  {locationListData
+                    ?.map((location) => {
+                      return (
+                        location.suburb +
+                        " " +
+                        location.postcode +
+                        " " +
+                        location.state
+                      );
+                    })
+                    .join(", ")}{" "}
+                </td>
               </tr>
+
+                  )
+                })
+              }
             </table>
           </div>
         </div>

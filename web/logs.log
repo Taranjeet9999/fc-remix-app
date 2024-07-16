@@ -1,395 +1,732 @@
-[2024-06-20T11:43:22.500] [INFO] default - [
-  { name: 'Le petite box-0', width: 25, height: 25, length: 25 },
+[2024-07-12T16:30:32.872] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
   { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
 ] _bins 0
-[2024-06-20T11:43:51.918] [INFO] default - order-metafields-on-webhook== Order {
-  id: 5799415677147,
-  metafields: [
-    {
-      key: 'quote_id',
-      value: 'YXQNPXJBZQ',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'order_hash_id',
-      value: 'YEOQQRJJAO',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'carrier_name',
-      value: 'AlliedExpress',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'fc_order_status',
-      value: 'Freeshipping',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'courier_charges',
-      value: '133.35',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    }
-  ]
-}
-[2024-06-20T12:25:00.025] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
-{
-  "value": [
-    "can't be blank."
-  ]
-}
-If you report this error, please include this id: 10036c5f-5352-49eb-ad7e-8dba20494f7c-1718866499
-    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
-    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
-    at Generator.next (<anonymous>)
-    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  response: {
-    code: 422,
-    statusText: 'Unprocessable Entity',
-    body: { errors: [Object] },
-    headers: {
-      'Alt-Svc': [Array],
-      'Cf-Cache-Status': [Array],
-      'Cf-Ray': [Array],
-      Connection: [Array],
-      'Content-Security-Policy': [Array],
-      'Content-Type': [Array],
-      Date: [Array],
-      Http_x_shopify_shop_api_call_limit: [Array],
-      Nel: [Array],
-      'Referrer-Policy': [Array],
-      'Report-To': [Array],
-      Server: [Array],
-      'Server-Timing': [Array],
-      'Strict-Transport-Security': [Array],
-      'Transfer-Encoding': [Array],
-      'X-Content-Type-Options': [Array],
-      'X-Dc': [Array],
-      'X-Download-Options': [Array],
-      'X-Frame-Options': [Array],
-      'X-Permitted-Cross-Domain-Policies': [Array],
-      'X-Request-Id': [Array],
-      'X-Shardid': [Array],
-      'X-Shopid': [Array],
-      'X-Shopify-Api-Version': [Array],
-      'X-Shopify-Api-Version-Warning': [Array],
-      'X-Shopify-Shop-Api-Call-Limit': [Array],
-      'X-Sorting-Hat-Podid': [Array],
-      'X-Sorting-Hat-Shopid': [Array],
-      'X-Stats-Apiclientid': [Array],
-      'X-Stats-Apipermissionid': [Array],
-      'X-Stats-Userid': [Array],
-      'X-Xss-Protection': [Array]
+[2024-07-12T16:30:32.874] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'second',
+  pickupLastName: 'address',
+  pickupCompanyName: '',
+  pickupEmail: 'second+add@gmail.com',
+  pickupAddress1: 'st no 2 cemeron street',
+  pickupAddress2: null,
+  pickupPhone: '04587878784',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Sydney',
+  destinationState: 'NSW',
+  destinationPostcode: '2000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'AWS',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '2000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '600',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T16:30:35.698] [INFO] default - [
+  {
+    amount: '30.06',
+    description: 'Includes tracking and insurance',
+    eta: '3 Business Days',
+    serviceCode: '(WJQWNPRBKO-RNMEQLABEM)',
+    courierName: 'Star Track',
+    totalPrice: '30.06',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'second',
+      pickupLastName: 'address',
+      pickupCompanyName: '',
+      pickupEmail: 'second+add@gmail.com',
+      pickupAddress1: 'st no 2 cemeron street',
+      pickupAddress2: null,
+      pickupPhone: '04587878784',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Sydney',
+      destinationState: 'NSW',
+      destinationPostcode: '2000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'AWS',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '2000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '600',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
     }
   }
-}
-[2024-06-20T12:32:23.585] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
-{
-  "value": [
-    "can't be blank."
+] quotes
+[2024-07-12T16:30:35.699] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [Star Track]',
+      service_code: '(WJQWNPRBKO-RNMEQLABEM)~[PAID]~[30.06]',
+      total_price: '3005.9999999999995',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
   ]
-}
-If you report this error, please include this id: cff1037d-e5af-4700-8e7f-445f56e2b28f-1718866943
-    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
-    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
-    at Generator.next (<anonymous>)
-    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  response: {
-    code: 422,
-    statusText: 'Unprocessable Entity',
-    body: { errors: [Object] },
-    headers: {
-      'Alt-Svc': [Array],
-      'Cf-Cache-Status': [Array],
-      'Cf-Ray': [Array],
-      Connection: [Array],
-      'Content-Security-Policy': [Array],
-      'Content-Type': [Array],
-      Date: [Array],
-      Http_x_shopify_shop_api_call_limit: [Array],
-      Nel: [Array],
-      'Referrer-Policy': [Array],
-      'Report-To': [Array],
-      Server: [Array],
-      'Server-Timing': [Array],
-      'Strict-Transport-Security': [Array],
-      'Transfer-Encoding': [Array],
-      'X-Content-Type-Options': [Array],
-      'X-Dc': [Array],
-      'X-Download-Options': [Array],
-      'X-Frame-Options': [Array],
-      'X-Permitted-Cross-Domain-Policies': [Array],
-      'X-Request-Id': [Array],
-      'X-Shardid': [Array],
-      'X-Shopid': [Array],
-      'X-Shopify-Api-Version': [Array],
-      'X-Shopify-Api-Version-Warning': [Array],
-      'X-Shopify-Shop-Api-Call-Limit': [Array],
-      'X-Sorting-Hat-Podid': [Array],
-      'X-Sorting-Hat-Shopid': [Array],
-      'X-Stats-Apiclientid': [Array],
-      'X-Stats-Apipermissionid': [Array],
-      'X-Stats-Userid': [Array],
-      'X-Xss-Protection': [Array]
+} response
+[2024-07-12T16:46:28.876] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T16:46:28.884] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'second',
+  pickupLastName: 'address',
+  pickupCompanyName: '',
+  pickupEmail: 'second+add@gmail.com',
+  pickupAddress1: 'st no 2 cemeron street',
+  pickupAddress2: null,
+  pickupPhone: '04587878784',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Sydney',
+  destinationState: 'NSW',
+  destinationPostcode: '2000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'AWS',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '2000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '600',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":1,"width":50,"height":50,"length":50,"weight":40,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T16:46:31.237] [INFO] default - [
+  {
+    amount: '325.38',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(GPQDKLAPGO-RNOEQLAGEO)',
+    courierName: 'TNT',
+    totalPrice: '325.38',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'second',
+      pickupLastName: 'address',
+      pickupCompanyName: '',
+      pickupEmail: 'second+add@gmail.com',
+      pickupAddress1: 'st no 2 cemeron street',
+      pickupAddress2: null,
+      pickupPhone: '04587878784',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Sydney',
+      destinationState: 'NSW',
+      destinationPostcode: '2000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'AWS',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '2000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '600',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":1,"width":50,"height":50,"length":50,"weight":40,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
     }
   }
-}
-[2024-06-20T13:34:05.952] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:36:24.998] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:36:33.968] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:37:17.274] [INFO] default - order-metafields-on-webhook== Order {
-  id: 5799481409755,
-  metafields: [
+] quotes
+[2024-07-12T16:46:31.238] [INFO] default - {
+  rates: [
     {
-      key: 'quote_id',
-      value: 'NPOAYEXPKO',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'order_hash_id',
-      value: 'GRMRPGKBPM',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'carrier_name',
-      value: 'TNT',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'fc_order_status',
-      value: 'Freeshipping',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'courier_charges',
-      value: '42.65',
-      type: 'single_line_text_field',
-      namespace: 'Order'
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(GPQDKLAPGO-RNOEQLAGEO)~[PAID]~[325.38]',
+      total_price: '32538',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
     }
   ]
-}
-[2024-06-20T13:37:52.704] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:38:32.197] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:39:07.015] [INFO] default - order-metafields-on-webhook== Order {
-  id: 5799482294491,
-  metafields: [
-    {
-      key: 'quote_id',
-      value: 'XEQZBVMLZQ',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'order_hash_id',
-      value: 'WKOVEZWBJM',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'carrier_name',
-      value: 'TNT',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'fc_order_status',
-      value: 'Paid',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'courier_charges',
-      value: '40.35',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    }
-  ]
-}
-[2024-06-20T13:40:21.655] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:41:43.175] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:42:14.853] [INFO] default - order-metafields-on-webhook== Order {
-  id: 5799483736283,
-  metafields: [
-    {
-      key: 'quote_id',
-      value: 'XEQZBVMWZQ',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'order_hash_id',
-      value: 'ZPOLRPEXAO',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'carrier_name',
-      value: 'Zoom2u',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'fc_order_status',
-      value: 'Paid',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'courier_charges',
-      value: '36.85',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    }
-  ]
-}
-[2024-06-20T13:43:01.366] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
-{
-  "value": [
-    "can't be blank."
-  ]
-}
-If you report this error, please include this id: c8d748e6-a844-4bfb-ae72-5a145a2d183d-1718871181
-    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
-    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
-    at Generator.next (<anonymous>)
-    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  response: {
-    code: 422,
-    statusText: 'Unprocessable Entity',
-    body: { errors: [Object] },
-    headers: {
-      'Alt-Svc': [Array],
-      'Cf-Cache-Status': [Array],
-      'Cf-Ray': [Array],
-      Connection: [Array],
-      'Content-Security-Policy': [Array],
-      'Content-Type': [Array],
-      Date: [Array],
-      Http_x_shopify_shop_api_call_limit: [Array],
-      Nel: [Array],
-      'Referrer-Policy': [Array],
-      'Report-To': [Array],
-      Server: [Array],
-      'Server-Timing': [Array],
-      'Strict-Transport-Security': [Array],
-      'Transfer-Encoding': [Array],
-      'X-Content-Type-Options': [Array],
-      'X-Dc': [Array],
-      'X-Download-Options': [Array],
-      'X-Frame-Options': [Array],
-      'X-Permitted-Cross-Domain-Policies': [Array],
-      'X-Request-Id': [Array],
-      'X-Shardid': [Array],
-      'X-Shopid': [Array],
-      'X-Shopify-Api-Version': [Array],
-      'X-Shopify-Api-Version-Warning': [Array],
-      'X-Shopify-Shop-Api-Call-Limit': [Array],
-      'X-Sorting-Hat-Podid': [Array],
-      'X-Sorting-Hat-Shopid': [Array],
-      'X-Stats-Apiclientid': [Array],
-      'X-Stats-Apipermissionid': [Array],
-      'X-Stats-Userid': [Array],
-      'X-Xss-Protection': [Array]
+} response
+[2024-07-12T16:47:44.574] [INFO] default - codes (GPQDKLAPGO-RNOEQLAGEO)~[PAID]~[325.38]
+[2024-07-12T17:01:05.600] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T17:01:05.611] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'second',
+  pickupLastName: 'address',
+  pickupCompanyName: '',
+  pickupEmail: 'second+add@gmail.com',
+  pickupAddress1: 'st no 2 cemeron street',
+  pickupAddress2: null,
+  pickupPhone: '04587878784',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Melbourne',
+  destinationState: 'VIC',
+  destinationPostcode: '3000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: null,
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '3000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '600',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T17:01:08.356] [INFO] default - [
+  {
+    amount: '330.57',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(BWOJAXYWAQ-BNOBJLKYGO)',
+    courierName: 'TNT',
+    totalPrice: '330.57',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'second',
+      pickupLastName: 'address',
+      pickupCompanyName: '',
+      pickupEmail: 'second+add@gmail.com',
+      pickupAddress1: 'st no 2 cemeron street',
+      pickupAddress2: null,
+      pickupPhone: '04587878784',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Melbourne',
+      destinationState: 'VIC',
+      destinationPostcode: '3000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: null,
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '3000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '600',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
     }
   }
-}
-[2024-06-20T13:45:28.816] [INFO] default - book-orders-error== HttpResponseError: Received an error response (422 Unprocessable Entity) from Shopify:
-{
-  "value": [
-    "can't be blank."
+] quotes
+[2024-07-12T17:01:08.357] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(BWOJAXYWAQ-BNOBJLKYGO)~[PAID]~[330.57]',
+      total_price: '0',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
   ]
-}
-If you report this error, please include this id: afdeb4bc-e632-461b-9267-ee0cf3e0c639-1718871328
-    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
-    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
-    at Generator.next (<anonymous>)
-    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  response: {
-    code: 422,
-    statusText: 'Unprocessable Entity',
-    body: { errors: [Object] },
-    headers: {
-      'Alt-Svc': [Array],
-      'Cf-Cache-Status': [Array],
-      'Cf-Ray': [Array],
-      Connection: [Array],
-      'Content-Security-Policy': [Array],
-      'Content-Type': [Array],
-      Date: [Array],
-      Http_x_shopify_shop_api_call_limit: [Array],
-      Nel: [Array],
-      'Referrer-Policy': [Array],
-      'Report-To': [Array],
-      Server: [Array],
-      'Server-Timing': [Array],
-      'Strict-Transport-Security': [Array],
-      'Transfer-Encoding': [Array],
-      'X-Content-Type-Options': [Array],
-      'X-Dc': [Array],
-      'X-Download-Options': [Array],
-      'X-Frame-Options': [Array],
-      'X-Permitted-Cross-Domain-Policies': [Array],
-      'X-Request-Id': [Array],
-      'X-Shardid': [Array],
-      'X-Shopid': [Array],
-      'X-Shopify-Api-Version': [Array],
-      'X-Shopify-Api-Version-Warning': [Array],
-      'X-Shopify-Shop-Api-Call-Limit': [Array],
-      'X-Sorting-Hat-Podid': [Array],
-      'X-Sorting-Hat-Shopid': [Array],
-      'X-Stats-Apiclientid': [Array],
-      'X-Stats-Apipermissionid': [Array],
-      'X-Stats-Userid': [Array],
-      'X-Xss-Protection': [Array]
+} response
+[2024-07-12T17:01:18.157] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T17:01:18.160] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'second',
+  pickupLastName: 'address',
+  pickupCompanyName: '',
+  pickupEmail: 'second+add@gmail.com',
+  pickupAddress1: 'st no 2 cemeron street',
+  pickupAddress2: null,
+  pickupPhone: '04587878784',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Melbourne',
+  destinationState: 'VIC',
+  destinationPostcode: '3000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'AQQ AQSWW',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '3000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '600',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T17:01:19.898] [INFO] default - [
+  {
+    amount: '330.57',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(WVQXPVZDBQ-PLOGGWXLNO)',
+    courierName: 'TNT',
+    totalPrice: '330.57',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'second',
+      pickupLastName: 'address',
+      pickupCompanyName: '',
+      pickupEmail: 'second+add@gmail.com',
+      pickupAddress1: 'st no 2 cemeron street',
+      pickupAddress2: null,
+      pickupPhone: '04587878784',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Melbourne',
+      destinationState: 'VIC',
+      destinationPostcode: '3000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'AQQ AQSWW',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '3000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '600',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
     }
   }
-}
-[2024-06-20T13:47:22.847] [INFO] default - [ { name: 'Le petite box-0', width: 25, height: 25, length: 25 } ] _bins 0
-[2024-06-20T13:47:48.872] [INFO] default - order-metafields-on-webhook== Order {
-  id: 5799486816475,
-  metafields: [
+] quotes
+[2024-07-12T17:01:19.899] [INFO] default - {
+  rates: [
     {
-      key: 'quote_id',
-      value: 'REOEAKGBPO',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'order_hash_id',
-      value: 'BLMPVREBZM',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'carrier_name',
-      value: 'TNT',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'fc_order_status',
-      value: 'Freeshipping',
-      type: 'single_line_text_field',
-      namespace: 'Order'
-    },
-    {
-      key: 'courier_charges',
-      value: '42.65',
-      type: 'single_line_text_field',
-      namespace: 'Order'
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(WVQXPVZDBQ-PLOGGWXLNO)~[PAID]~[330.57]',
+      total_price: '0',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
     }
   ]
-}
+} response
+[2024-07-12T17:02:28.125] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T17:02:28.131] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'new',
+  pickupLastName: 'Test',
+  pickupCompanyName: '',
+  pickupEmail: 'test+user123@gmail.com',
+  pickupAddress1: 'street no 627 hometown',
+  pickupAddress2: null,
+  pickupPhone: '0123456789',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Melbourne',
+  destinationState: 'VIC',
+  destinationPostcode: '3000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'AQQ AQSWW',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '3000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '1025',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T17:02:30.312] [INFO] default - [
+  {
+    amount: '330.57',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(ZDQYNDBJXO-NXOJQXRKGM)',
+    courierName: 'TNT',
+    totalPrice: '330.57',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'new',
+      pickupLastName: 'Test',
+      pickupCompanyName: '',
+      pickupEmail: 'test+user123@gmail.com',
+      pickupAddress1: 'street no 627 hometown',
+      pickupAddress2: null,
+      pickupPhone: '0123456789',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Melbourne',
+      destinationState: 'VIC',
+      destinationPostcode: '3000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'AQQ AQSWW',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '3000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '1025',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
+    }
+  }
+] quotes
+[2024-07-12T17:02:30.313] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(ZDQYNDBJXO-NXOJQXRKGM)~[PAID]~[330.57]',
+      total_price: '33057',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+} response
+[2024-07-12T17:03:10.876] [INFO] default - codes (ZDQYNDBJXO-NXOJQXRKGM)~[PAID]~[330.57]
+[2024-07-12T17:52:58.720] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T17:52:58.726] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'new',
+  pickupLastName: 'Test',
+  pickupCompanyName: '',
+  pickupEmail: 'test+user123@gmail.com',
+  pickupAddress1: 'street no 627 hometown',
+  pickupAddress2: null,
+  pickupPhone: '0123456789',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Melbourne',
+  destinationState: 'VIC',
+  destinationPostcode: '3000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: null,
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '3000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '1025',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T17:53:01.026] [INFO] default - [
+  {
+    amount: '330.57',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(GPOKMYLVDO-YEOQQRWZXO)',
+    courierName: 'TNT',
+    totalPrice: '330.57',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'new',
+      pickupLastName: 'Test',
+      pickupCompanyName: '',
+      pickupEmail: 'test+user123@gmail.com',
+      pickupAddress1: 'street no 627 hometown',
+      pickupAddress2: null,
+      pickupPhone: '0123456789',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Melbourne',
+      destinationState: 'VIC',
+      destinationPostcode: '3000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: null,
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '3000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '1025',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
+    }
+  }
+] quotes
+[2024-07-12T17:53:01.028] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(GPOKMYLVDO-YEOQQRWZXO)~[PAID]~[330.57]',
+      total_price: '33057',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+} response
+[2024-07-12T17:53:13.292] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-12T17:53:13.295] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'new',
+  pickupLastName: 'Test',
+  pickupCompanyName: '',
+  pickupEmail: 'test+user123@gmail.com',
+  pickupAddress1: 'street no 627 hometown',
+  pickupAddress2: null,
+  pickupPhone: '0123456789',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Melbourne',
+  destinationState: 'VIC',
+  destinationPostcode: '3000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'AAA AWS',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '3000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '1025',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-12T17:53:15.084] [INFO] default - [
+  {
+    amount: '330.57',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(NPQAYRLWRQ-JNMAELJXBM)',
+    courierName: 'TNT',
+    totalPrice: '330.57',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'new',
+      pickupLastName: 'Test',
+      pickupCompanyName: '',
+      pickupEmail: 'test+user123@gmail.com',
+      pickupAddress1: 'street no 627 hometown',
+      pickupAddress2: null,
+      pickupPhone: '0123456789',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Melbourne',
+      destinationState: 'VIC',
+      destinationPostcode: '3000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'AAA AWS',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '3000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '1025',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
+    }
+  }
+] quotes
+[2024-07-12T17:53:15.085] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(NPQAYRLWRQ-JNMAELJXBM)~[PAID]~[330.57]',
+      total_price: '33057',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+} response
+[2024-07-12T17:53:39.923] [INFO] default - codes (NPQAYRLWRQ-JNMAELJXBM)~[PAID]~[330.57]
+[2024-07-15T10:38:44.238] [INFO] default - [
+  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
+  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+] _bins 0
+[2024-07-15T10:38:44.244] [INFO] default - {
+  request_type: 'wp',
+  pickupFirstName: 'new',
+  pickupLastName: 'Test',
+  pickupCompanyName: '',
+  pickupEmail: 'test+user123@gmail.com',
+  pickupAddress1: 'street no 627 hometown',
+  pickupAddress2: null,
+  pickupPhone: '0123456789',
+  pickupSuburb: 'SYDNEY',
+  pickupState: 'NSW',
+  pickupPostcode: '2000',
+  pickupBuildingType: 'residential',
+  pickupTimeWindow: '9am to 5pm',
+  isPickupTailLift: '0',
+  destinationSuburb: 'Perth',
+  destinationState: 'WA',
+  destinationPostcode: '6000',
+  destinationBuildingType: 'residential',
+  destinationFirstName: 'dds dd',
+  destinationLastName: '',
+  destinationCompanyName: 'NA',
+  destinationEmail: null,
+  destinationAddress1: '6000',
+  destinationAddress2: '',
+  destinationPhone: null,
+  parcelContent: 'Order from Main Hub',
+  valueOfContent: '1359.9',
+  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+  isDropOffTailLift: 1,
+  orderType: '8'
+} payload
+[2024-07-15T10:38:47.042] [INFO] default - [
+  {
+    amount: '446.7',
+    description: 'Includes tracking and insurance',
+    eta: '4 Business Days',
+    serviceCode: '(WVOXPVMVVO-EYMKYAVNKM)',
+    courierName: 'TNT',
+    totalPrice: '446.7',
+    quoteData: {
+      status: 1,
+      data: [Object],
+      request_type: 'wp',
+      pickupFirstName: 'new',
+      pickupLastName: 'Test',
+      pickupCompanyName: '',
+      pickupEmail: 'test+user123@gmail.com',
+      pickupAddress1: 'street no 627 hometown',
+      pickupAddress2: null,
+      pickupPhone: '0123456789',
+      pickupSuburb: 'SYDNEY',
+      pickupState: 'NSW',
+      pickupPostcode: '2000',
+      pickupBuildingType: 'residential',
+      pickupTimeWindow: '9am to 5pm',
+      isPickupTailLift: '0',
+      destinationSuburb: 'Perth',
+      destinationState: 'WA',
+      destinationPostcode: '6000',
+      destinationBuildingType: 'residential',
+      destinationFirstName: 'dds dd',
+      destinationLastName: '',
+      destinationCompanyName: 'NA',
+      destinationEmail: null,
+      destinationAddress1: '6000',
+      destinationAddress2: '',
+      destinationPhone: null,
+      parcelContent: 'Order from Main Hub',
+      valueOfContent: '1359.9',
+      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
+      isDropOffTailLift: 1,
+      orderType: '8'
+    }
+  }
+] quotes
+[2024-07-15T10:38:47.043] [INFO] default - {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(WVOXPVMVVO-EYMKYAVNKM)~[PAID]~[446.7]',
+      total_price: '44670',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+} response
+[2024-07-15T10:40:56.208] [INFO] default - codes (WVOXPVMVVO-EYMKYAVNKM)~[PAID]~[446.7]

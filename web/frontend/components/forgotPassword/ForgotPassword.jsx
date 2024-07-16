@@ -8,6 +8,7 @@ import { Loader } from "../loader";
 import { SuccessModal } from "../successModal";
 import { useAuthenticatedFetch } from "../../hooks";
 import { ErrorModal } from "../errorModal";
+import { headers } from "../../globals";
 
 export function ForgotPassword(props) {
     const [email, setEmail] = useState("");
@@ -26,12 +27,7 @@ export function ForgotPassword(props) {
         const payload = {
             "email": email,
         }
-        const headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "request-type": process.env.REQUEST_TYPE,
-            "version": "3.1.1",
-        }
+        
         axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/forgot_password`, payload, { "headers": headers }).then(response => {
             setIsLoading(false);
             setShowModal(true);

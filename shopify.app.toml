@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier"
 handle = "fast-courier"
-application_url = "https://happening-pollution-bulgaria-bare.trycloudflare.com"
+application_url = "https://tommy-exchanges-recipient-sas.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/auth/callback",
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/auth/shopify/callback",
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/auth/callback"
+  "https://tommy-exchanges-recipient-sas.trycloudflare.com/auth/callback",
+  "https://tommy-exchanges-recipient-sas.trycloudflare.com/auth/shopify/callback",
+  "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

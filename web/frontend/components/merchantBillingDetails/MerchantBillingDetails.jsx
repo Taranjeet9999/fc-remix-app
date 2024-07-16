@@ -5,6 +5,7 @@ import "./style.css";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
+import { headers } from "../../globals";
 
 export function MerchantBillingDetails(props) {
   const [billingFirstName, setBillingFirstName] = useState("");
@@ -128,7 +129,6 @@ export function MerchantBillingDetails(props) {
   }
 
   function getSelectedCategoryOfGoods() {
-    console.log(selectedGoods, "selectedGoods");
     return selectedGoods ?? [];
   }
   const [timeoutId, setTimeoutId] = useState(null);
@@ -179,13 +179,7 @@ export function MerchantBillingDetails(props) {
   const getMerchantDetails = (categories) => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${
@@ -275,13 +269,7 @@ export function MerchantBillingDetails(props) {
   const getCategoryOfGoods = () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+   
     axios
       .get(
         `${
@@ -352,7 +340,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/shipping-rates"
+        "https://tommy-exchanges-recipient-sas.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }
@@ -442,13 +430,7 @@ export function MerchantBillingDetails(props) {
   async function getSuburbs(search = "") {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+      
 
       const apiUrl =
         localStorage.getItem("isProduction") === "1"
@@ -474,13 +456,7 @@ export function MerchantBillingDetails(props) {
 
   const getCouriers = () => {
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${
@@ -542,13 +518,7 @@ export function MerchantBillingDetails(props) {
           categoriesOfGoods: selectedGoods ?? [],
         };
         props.setActiveApiPayload(payload);
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-          Authorization: "Bearer " + accessToken,
-        };
+        
         await axios
           .post(
             `${
@@ -771,13 +741,7 @@ export function MerchantBillingDetails(props) {
       if (!accessToken || !merchantDomainId) {
         return;
       }
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+     
 
       axios
         .get(
@@ -805,13 +769,7 @@ export function MerchantBillingDetails(props) {
     if (!accessToken || !merchantDomainId) {
       return;
     }
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${

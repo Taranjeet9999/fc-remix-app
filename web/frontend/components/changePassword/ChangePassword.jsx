@@ -7,6 +7,7 @@ import { Loader } from "../loader";
 import { SuccessModal } from "../successModal";
 import { ErrorModal } from "../errorModal";
 import PasswordInput from "../login/PasswordInput";
+import { headers } from "../../globals";
 
 export function ChangePassword(props) {
     const [password, setPassword] = useState("");
@@ -50,13 +51,7 @@ export function ChangePassword(props) {
             "new_password": newPassword,
             "confirm_password": confirmPassword,
         }
-        const headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "request-type": process.env.REQUEST_TYPE,
-            "Version": "3.1.1",
-            "Authorization": "Bearer " + accessToken
-        }
+       
         axios.post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/change_password`, payload, { "headers": headers }).then(response => {
              
             setIsLoading(false);

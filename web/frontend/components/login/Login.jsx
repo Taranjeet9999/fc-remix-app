@@ -6,6 +6,7 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAuthenticatedFetch } from "../../hooks";
 import PasswordInput from "./PasswordInput";
+import { headers } from "../../globals";
 
 export function Login(props) {
   const [email, setEmail] = useState("");
@@ -43,12 +44,7 @@ export function Login(props) {
           email: email,
           password: password,
         };
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-        };
+     
         axios
           .post(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/login`, payload, {
             headers: headers,

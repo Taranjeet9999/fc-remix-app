@@ -11,6 +11,7 @@ import { ConfirmModal } from "../confirmModal";
 
      
 import { Link, useNavigate } from "react-router-dom";
+import { headers } from "../../globals";
 
 export function FallbackOrders() {
     const fetch = useAuthenticatedFetch();
@@ -69,13 +70,7 @@ export function FallbackOrders() {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+     
       axios
         .get(
           `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
@@ -98,13 +93,7 @@ export function FallbackOrders() {
   
     const getHolidays = () => {
       const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+      
       axios
         .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
           headers: headers,
@@ -262,13 +251,7 @@ export function FallbackOrders() {
     const bookSelectedOrders = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-          Authorization: "Bearer " + accessToken,
-        };
+        
         const selectedOrderDetails = orders?.filter((element) =>
           selectedOrders.includes(`${element.id}`)
         );

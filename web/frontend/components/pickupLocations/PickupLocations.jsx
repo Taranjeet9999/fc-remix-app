@@ -9,6 +9,7 @@ import { ConfirmModal } from "../confirmModal";
 import CustomTooltip from "../customToolTip/CustomToolTip";
 import { useAuthenticatedFetch } from "../../hooks";
 import {   toast } from 'react-toastify';
+import { headers } from "../../globals";
 export function PickupLocations(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -23,13 +24,7 @@ export function PickupLocations(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+     
     axios
       .get(
         `${
@@ -63,13 +58,7 @@ export function PickupLocations(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+     
 
       axios
         .get(
@@ -97,13 +86,7 @@ export function PickupLocations(props) {
     setIsLoading(true);
     console.log("locationId==", element.id);
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+   
     const payload = {};
     axios
       .post(

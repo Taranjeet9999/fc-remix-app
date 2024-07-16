@@ -9,7 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
-import { getAddress, getCurrentDate, getNextSixDays } from "../newOrders/NewOrders";
+import { getAddress, getCurrentDate, getNextSixDays, getOrderDataMetaField } from "../newOrders/NewOrders";
+import { headers } from "../../globals";
 
 export function HoldOrders() {
   const fetch = useAuthenticatedFetch();
@@ -64,13 +65,7 @@ export function HoldOrders() {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
@@ -91,52 +86,95 @@ export function HoldOrders() {
       });
   };
 
+  const create2DArray = (_orders) => {
+    return _orders.map((element) => {
+      const orderDataEdge = element.node.metafields.edges.find(
+        (edge) => edge.node.key === "order_data"
+      );
+      if (orderDataEdge) {
+        const orderData = JSON.parse(orderDataEdge.node.value);
+        let _orderArray = new Array(orderData.length).fill(null);
+
+        for (let index = 0; index < _orderArray.length; index++) {
+          const order = orderData[index];
+          _orderArray[index] = {
+            quoteId: order.quote_id,
+            orderHashId: order.order_id,
+            collectionDate: collectionDate,
+            destinationEmail: element?.contact_email,
+            destinationPhone: element?.customer?.phone,
+            wpOrderId: element?.order_number,
+            destinationFirstName: element?.shipping_address.first_name,
+            destinationLastName: element?.shipping_address.last_name,
+            destinationCompanyName: element?.shipping_address.company,
+            destinationAddress1: element?.shipping_address.address1,
+            destinationAddress2: element?.shipping_address.address2,
+            pickupFirstName: defaultLocation?.first_name,
+            pickupLastName: defaultLocation?.last_name,
+            pickupCompanyName: null,
+            pickupAddress1: defaultLocation?.address1,
+            pickupAddress2: defaultLocation?.address2,
+            pickupPhone: defaultLocation?.phone,
+            pickupEmail: defaultLocation?.email,
+            atl: false, 
+            // ...order,
+          };
+        }
+
+        return _orderArray;
+      }
+      return [];
+    });
+  };
+
+  const convertTo2DArray = (flatArray, TwoDArray) => {
+    let index = 0;
+    return TwoDArray.map(innerArray => {
+      return innerArray.map(() => flatArray[index++]);
+    });
+  }
+
   const bookSelectedOrders = async () => {
     try {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        "version": "3.1.1",
-        "Authorization": "Bearer " + accessToken
-      }
+   
       const selectedOrderDetails = orders?.filter((element) => selectedOrders.includes(`${element.id}`));
 
+      const orderStructure = create2DArray(selectedOrderDetails); 
       
 
-      var bookOrders = [];
-      for (const element of selectedOrderDetails) {
-        const order = {
-          quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
-          orderHashId: getMetaValue(
-            element.node?.metafields?.edges,
-            "order_hash_id"
-          ),
-          collectionDate: collectionDate,
-          destinationEmail: element?.contact_email,
-          destinationPhone:  element?.customer?.phone,
-          wpOrderId: element?.order_number,
-          destinationFirstName: element?.shipping_address.first_name,
-          destinationLastName: element?.shipping_address.last_name,
-          destinationCompanyName: element?.shipping_address.company,
-          destinationAddress1: element?.shipping_address.address1,
-          destinationAddress2: element?.shipping_address.address2,
-          pickupFirstName: defaultLocation?.first_name,
-          pickupLastName: defaultLocation?.last_name,
-          pickupCompanyName: null,
-          pickupAddress1: defaultLocation?.address1,
-          pickupAddress2: defaultLocation?.address2,
-          pickupPhone: defaultLocation?.phone,
-          pickupEmail: defaultLocation?.email,
-          atl: false,
-        };
+      // var bookOrders = [];
+      // for (const element of selectedOrderDetails) {
+      //   const order = {
+      //     quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
+      //     orderHashId: getMetaValue(
+      //       element.node?.metafields?.edges,
+      //       "order_hash_id"
+      //     ),
+      //     collectionDate: collectionDate,
+      //     destinationEmail: element?.contact_email,
+      //     destinationPhone:  element?.customer?.phone,
+      //     wpOrderId: element?.order_number,
+      //     destinationFirstName: element?.shipping_address.first_name,
+      //     destinationLastName: element?.shipping_address.last_name,
+      //     destinationCompanyName: element?.shipping_address.company,
+      //     destinationAddress1: element?.shipping_address.address1,
+      //     destinationAddress2: element?.shipping_address.address2,
+      //     pickupFirstName: defaultLocation?.first_name,
+      //     pickupLastName: defaultLocation?.last_name,
+      //     pickupCompanyName: null,
+      //     pickupAddress1: defaultLocation?.address1,
+      //     pickupAddress2: defaultLocation?.address2,
+      //     pickupPhone: defaultLocation?.phone,
+      //     pickupEmail: defaultLocation?.email,
+      //     atl: false,
+      //   };
 
-        bookOrders.push(order);
-      }
+      //   bookOrders.push(order);
+      // }
       const payload = {
-        orders: bookOrders,
+        orders: orderStructure.flat(1),
         isReprocessOrders: false,
         request_type: "wp",
       };
@@ -149,7 +187,10 @@ export function HoldOrders() {
         { headers: headers }
       )
       .then((response) => {
-        let output = response.data.response;
+        let _output = convertTo2DArray(
+          response.data.response,
+          orderStructure
+        ) 
         fetch("/api/book-orders", {
           method: "POST",
           headers: {
@@ -157,8 +198,8 @@ export function HoldOrders() {
           },
           body: JSON.stringify({
             collectionDate: collectionDate,
-            orderIds: selectedOrders,
-            orderStatuses:output
+              orders: selectedOrderDetails,
+              orderStatuses: _output,
           }),
         });
         setIsLoading(false);
@@ -430,22 +471,27 @@ export function HoldOrders() {
             </th>
             <th>Order Id</th>
             <th>Date</th>
+            <th>Fastcourier Refrence No.</th>
             <th>Customer</th>
             <th>Ship To</th>
             <th>Status</th>
             <th>Remarks</th>
             <th>Total</th>
             <th>packages</th>
-            <th>Shipping type</th>
+            {/* <th>Shipping type</th> */}
+            <th>Carrier details</th>
             <th>Actions</th>
           </tr>
           {orders?.length > 0 &&
             orders.map((element, i) => {
               if (
-                getMetaValue(
-                  element.node?.metafields?.edges,
-                  "fc_order_status"
-                ) == "Hold"
+                // getMetaValue(
+                //   element.node?.metafields?.edges,
+                //   "fc_order_status"
+                // ) == "Hold"
+                getOrderDataMetaField(element)?.some(
+                  (item) => item?.order_status === "Hold"
+                ) === true
               ) {
                 return (
                   <tr
@@ -475,20 +521,51 @@ export function HoldOrders() {
                       {new Date(element.created_at).toLocaleDateString("en-GB")}
                     </td>
                     <td width="15%">
+                      {/* Fast courier refernce Number */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => item?.order_id)
+                        .join(", ")}
+                    </td>
+                    <td width="10%">
                     {element?.shipping_address?.first_name + " " + element?.shipping_address?.last_name}
                     </td>
-                    <td width="15%">
+                    <td width="10%">
                     {element?.shipping_address != null
     ? getAddress(element.shipping_address)
     : getAddress(element.billing_address)}
                     </td>
-                    <td width="8%">{"Hold"}</td>
+                    <td width="8%">
+                      {/* Fast courier Order Status */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `${item?.order_status}`)
+                        .join(", ")}
+                    </td>
                     <td width="8%">{"NA"}</td>
                     <td width={"8%"}>${element.subtotal_price}</td>
                     <td width="7%">
                       {element.line_items[0].fulfillable_quantity}
                     </td>
-                    <td width="15%">{"NA"}</td>
+                    <td width="15%">
+                         {/* Carrier Details */} 
+                         {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `$${item?.price}(${item?.courierName})`)
+                        .join(", ")}
+                    </td>
                     <td width="10%" className="order-actions">
                       {/* <FontAwesomeIcon
                         icon="fa-solid fa-pen-to-square"

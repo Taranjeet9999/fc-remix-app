@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://happening-pollution-bulgaria-bare.trycloudflare.com"
+application_url = "https://zealand-alerts-upset-proposals.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/auth/callback",
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/auth/shopify/callback",
-  "https://happening-pollution-bulgaria-bare.trycloudflare.com/api/auth/callback"
+  "https://zealand-alerts-upset-proposals.trycloudflare.com/auth/callback",
+  "https://zealand-alerts-upset-proposals.trycloudflare.com/auth/shopify/callback",
+  "https://zealand-alerts-upset-proposals.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

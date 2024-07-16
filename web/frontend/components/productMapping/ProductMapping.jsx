@@ -10,7 +10,7 @@ import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import Papa from "papaparse";
 import { csv } from "csvtojson";
-import { locationMetafields } from "../../globals";
+import { headers, locationMetafields } from "../../globals";
 
 export function ProductMapping(props) {
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
@@ -41,14 +41,14 @@ export function ProductMapping(props) {
   const [selectedProductType, setSelectedProductType] = useState("all");
   const [productData, setProductData] = useState([]);
   const [shippingPackageName, setShippingPackageName] = useState("");
-  const [shippingBoxToDelete, setShippingBoxToDelete] = useState()
+  const [shippingBoxToDelete, setShippingBoxToDelete] = useState();
   const [shippingPackageType, setShippingPackageType] = useState("");
   const [shippingPackageHeight, setShippingPackageHeight] = useState("");
   const [shippingPackageLength, setShippingPackageLength] = useState("");
   const [shippingPackageWidth, setShippingPackageWidth] = useState("");
   const [isDefaultShippingPackage, setIsDefaultShippingPackage] =
     useState("No");
-    const [shippingBoxId, setShippingBoxId] = useState(null);
+  const [shippingBoxId, setShippingBoxId] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [openProductIds, setOpenProductIds] = useState([]);
   const [showImportDimensionsModal, setShowImportDimensionsModal] =
@@ -110,6 +110,7 @@ export function ProductMapping(props) {
             title: variantEdge.node.title,
             price: variantEdge.node.price,
             sku: variantEdge.node.sku,
+            requires_shipping: variantEdge.node.requiresShipping,
             metafields: variantEdge.node.metafields.edges.map(
               (_edge) => _edge.node
             ),
@@ -344,13 +345,7 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${
@@ -358,7 +353,7 @@ export function ProductMapping(props) {
             ? process.env.PROD_API_ENDPOINT
             : process.env.API_ENDPOINT
         }/api/wp/merchant_domain/locations/${merchantDomainId}`,
-        { headers: headers }
+        { headers: headers  }
       )
       .then((response) => {
         setIsLoading(false);
@@ -374,13 +369,7 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+     
     axios
       .get(
         `${
@@ -404,13 +393,7 @@ export function ProductMapping(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${
@@ -448,7 +431,7 @@ export function ProductMapping(props) {
 
   const handleSelectAll = (e) => {
     var selectedProductIds = e.target.checked
-      ? products.map((element) => element.id.toString())
+      ? products.filter(element=> element?.variants[0]?.requires_shipping).map((element) => element.id.toString())
       : [];
     setSelectedProducts(selectedProductIds);
 
@@ -637,7 +620,7 @@ export function ProductMapping(props) {
     }
   };
 
-  const deleteShippingBox = async ( ) => {
+  const deleteShippingBox = async () => {
     try {
       setIsLoading(true);
       await fetch("/api/shipping-box/delete", {
@@ -1031,9 +1014,10 @@ export function ProductMapping(props) {
             <div className="shipping-heading">Shipping Boxes</div>
             <div
               className="submit-btn"
-              onClick={() =>{
+              onClick={() => {
                 setShippingBoxId(null);
-                setShowAddShippingBoxModal(true)}}
+                setShowAddShippingBoxModal(true);
+              }}
             >
               Add Shipping Box
             </div>
@@ -1168,56 +1152,53 @@ export function ProductMapping(props) {
                     {/* {!shippingBoxes?.some(
                       (item) => item.is_default === "Yes"
                     ) && ( */}
-                      <div className="input-container1">
-                        <div className="input-lebel1">
-                          <span> Default&nbsp;</span>
-                          <span style={{ color: "red" }}> *</span>
-                        </div>
-                        <div
-                          className=" "
-                          style={{
-                            width: "100%",
-                            display: "flex",
-                            /* justify-content: center, */
-                            marginTop: "10px",
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name={"isDefault"}
-                            id={"yes"}
-                            value="Yes"
-                            onChange={(e) =>
-                              setIsDefaultShippingPackage(e.target.value)
-                            }
-                            checked={isDefaultShippingPackage == "Yes"}
-                          />
-                          <label htmlFor={"yes"}>&nbsp;Yes</label>
-                          <input
-                            type="radio"
-                            name={"isDefault"}
-                            id={"no"}
-                            // it should be disabled if its id machtes with any of the shipping box id and its default is yes
-                            disabled={
-                              shippingBoxes?.some(
-                                (item) => item.id === shippingBoxId
-                              ) &&
-                             shippingBoxes?.find(
-                                (item) => item.id === shippingBoxId
-                              ).is_default === "Yes"
-                            }
-
-                           
-
-                            value="No"
-                            onChange={(e) =>
-                              setIsDefaultShippingPackage(e.target.value)
-                            }
-                            checked={isDefaultShippingPackage == "No"}
-                          />
-                          <label htmlFor={"no"}>&nbsp;No</label>
-                        </div>
+                    <div className="input-container1">
+                      <div className="input-lebel1">
+                        <span> Default&nbsp;</span>
+                        <span style={{ color: "red" }}> *</span>
                       </div>
+                      <div
+                        className=" "
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          /* justify-content: center, */
+                          marginTop: "10px",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name={"isDefault"}
+                          id={"yes"}
+                          value="Yes"
+                          onChange={(e) =>
+                            setIsDefaultShippingPackage(e.target.value)
+                          }
+                          checked={isDefaultShippingPackage == "Yes"}
+                        />
+                        <label htmlFor={"yes"}>&nbsp;Yes</label>
+                        <input
+                          type="radio"
+                          name={"isDefault"}
+                          id={"no"}
+                          // it should be disabled if its id machtes with any of the shipping box id and its default is yes
+                          disabled={
+                            shippingBoxes?.some(
+                              (item) => item.id === shippingBoxId
+                            ) &&
+                            shippingBoxes?.find(
+                              (item) => item.id === shippingBoxId
+                            ).is_default === "Yes"
+                          }
+                          value="No"
+                          onChange={(e) =>
+                            setIsDefaultShippingPackage(e.target.value)
+                          }
+                          checked={isDefaultShippingPackage == "No"}
+                        />
+                        <label htmlFor={"no"}>&nbsp;No</label>
+                      </div>
+                    </div>
                     {/* // )} */}
                   </div>
                 </div>
@@ -1266,28 +1247,29 @@ export function ProductMapping(props) {
                         {element.is_default === "No" ? (
                           <FontAwesomeIcon
                             icon="fa-solid fa-trash-can"
-                            onClick={() =>{
-                              setShippingBoxToDelete(element)
-                              setShowConfirmModal(true)}}
+                            onClick={() => {
+                              setShippingBoxToDelete(element);
+                              setShowConfirmModal(true);
+                            }}
                           />
                         ) : (
                           <></>
                         )}
-                         
+
                         <FontAwesomeIcon
-                      icon="fa-solid fa-pen-to-square"
-                      // size="2xs"
-                      onClick={() => {
-                        setShippingPackageName(element.package_name);
-                        setShippingPackageType(element.package_type);
-                        setShippingPackageHeight(element.height);
-                        setShippingPackageLength(element.length);
-                        setShippingPackageWidth(element.width);
-                        setIsDefaultShippingPackage(element.is_default);
-                        setShippingBoxId(element.id);
-                        setShowAddShippingBoxModal(true);
-                      }}
-                    />
+                          icon="fa-solid fa-pen-to-square"
+                          // size="2xs"
+                          onClick={() => {
+                            setShippingPackageName(element.package_name);
+                            setShippingPackageType(element.package_type);
+                            setShippingPackageHeight(element.height);
+                            setShippingPackageLength(element.length);
+                            setShippingPackageWidth(element.width);
+                            setIsDefaultShippingPackage(element.is_default);
+                            setShippingBoxId(element.id);
+                            setShowAddShippingBoxModal(true);
+                          }}
+                        />
                         <ConfirmModal
                           showModal={showConfirmModal}
                           onConfirm={() => deleteShippingBox()}
@@ -1665,15 +1647,18 @@ export function ProductMapping(props) {
                     style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
                   >
                     <td>
-                      <input
-                        type="checkbox"
-                        style={{ width: "40px" }}
-                        value={element.id}
-                        onChange={(e) => selectProduct(e)}
-                        checked={selectedProducts.includes(
-                          element.id.toString()
-                        )}
-                      />
+                       
+                      {element?.variants[0]?.requires_shipping && (
+                        <input
+                          type="checkbox"
+                          style={{ width: "40px" }}
+                          value={element.id}
+                          onChange={(e) => selectProduct(e)}
+                          checked={selectedProducts.includes(
+                            element.id.toString()
+                          )}
+                        />
+                      )}
                     </td>
                     <td width="10%">{element.title}</td>
                     {/* <td width="10%">{element?.variants?.[0]?.sku}</td> */}
@@ -1703,7 +1688,7 @@ export function ProductMapping(props) {
                       )}
                     </td>
                     <td width="10%">
-                      {getProductDimentionArray(
+                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
                         getProductMetaField(
                           element.metafields,
                           "product_dimentions"
@@ -1713,7 +1698,7 @@ export function ProductMapping(props) {
                       })}
                     </td>
                     <td width="20%">
-                      {getProductDimentionArray(
+                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
                         getProductMetaField(
                           element.metafields,
                           "product_dimentions"
@@ -1727,7 +1712,7 @@ export function ProductMapping(props) {
                       })}
                     </td>
                     <td width="10%">
-                      {getProductDimentionArray(
+                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
                         getProductMetaField(
                           element.metafields,
                           "product_dimentions"
@@ -1737,7 +1722,7 @@ export function ProductMapping(props) {
                       })}
                     </td>
                     <td width="10%">
-                      {getProductDimentionArray(
+                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
                         getProductMetaField(
                           element.metafields,
                           "product_dimentions"
@@ -1751,7 +1736,7 @@ export function ProductMapping(props) {
                                     <span className="slider round"></span>
                                 </label></td> */}
                     <td width="10%">
-                      <label className="switch">
+               {element?.variants[0]?.requires_shipping &&       <label className="switch">
                         <input
                           type="checkbox"
                           onChange={(e) =>
@@ -1767,10 +1752,10 @@ export function ProductMapping(props) {
                           }
                         />
                         <span className="slider round"></span>
-                      </label>
+                      </label>}
                     </td>
                     <td width="10%">
-                      {getLocationtagName(
+                      {element?.variants[0]?.requires_shipping &&getLocationtagName(
                         getProductMetaField(element.metafields, "location")
                       )}
                     </td>

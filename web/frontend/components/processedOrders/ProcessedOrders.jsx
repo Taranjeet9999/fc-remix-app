@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loader } from "../loader";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
+import { getOrderDataMetaField } from "../newOrders/NewOrders";
+import { headers } from "../../globals";
 
 export function ProcessedOrders(props) {
     const fetch = useAuthenticatedFetch();
@@ -67,13 +69,7 @@ export function ProcessedOrders(props) {
       setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const merchantDomainId = localStorage.getItem("merchantDomainId");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+      
       axios
         .get(
           `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
@@ -96,13 +92,7 @@ export function ProcessedOrders(props) {
   
     const getHolidays = () => {
       const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+      
       axios
         .get(`${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/public-holidays`, {
           headers: headers,
@@ -260,13 +250,7 @@ export function ProcessedOrders(props) {
     const bookSelectedOrders = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const headers = {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "request-type": process.env.REQUEST_TYPE,
-          version: "3.1.1",
-          Authorization: "Bearer " + accessToken,
-        };
+       
         const selectedOrderDetails = orders?.filter((element) =>
           selectedOrders.includes(`${element.id}`)
         );
@@ -595,6 +579,7 @@ export function ProcessedOrders(props) {
               </th> */}
               <th>Order Id</th>
               <th>Date</th>
+              <th>Fastcourier Refrence No.</th>
               <th>Customer</th>
               <th>Ship To</th>
               <th>Status</th>
@@ -607,14 +592,17 @@ export function ProcessedOrders(props) {
             {orders?.length > 0 &&
               orders?.map((element, i) => {
                 if (
-                    getMetaValue(
-                        element.node?.metafields?.edges,
-                        "fc_order_status"
-                      ) == "Booked for collection" ||
-                      getMetaValue(
-                        element.node?.metafields?.edges,
-                        "fc_order_status"
-                      ) == "Processed"
+                    // getMetaValue(
+                    //     element.node?.metafields?.edges,
+                    //     "fc_order_status"
+                    //   ) == "Booked for collection" ||
+                    //   getMetaValue(
+                    //     element.node?.metafields?.edges,
+                    //     "fc_order_status"
+                    //   ) == "Processed"
+                    getOrderDataMetaField(element)?.some(
+                      (item) => item?.order_status === "Processed"
+                    ) === true
                 ) {
                   return (
                     <tr
@@ -646,8 +634,19 @@ export function ProcessedOrders(props) {
                       >
                         {element.order_number}
                       </td>
-                      <td width="10%">{getFormattedDate(element.created_at)}</td>
+                      <td width="5%">{getFormattedDate(element.created_at)}</td>
                       <td width="15%">
+                      {/* Fast courier refernce Number */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => item?.order_id)
+                        .join(", ")}
+                    </td>
+                      <td width="10%">
                         {element?.shipping_address != null
                           ? element?.shipping_address?.first_name +
                             " " +
@@ -656,22 +655,38 @@ export function ProcessedOrders(props) {
                             " " +
                             element?.billing_address?.last_name}
                       </td>
-                      <td width="15%">
+                      <td width="10%">
                         {element?.shipping_address != null
                           ? getAddress(element.shipping_address)
                           : getAddress(element.billing_address)}
                       </td>
   
                       <td width="8%">
-                        Booked for collection
-                        {/* {element.financial_status} */}
+                         {/* Fast courier Order Status */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `${item?.order_status}`)
+                        .join(", ")}
                       </td>
                       <td width={"8%"}>${element.current_total_price}</td>
                       <td width="7%">
                         {element.line_items[0].fulfillable_quantity}
                       </td>
                       <td width="15%">
-                      {getMetaValue(
+                        {/* Carrier Details */} 
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `$${item?.price}(${item?.courierName})`)
+                        .join(", ")}
+                      {/* {getMetaValue(
                         element.node?.metafields?.edges,
                         "fc_order_status"
                       ) === "Freeshipping"
@@ -685,7 +700,7 @@ export function ProcessedOrders(props) {
                               ?.replace("]", "")
                               ?.replace(" ", "") ?? "Free"
                           })`
-                        : ""}
+                        : ""} */}
                       </td>
                       <td width="10%">{element.financial_status}</td>
                       <td width="8%">{"NA"}</td>

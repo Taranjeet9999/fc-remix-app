@@ -9,6 +9,8 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { ConfirmModal } from "../confirmModal";
 import { Link, useNavigate } from "react-router-dom";
+import { getOrderDataMetaField } from "../newOrders/NewOrders";
+import { headers } from "../../globals";
 
 export function RejectedOrders(props) {
   const fetch = useAuthenticatedFetch();
@@ -67,13 +69,7 @@ export function RejectedOrders(props) {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+     
     axios
       .get(
         `${
@@ -100,13 +96,7 @@ export function RejectedOrders(props) {
 
   const getHolidays = () => {
     const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "request-type": process.env.REQUEST_TYPE,
-      version: "3.1.1",
-      Authorization: "Bearer " + accessToken,
-    };
+    
     axios
       .get(
         `${
@@ -268,64 +258,116 @@ export function RejectedOrders(props) {
     }
   };
 
+  const create2DArray = (_orders) => {
+    return _orders.map((element) => {
+      const orderDataEdge = element.node.metafields.edges.find(
+        (edge) => edge.node.key === "order_data"
+      );
+      if (orderDataEdge) {
+        const orderData = JSON.parse(orderDataEdge.node.value);
+        let _orderArray = new Array(orderData.length).fill(null);
+
+        for (let index = 0; index < _orderArray.length; index++) {
+          const order = orderData[index];
+          _orderArray[index] = {
+            quoteId: order.quote_id,
+            orderHashId: order.order_id,
+            collectionDate: collectionDate,
+            destinationEmail: element?.contact_email,
+            destinationPhone: element?.customer?.phone,
+            wpOrderId: element?.order_number,
+            destinationFirstName: element?.shipping_address.first_name,
+            destinationLastName: element?.shipping_address.last_name,
+            destinationCompanyName: element?.shipping_address.company,
+            destinationAddress1: element?.shipping_address.address1,
+            destinationAddress2: element?.shipping_address.address2,
+            pickupFirstName: defaultLocation?.first_name,
+            pickupLastName: defaultLocation?.last_name,
+            pickupCompanyName: null,
+            pickupAddress1: defaultLocation?.address1,
+            pickupAddress2: defaultLocation?.address2,
+            pickupPhone: defaultLocation?.phone,
+            pickupEmail: defaultLocation?.email,
+            atl: false, 
+            // ...order,
+          };
+        }
+
+        return _orderArray;
+      }
+      return [];
+    });
+  };
+
+  const convertTo2DArray = (flatArray, TwoDArray) => {
+    let index = 0;
+    return TwoDArray.map(innerArray => {
+      return innerArray.map(() => flatArray[index++]);
+    });
+  }
+  
   const bookSelectedOrders = async () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const headers = {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "request-type": process.env.REQUEST_TYPE,
-        version: "3.1.1",
-        Authorization: "Bearer " + accessToken,
-      };
+       
       const selectedOrderDetails = orders?.filter((element) =>
         selectedOrders.includes(`${element.id}`)
       );
 
-      var bookOrders = [];
-      for (const element of selectedOrderDetails) {
-        const order = {
-          quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
-          orderHashId: getMetaValue(
-            element.node?.metafields?.edges,
-            "order_hash_id"
-          ),
-          collectionDate: collectionDate,
-          destinationEmail: element?.contact_email,
-          destinationPhone:  element?.customer?.phone,
-          wpOrderId: element?.order_number,
-          destinationFirstName: element?.shipping_address.first_name,
-          destinationLastName: element?.shipping_address.last_name,
-          destinationCompanyName: element?.shipping_address.company,
-          destinationAddress1: element?.shipping_address.address1,
-          destinationAddress2: element?.shipping_address.address2,
-          pickupFirstName: defaultLocation?.first_name,
-          pickupLastName: defaultLocation?.last_name,
-          pickupCompanyName: null,
-          pickupAddress1: defaultLocation?.address1,
-          pickupAddress2: defaultLocation?.address2,
-          pickupPhone: defaultLocation?.phone,
-          pickupEmail: defaultLocation?.email,
-          atl: false,
-        };
+      const orderStructure = create2DArray(selectedOrderDetails); 
+       
+      // var bookOrders = [];
+      // for (const element of selectedOrderDetails) {
+      //   const order = {
+      //     quoteId: getMetaValue(element.node?.metafields?.edges, "quote_id"),
+      //     orderHashId: getMetaValue(
+      //       element.node?.metafields?.edges,
+      //       "order_hash_id"
+      //     ),
+      //     collectionDate: collectionDate,
+      //     destinationEmail: element?.contact_email,
+      //     destinationPhone: element?.customer?.phone,
+      //     wpOrderId: element?.order_number,
+      //     destinationFirstName: element?.shipping_address.first_name,
+      //     destinationLastName: element?.shipping_address.last_name,
+      //     destinationCompanyName: element?.shipping_address.company,
+      //     destinationAddress1: element?.shipping_address.address1,
+      //     destinationAddress2: element?.shipping_address.address2,
+      //     pickupFirstName: defaultLocation?.first_name,
+      //     pickupLastName: defaultLocation?.last_name,
+      //     pickupCompanyName: null,
+      //     pickupAddress1: defaultLocation?.address1,
+      //     pickupAddress2: defaultLocation?.address2,
+      //     pickupPhone: defaultLocation?.phone,
+      //     pickupEmail: defaultLocation?.email,
+      //     atl: false,
+      //   };
 
-        bookOrders.push(order);
-      }
+      //   bookOrders.push(order);
+      // }
       const payload = {
-        orders: bookOrders,
-        // isReprocessOrders: false,
+        orders: orderStructure.flat(1),
         isReprocessOrders: true,
         request_type: "wp",
       };
 
       axios
         .post(
-          `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/bulk_order_booking`,
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/wp/bulk_order_booking`,
           payload,
           { headers: headers }
         )
         .then((response) => {
-          let output = response.data.response;
+          // let output = response.data.response;
+          let _output = convertTo2DArray(
+            response.data.response,
+            orderStructure
+          ) 
+       
           fetch("/api/book-orders", {
             method: "POST",
             headers: {
@@ -333,8 +375,8 @@ export function RejectedOrders(props) {
             },
             body: JSON.stringify({
               collectionDate: collectionDate,
-              orderIds: selectedOrders,
-              orderStatuses:output
+              orders: selectedOrderDetails,
+              orderStatuses: _output,
             }),
           });
           setIsLoading(false);
@@ -350,7 +392,6 @@ export function RejectedOrders(props) {
       console.log(err);
     }
   };
-
   const handleDateChange = (e) => {
     const selected = e.target.value;
     // Check if the selected date is in the disabledDates array
@@ -607,6 +648,7 @@ export function RejectedOrders(props) {
             </th>
             <th>Order Id</th>
             <th>Date</th>
+            <th>Fastcourier Refrence No.</th>
             <th>Customer</th>
             <th>Ship To</th>
             <th>Status</th>
@@ -634,10 +676,9 @@ export function RejectedOrders(props) {
                 //   element.node?.metafields?.edges,
                 //   "fc_order_status"
                 // ) != "Fallback"
-                getMetaValue(
-                  element.node?.metafields?.edges,
-                  "fc_order_status"
-                ) === "Rejected"
+                getOrderDataMetaField(element)?.some(
+                  (item) => item?.order_status === "Rejected"
+                ) === true
               ) {
                 return (
                   <tr
@@ -664,8 +705,19 @@ export function RejectedOrders(props) {
                     >
                       {element.order_number}
                     </td>
-                    <td width="10%">{getFormattedDate(element.created_at)}</td>
+                    <td width="5%">{getFormattedDate(element.created_at)}</td>
                     <td width="15%">
+                      {/* Fast courier refernce Number */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => item?.order_id)
+                        .join(", ")}
+                    </td>
+                    <td width="10%">
                       {element?.shipping_address != null
                         ? element?.shipping_address?.first_name +
                           " " +
@@ -674,23 +726,38 @@ export function RejectedOrders(props) {
                           " " +
                           element?.billing_address?.last_name}
                     </td>
-                    <td width="15%">
+                    <td width="5%">
                       {element?.shipping_address != null
                         ? getAddress(element.shipping_address)
                         : getAddress(element.billing_address)}
                     </td>
 
-                    <td width="8%">
-                      {/* Ready to Book */}
-                      Rejected
-                      {/* {element.financial_status} */}
+                    <td width="15%">
+                      {/* Fast courier Order Status */}
+                      {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `${item?.order_status}`)
+                        .join(", ")}
                     </td>
                     <td width={"8%"}>${element.current_total_price}</td>
                     <td width="7%">
                       {element.line_items[0].fulfillable_quantity}
                     </td>
                     <td width="15%">
-                      {getMetaValue(
+                        {/* Carrier Details */} 
+                        {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `$${item?.price}(${item?.courierName})`)
+                        .join(", ")}
+                      {/* {getMetaValue(
                         element.node?.metafields?.edges,
                         "fc_order_status"
                       ) === "Freeshipping"
@@ -704,12 +771,18 @@ export function RejectedOrders(props) {
                               ?.replace("]", "")
                               ?.replace(" ", "") ?? "Free"
                           })`
-                        : ""}
+                        : ""} */}
                     </td>
                     <td width="10%">
-                      {/* {element.financial_status} */}
-                      {getMetaValue(element.node?.metafields?.edges, "errors")}
-                    </td>
+                     {/* Fast courier Rejection Reason */}
+                     {JSON.parse(
+                        getMetaValue(
+                          element.node?.metafields?.edges,
+                          "order_data"
+                        )
+                      )
+                        ?.map((item) => `${item?.errors}`)
+                        .join(", ")} </td>
                     <td width="8%">
                         
                         
