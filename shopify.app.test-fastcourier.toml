@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "3e2f0de8525f2452cb4e2b9259080061"
+name = "Test FastCourier"
+handle = "test-fastcourier"
+application_url = "https://selection-expectations-registration-diesel.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "fc-check.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+
+[auth]
+redirect_urls = [
+  "https://selection-expectations-registration-diesel.trycloudflare.com/auth/callback",
+  "https://selection-expectations-registration-diesel.trycloudflare.com/auth/shopify/callback",
+  "https://selection-expectations-registration-diesel.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false

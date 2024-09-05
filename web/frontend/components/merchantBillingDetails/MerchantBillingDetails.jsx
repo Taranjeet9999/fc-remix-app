@@ -5,6 +5,7 @@ import "./style.css";
 import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
+import { formatSyncTime } from "../newOrders/NewOrders";
 ;
 
 export function MerchantBillingDetails(props) {
@@ -200,6 +201,10 @@ export function MerchantBillingDetails(props) {
       )
       .then((response) => {
         setDataIntoData("merchant", response.data.data);
+        if (response?.data?.data?.sync_time) {
+          localStorage.setItem("reSyncTime", formatSyncTime(response?.data?.data?.sync_time));
+          
+        }
         if (response.data.data.billing_suburb) {
           setShowSuburbModal(false);
           setDefaultSuburb({
@@ -354,7 +359,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://fc-app.vuwork.com/api/shipping-rates"
+        "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }
@@ -386,7 +391,10 @@ export function MerchantBillingDetails(props) {
     setBillingPostcode(merchant.billing_postcode);
     setBillingSuburb(merchant.billing_suburb);
     setBookingPreference(merchant.booking_preference);
-    setFallbackAmount(merchant.fallback_amount);
+    if (merchant.fallback_amount) {
+      
+      setFallbackAmount(merchant.fallback_amount);
+    }
     setInsuranceType(merchant.insurance_type);
     setIsInsurancePaidByCustomer(merchant.is_insurance_paid_by_customer);
     setConditionalValue(merchant.conditional_price);
@@ -851,7 +859,7 @@ export function MerchantBillingDetails(props) {
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
-        navigate("/login");
+        navigate(`/login`);
         props.setIsStaging(
           props.executeSandboxStatus.value === "1" ? false : true
         );
@@ -893,6 +901,37 @@ export function MerchantBillingDetails(props) {
         });
     });
   }
+  function OauthShopify( ) {
+    return new Promise((resolve, reject) => {
+      fetch("/oauth/shopify", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: JSON.stringify({
+        //   columnName: columnName,
+        //   data: data,
+        // }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((error) => {
+              throw new Error(`Error: ${error.message}`);
+            });
+          }
+
+          console.log("response", response.json());
+          return response.json();
+        })
+        .then((responseData) => {
+          resolve(responseData);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
+    });
+  }
   useEffect(() => {
     if (props.executeSandboxStatus.execute == "sandbox") {
       setIsLoading(true);
@@ -909,6 +948,23 @@ export function MerchantBillingDetails(props) {
     }
   }, [props.executeSandboxStatus]);
 
+  
+
+  function openWindowAndWait(url, callback) {
+    // Open a new window
+    const newWindow = window.open(url,  'popupWindow', 'width=700,height=700');
+
+    // Check if the window is closed every 500 milliseconds
+    const checkWindowClosed = setInterval(() => {
+        if (newWindow.closed) {
+            // Clear the interval
+            clearInterval(checkWindowClosed);
+            // Execute the callback
+            callback();
+        }
+    }, 500);
+}
+ 
   return (
     <div className="merchant-main">
       {isLoading && <Loader />}
@@ -918,6 +974,16 @@ export function MerchantBillingDetails(props) {
         onConfirm={() => setOpenErrorModal(false)}
       />
       <div className="merchant-heading1">Merchant Billing Details</div>
+{/* 
+      <button
+        onClick={() => {
+    
+          
+          window.open(`https://portal-staging.fastcourier.com.au/quick-login?access_token=${localStorage.getItem("accessToken")}&redirect_page=payment` ,'popupWindow', 'width=7000,height=7000')
+        }}
+      >
+        TEST
+      </button> */}
       <div className="input-row">
         <div className="input-container1">
           <div className="input-lebel1">

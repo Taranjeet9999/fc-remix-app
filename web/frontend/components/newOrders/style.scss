@@ -50,3 +50,43 @@
 .booking-modal .submit-btn {
     width: 40%;
 }
+
+.nav-link.active{
+    color: #ff6900 !important;
+}
+
+.nav-link{
+    color: #000 !important;
+}
+
+.options-dropdown button{
+    background-color: #ff6900;
+    color: #fff;
+    border: none;
+    display: flex;
+
+}
+.options-dropdown button:hover{
+    background-color: #ff6900;
+    color: #fff;
+    border: none;
+    
+
+}
+
+
+.new-orders a {
+    text-decoration: none;
+}
+
+.options-dropdown{
+    button::before{
+        display: none !important;
+    }
+
+    .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
+        background-color: #ff6900;
+        color: #fff;
+        border: none;
+    }
+}

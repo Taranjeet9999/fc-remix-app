@@ -8,7 +8,6 @@ import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
 
-
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [locationName, setLocationName] = useState("");
@@ -87,7 +86,7 @@ export function AddLocation(props) {
     document.body.removeChild(link);
   };
 
-  async function getSuburbs (search= "")  {
+  async function getSuburbs(search = "") {
     const accessToken = localStorage.getItem("accessToken");
     const headers = {
       Accept: "application/json",
@@ -95,9 +94,11 @@ export function AddLocation(props) {
       "request-type": "shopify_development",
       version: "3.1.1",
       Authorization: "Bearer " + localStorage.getItem("accessToken"),
-      "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
-    }
-   await axios
+      "store-domain": localStorage.getItem("userData")
+        ? JSON.parse(localStorage.getItem("userData")).id
+        : "",
+    };
+    await axios
       .get(
         `${
           localStorage.getItem("isProduction") === "1"
@@ -134,7 +135,7 @@ export function AddLocation(props) {
       .catch((error) => {
         console.log(error);
       });
-  };
+  }
   const [timeoutId, setTimeoutId] = useState(null);
 
   const handleInputChange = (e) => {
@@ -195,7 +196,9 @@ export function AddLocation(props) {
 
   const addLocation = () => {
     try {
-      const isValid = validations(); 
+
+      
+      const isValid = validations();
       if (isValid) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -203,7 +206,7 @@ export function AddLocation(props) {
         const freeShippingCodes = selectedFreeShippingCodes.map(
           (element) => element.value
         );
-       
+
         const payload = {
           location_name: locationName,
           first_name: firstName,
@@ -231,9 +234,10 @@ export function AddLocation(props) {
           "request-type": "shopify_development",
           version: "3.1.1",
           Authorization: "Bearer " + localStorage.getItem("accessToken"),
-          "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
-        }
-        
+          "store-domain": localStorage.getItem("userData")
+            ? JSON.parse(localStorage.getItem("userData")).id
+            : "",
+        };
 
         const url = props.editLocation
           ? `${
@@ -256,7 +260,7 @@ export function AddLocation(props) {
               // toast.success('Location updated successfully', {
               //   autoClose: 4000,
               // });
-            }else{
+            } else {
               // toast.success('Location created successfully', {
               //   autoClose: 4000,
               // });
@@ -265,14 +269,22 @@ export function AddLocation(props) {
           .catch((error) => {
             setIsLoading(false);
             console.log(error);
-            toast.error('Something went wrong', {
-       
+            toast.error("Something went wrong", {
+              autoClose: 3000,
+              closeOnClick: true,
             });
           });
       } else {
         setOpenErrorModal(true);
       }
-    } catch (error) {}
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+      toast.error("Something went wrong", {
+        autoClose: 3000,
+        closeOnClick: true,
+      });
+    }
   };
 
   const setEditLocationData = (location) => {
@@ -301,7 +313,7 @@ export function AddLocation(props) {
     setLongitude(location.longitude);
     setLatitude(location.latitude);
   };
-
+ 
   function refreshModal() {
     setLocationName("");
     setFirstName("");
@@ -316,7 +328,7 @@ export function AddLocation(props) {
     setSelectedPostcode("");
     setSelectedSuburb("");
     setTailLift("0");
-    setIsDefaultLocation("0");
+    // setIsDefaultLocation("0");
     // setSuburbs([]);
     setTags(null);
 
@@ -376,18 +388,34 @@ export function AddLocation(props) {
   };
 
   const getDefaultLocation = () => {
-    var defaultValue = props.editLocation
-      ? {
-          value: props.editLocation.is_default,
-          label: props.editLocation.is_default == 0 ? "No" : "Yes",
-        }
-      : {
-          value: "0",
-          label: "No",
-        };
+    if (props.editLocation) {
+      const isDefault = props.editLocation.is_default;
 
-    return defaultValue;
+      return {
+        value: isDefault,
+        label: isDefault == 0 ? "No" : "Yes",
+      };
+    }
+
+    if (props.isDefaultLocationExist) {
+      return {
+        value: "0",
+        label: "No",
+      };
+    }
+
+    return {
+      value: "1",
+      label: "Yes",
+    };
   };
+
+  useEffect(() => {
+    if (props.showModal) {
+      console.log("default location set")
+      setIsDefaultLocation(getDefaultLocation().value);
+    }
+  }, [props.showModal, props.editLocation, props.isDefaultLocationExist]);
 
   const getDefaultSuburbValue = () => {
     var defaultValue = props.editLocation
@@ -442,8 +470,10 @@ export function AddLocation(props) {
         "request-type": "shopify_development",
         version: "3.1.1",
         Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        "store-domain": localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).id   :"",
-      }
+        "store-domain": localStorage.getItem("userData")
+          ? JSON.parse(localStorage.getItem("userData")).id
+          : "",
+      };
 
       axios
         .get(
@@ -628,8 +658,11 @@ export function AddLocation(props) {
             <div className="input-lebel1">
               <span> Email&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
-              {errorMessage != "" && (email == ""|| !isValidEmail(email) ) && (
-                <span style={{ color: "red" }}> &nbsp; {"(Invalid email)"}</span>
+              {errorMessage != "" && (email == "" || !isValidEmail(email)) && (
+                <span style={{ color: "red" }}>
+                  {" "}
+                  &nbsp; {"(Invalid email)"}
+                </span>
               )}
             </div>
             <div className="input-field">
@@ -761,7 +794,7 @@ export function AddLocation(props) {
               <span> Default&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
             </div>
-       
+
             <Select
               options={tailLiftList}
               onChange={(e) => setIsDefaultLocation(e.value)}

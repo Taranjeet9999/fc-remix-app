@@ -13,7 +13,8 @@
     "logout": "shopify auth logout"
   },
   "dependencies": {
-    "binpackingjs": "^3.0.2"
+    "binpackingjs": "^3.0.2",
+    "lodash": "^4.17.21"
   },
   "author": "tf",
   "private": true,
@@ -21,5 +22,8 @@
     "extensions/*",
     "web",
     "web/frontend"
-  ]
+  ],
+  "devDependencies": {
+    "sass": "^1.77.8"
+  }
 }

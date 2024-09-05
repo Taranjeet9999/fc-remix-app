@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "138e1b211ca812e6478337a64e9c92a9"
+name = "Fast Courier v2.0"
+handle = "fast-courier-v2-0"
+application_url = "https://magnet-fever-notice-feof.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "fc-check.myshopify.com"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated_read_checkouts,unauthenticated_write_checkouts,write_checkouts,write_orders,write_products,write_shipping"
+
+[auth]
+redirect_urls = [
+  "https://magnet-fever-notice-feof.trycloudflare.com/auth/callback",
+  "https://magnet-fever-notice-feof.trycloudflare.com/auth/shopify/callback",
+  "https://magnet-fever-notice-feof.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false

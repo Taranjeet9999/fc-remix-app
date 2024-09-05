@@ -20,12 +20,12 @@ const billingConfig = {
 const shopify = shopifyApp({
   api: {
     apiVersion: LATEST_API_VERSION,
-    // apiKey: "fba0237f7f8084edf2aa919f82b4a68d",
-    // apiSecretKey: "462d2444640fd4e35b1250a085c7392e",
+    // apiKey: "48c11f190fe107153899a7f870f79215",
+    // apiSecretKey: "76340c674fc34252622a40c916af1d2c",
     scopes: 'read_checkouts,read_orders,read_products,read_shipping,unauthenticated_read_checkouts,unauthenticated_write_checkouts,write_checkouts,write_orders,write_products,write_shipping',
     //  hostName: "https://webshots-charity-delta-sunny.trycloudflare.com",
-    // hostName: "https://fc-app.vuwork.com/",
-    //  hostName: "https://fc-app.vuwork.com/",
+    // hostName: "https://tech-boolean-promised-missing.trycloudflare.com/",
+    //  hostName: "https://tech-boolean-promised-missing.trycloudflare.com/",
 
     restResources,
     billing: undefined, // or replace with billingConfig above to enable example billing

@@ -1,732 +1,1870 @@
-[2024-07-12T16:30:32.872] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
-] _bins 0
-[2024-07-12T16:30:32.874] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'second',
-  pickupLastName: 'address',
-  pickupCompanyName: '',
-  pickupEmail: 'second+add@gmail.com',
-  pickupAddress1: 'st no 2 cemeron street',
-  pickupAddress2: null,
-  pickupPhone: '04587878784',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Sydney',
-  destinationState: 'NSW',
-  destinationPostcode: '2000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'AWS',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '2000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '600',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T16:30:35.698] [INFO] default - [
-  {
-    amount: '30.06',
-    description: 'Includes tracking and insurance',
-    eta: '3 Business Days',
-    serviceCode: '(WJQWNPRBKO-RNMEQLABEM)',
-    courierName: 'Star Track',
-    totalPrice: '30.06',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'second',
-      pickupLastName: 'address',
-      pickupCompanyName: '',
-      pickupEmail: 'second+add@gmail.com',
-      pickupAddress1: 'st no 2 cemeron street',
-      pickupAddress2: null,
-      pickupPhone: '04587878784',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Sydney',
-      destinationState: 'NSW',
-      destinationPostcode: '2000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'AWS',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '2000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '600',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+[2024-09-04T16:46:21.748] [INFO] default - order-create-webhook== {
+  id: 5904582213851,
+  admin_graphql_api_id: 'gid://shopify/Order/5904582213851',
+  app_id: 580111,
+  browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+  buyer_accepts_marketing: false,
+  cancel_reason: null,
+  cancelled_at: null,
+  cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjZZQUcxM1IwUDRZSzY1WlhKUVRDVkcz',
+  checkout_id: 35341323469019,
+  checkout_token: '73837ea87dcb43ae98c66ea260f134a0',
+  client_details: {
+    accept_language: 'en-AU',
+    browser_height: null,
+    browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+    browser_width: null,
+    session_hash: null,
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  },
+  closed_at: null,
+  company: null,
+  confirmation_number: '8K4IUJ059',
+  confirmed: true,
+  contact_email: null,
+  created_at: '2024-09-04T07:13:06-04:00',
+  currency: 'AUD',
+  current_subtotal_price: '1359.90',
+  current_subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  current_total_additional_fees_set: null,
+  current_total_discounts: '0.00',
+  current_total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  current_total_duties_set: null,
+  current_total_price: '1494.98',
+  current_total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  current_total_tax: '0.00',
+  current_total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  customer_locale: 'en-AU',
+  device_id: null,
+  discount_codes: [],
+  email: '',
+  estimated_taxes: false,
+  financial_status: 'paid',
+  fulfillment_status: null,
+  landing_site: '/',
+  landing_site_ref: null,
+  location_id: null,
+  merchant_of_record_app_id: null,
+  name: '#1249',
+  note: null,
+  note_attributes: [],
+  number: 249,
+  order_number: 1249,
+  order_status_url: 'https://test-development-fc-app.myshopify.com/67825205467/orders/3e355da8f32f77022d5de7317a4d939b/authenticate?key=6188f00dae2b88e2f24932aa988cb51d&none=VQVXAVJGXVBaQV1G',
+  original_total_additional_fees_set: null,
+  original_total_duties_set: null,
+  payment_gateway_names: [ 'bogus' ],
+  phone: '+61256555888',
+  po_number: null,
+  presentment_currency: 'AUD',
+  processed_at: '2024-09-04T07:13:05-04:00',
+  reference: 'afb92a66a5f463c07d8e8462a4e2375a',
+  referring_site: '',
+  source_identifier: 'afb92a66a5f463c07d8e8462a4e2375a',
+  source_name: 'web',
+  source_url: null,
+  subtotal_price: '1359.90',
+  subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  tags: '',
+  tax_exempt: false,
+  tax_lines: [],
+  taxes_included: false,
+  test: true,
+  token: '3e355da8f32f77022d5de7317a4d939b',
+  total_discounts: '0.00',
+  total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_line_items_price: '1359.90',
+  total_line_items_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  total_outstanding: '0.00',
+  total_price: '1494.98',
+  total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  total_shipping_price_set: {
+    shop_money: { amount: '135.08', currency_code: 'AUD' },
+    presentment_money: { amount: '135.08', currency_code: 'AUD' }
+  },
+  total_tax: '0.00',
+  total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_tip_received: '0.00',
+  total_weight: 0,
+  updated_at: '2024-09-04T07:13:07-04:00',
+  user_id: null,
+  billing_address: {
+    first_name: 'New Name',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'asfasfasfas',
+    address2: null,
+    company: null,
+    latitude: null,
+    longitude: null,
+    name: 'New Name asfasfasfas',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  customer: {
+    id: 7539230605531,
+    email: null,
+    created_at: '2024-06-05T08:04:42-04:00',
+    updated_at: '2024-09-04T07:13:06-04:00',
+    first_name: 'New Name',
+    last_name: 'asfasfasfas',
+    state: 'disabled',
+    note: null,
+    verified_email: true,
+    multipass_identifier: null,
+    tax_exempt: false,
+    phone: '+61256555888',
+    email_marketing_consent: null,
+    sms_marketing_consent: {
+      state: 'not_subscribed',
+      opt_in_level: 'single_opt_in',
+      consent_updated_at: null,
+      consent_collected_from: 'SHOPIFY'
+    },
+    tags: '',
+    currency: 'AUD',
+    tax_exemptions: [],
+    admin_graphql_api_id: 'gid://shopify/Customer/7539230605531',
+    default_address: {
+      id: 9340524331227,
+      customer_id: 7539230605531,
+      first_name: 'New Name',
+      last_name: 'asfasfasfas',
+      company: null,
+      address1: '238 Wilson Street',
+      address2: null,
+      city: 'Newtown',
+      province: 'New South Wales',
+      country: 'Australia',
+      zip: '2042',
+      phone: null,
+      name: 'New Name asfasfasfas',
+      province_code: 'NSW',
+      country_code: 'AU',
+      country_name: 'Australia',
+      default: true
     }
-  }
-] quotes
-[2024-07-12T16:30:35.699] [INFO] default - {
-  rates: [
+  },
+  discount_applications: [],
+  fulfillments: [],
+  line_items: [
     {
-      service_name: 'Fast Courier [Star Track]',
-      service_code: '(WJQWNPRBKO-RNMEQLABEM)~[PAID]~[30.06]',
-      total_price: '3005.9999999999995',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+      id: 14348377817307,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348377817307',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-location Snowboard',
+      price: '729.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706726619,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: '',
+      taxable: true,
+      title: 'The Multi-location Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528449755,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'test-development-fc-app',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    },
+    {
+      id: 14348377850075,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348377850075',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-managed Snowboard',
+      price: '629.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706890459,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: 'sku-managed-1',
+      taxable: true,
+      title: 'The Multi-managed Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528908507,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'Multi-managed Vendor',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    }
+  ],
+  payment_terms: null,
+  refunds: [],
+  shipping_address: {
+    first_name: 'New Name',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'asfasfasfas',
+    address2: null,
+    company: null,
+    latitude: -33.8939382,
+    longitude: 151.189119,
+    name: 'New Name asfasfasfas',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  shipping_lines: [
+    {
+      id: 4876892897499,
+      carrier_identifier: '650f1a14fa979ec5c74d063e968411d4',
+      code: '(NPOAYPZNDO-GRMRPEXJNM),(WKOLDAGEJO-WKOVEGVAWM)~[PAID,PAID]~[22.7,112.38]',
+      discounted_price: '135.08',
+      discounted_price_set: [Object],
+      is_removed: false,
+      phone: null,
+      price: '135.08',
+      price_set: [Object],
+      requested_fulfillment_service_id: null,
+      source: 'Fast Courier',
+      title: 'Fast Courier [Star Track,Star Track]',
+      tax_lines: [],
+      discount_allocations: []
     }
   ]
-} response
-[2024-07-12T16:46:28.876] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+}
+[2024-09-04T16:46:21.754] [INFO] default - codes (NPOAYPZNDO-GRMRPEXJNM),(WKOLDAGEJO-WKOVEGVAWM)~[PAID,PAID]~[22.7,112.38]
+[2024-09-04T16:50:04.822] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
 ] _bins 0
-[2024-07-12T16:46:28.884] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'second',
-  pickupLastName: 'address',
-  pickupCompanyName: '',
-  pickupEmail: 'second+add@gmail.com',
-  pickupAddress1: 'st no 2 cemeron street',
-  pickupAddress2: null,
-  pickupPhone: '04587878784',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Sydney',
-  destinationState: 'NSW',
-  destinationPostcode: '2000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'AWS',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '2000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '600',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":1,"width":50,"height":50,"length":50,"weight":40,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T16:46:31.237] [INFO] default - [
-  {
-    amount: '325.38',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(GPQDKLAPGO-RNOEQLAGEO)',
-    courierName: 'TNT',
-    totalPrice: '325.38',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'second',
-      pickupLastName: 'address',
-      pickupCompanyName: '',
-      pickupEmail: 'second+add@gmail.com',
-      pickupAddress1: 'st no 2 cemeron street',
-      pickupAddress2: null,
-      pickupPhone: '04587878784',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Sydney',
-      destinationState: 'NSW',
-      destinationPostcode: '2000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'AWS',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '2000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '600',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":1,"width":15,"height":15,"length":15,"weight":10,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":1,"width":50,"height":50,"length":50,"weight":40,"sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+[2024-09-04T16:50:04.829] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T16:50:28.669] [INFO] default - order-create-webhook== {
+  id: 5904589029595,
+  admin_graphql_api_id: 'gid://shopify/Order/5904589029595',
+  app_id: 580111,
+  browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+  buyer_accepts_marketing: false,
+  cancel_reason: null,
+  cancelled_at: null,
+  cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjZZQzNBQk45SDE4V01YQVNKTjZBSDNZ',
+  checkout_id: 35341378388187,
+  checkout_token: 'd0bb8bbae71d08b72112fdcef3187885',
+  client_details: {
+    accept_language: 'en-AU',
+    browser_height: null,
+    browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+    browser_width: null,
+    session_hash: null,
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  },
+  closed_at: null,
+  company: null,
+  confirmation_number: 'FRLH03CTT',
+  confirmed: true,
+  contact_email: null,
+  created_at: '2024-09-04T07:20:25-04:00',
+  currency: 'AUD',
+  current_subtotal_price: '1359.90',
+  current_subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  current_total_additional_fees_set: null,
+  current_total_discounts: '0.00',
+  current_total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  current_total_duties_set: null,
+  current_total_price: '1494.98',
+  current_total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  current_total_tax: '0.00',
+  current_total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  customer_locale: 'en-AU',
+  device_id: null,
+  discount_codes: [],
+  email: '',
+  estimated_taxes: false,
+  financial_status: 'paid',
+  fulfillment_status: null,
+  landing_site: '/',
+  landing_site_ref: null,
+  location_id: null,
+  merchant_of_record_app_id: null,
+  name: '#1250',
+  note: null,
+  note_attributes: [],
+  number: 250,
+  order_number: 1250,
+  order_status_url: 'https://test-development-fc-app.myshopify.com/67825205467/orders/9b24ee3fdd74a8a26e1f3148a00d6dfe/authenticate?key=9aa5c46e23225c30ae7b2aa5f0463aba&none=VQVXAVJGXVBaQV1G',
+  original_total_additional_fees_set: null,
+  original_total_duties_set: null,
+  payment_gateway_names: [ 'bogus' ],
+  phone: '+61256555888',
+  po_number: null,
+  presentment_currency: 'AUD',
+  processed_at: '2024-09-04T07:20:24-04:00',
+  reference: '3d28f5d94809173697b29977301d760d',
+  referring_site: '',
+  source_identifier: '3d28f5d94809173697b29977301d760d',
+  source_name: 'web',
+  source_url: null,
+  subtotal_price: '1359.90',
+  subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  tags: '',
+  tax_exempt: false,
+  tax_lines: [],
+  taxes_included: false,
+  test: true,
+  token: '9b24ee3fdd74a8a26e1f3148a00d6dfe',
+  total_discounts: '0.00',
+  total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_line_items_price: '1359.90',
+  total_line_items_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  total_outstanding: '0.00',
+  total_price: '1494.98',
+  total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  total_shipping_price_set: {
+    shop_money: { amount: '135.08', currency_code: 'AUD' },
+    presentment_money: { amount: '135.08', currency_code: 'AUD' }
+  },
+  total_tax: '0.00',
+  total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_tip_received: '0.00',
+  total_weight: 0,
+  updated_at: '2024-09-04T07:20:26-04:00',
+  user_id: null,
+  billing_address: {
+    first_name: 'RRR',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'RRR',
+    address2: null,
+    company: null,
+    latitude: null,
+    longitude: null,
+    name: 'RRR RRR',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  customer: {
+    id: 7539230605531,
+    email: null,
+    created_at: '2024-06-05T08:04:42-04:00',
+    updated_at: '2024-09-04T07:20:26-04:00',
+    first_name: 'RRR',
+    last_name: 'RRR',
+    state: 'disabled',
+    note: null,
+    verified_email: true,
+    multipass_identifier: null,
+    tax_exempt: false,
+    phone: '+61256555888',
+    email_marketing_consent: null,
+    sms_marketing_consent: {
+      state: 'not_subscribed',
+      opt_in_level: 'single_opt_in',
+      consent_updated_at: null,
+      consent_collected_from: 'SHOPIFY'
+    },
+    tags: '',
+    currency: 'AUD',
+    tax_exemptions: [],
+    admin_graphql_api_id: 'gid://shopify/Customer/7539230605531',
+    default_address: {
+      id: 9340532818139,
+      customer_id: 7539230605531,
+      first_name: 'RRR',
+      last_name: 'RRR',
+      company: null,
+      address1: '238 Wilson Street',
+      address2: null,
+      city: 'Newtown',
+      province: 'New South Wales',
+      country: 'Australia',
+      zip: '2042',
+      phone: null,
+      name: 'RRR RRR',
+      province_code: 'NSW',
+      country_code: 'AU',
+      country_name: 'Australia',
+      default: true
     }
-  }
-] quotes
-[2024-07-12T16:46:31.238] [INFO] default - {
-  rates: [
+  },
+  discount_applications: [],
+  fulfillments: [],
+  line_items: [
     {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(GPQDKLAPGO-RNOEQLAGEO)~[PAID]~[325.38]',
-      total_price: '32538',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+      id: 14348388958427,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348388958427',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-location Snowboard',
+      price: '729.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706726619,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: '',
+      taxable: true,
+      title: 'The Multi-location Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528449755,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'test-development-fc-app',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    },
+    {
+      id: 14348388991195,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348388991195',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-managed Snowboard',
+      price: '629.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706890459,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: 'sku-managed-1',
+      taxable: true,
+      title: 'The Multi-managed Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528908507,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'Multi-managed Vendor',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    }
+  ],
+  payment_terms: null,
+  refunds: [],
+  shipping_address: {
+    first_name: 'RRR',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'RRR',
+    address2: null,
+    company: null,
+    latitude: -33.8939382,
+    longitude: 151.189119,
+    name: 'RRR RRR',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  shipping_lines: [
+    {
+      id: 4876898730203,
+      carrier_identifier: '650f1a14fa979ec5c74d063e968411d4',
+      code: '(GPOKMKZJEO-BLMPVDAZAM),(BWQJAWZGNO-ZPOLRWJYDO)~[PAID,PAID]~[22.7,112.38]',
+      discounted_price: '135.08',
+      discounted_price_set: [Object],
+      is_removed: false,
+      phone: null,
+      price: '135.08',
+      price_set: [Object],
+      requested_fulfillment_service_id: null,
+      source: 'Fast Courier',
+      title: 'Fast Courier [Star Track,Star Track]',
+      tax_lines: [],
+      discount_allocations: []
     }
   ]
-} response
-[2024-07-12T16:47:44.574] [INFO] default - codes (GPQDKLAPGO-RNOEQLAGEO)~[PAID]~[325.38]
-[2024-07-12T17:01:05.600] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
-] _bins 0
-[2024-07-12T17:01:05.611] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'second',
-  pickupLastName: 'address',
-  pickupCompanyName: '',
-  pickupEmail: 'second+add@gmail.com',
-  pickupAddress1: 'st no 2 cemeron street',
-  pickupAddress2: null,
-  pickupPhone: '04587878784',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Melbourne',
-  destinationState: 'VIC',
-  destinationPostcode: '3000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: null,
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '3000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '600',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T17:01:08.356] [INFO] default - [
-  {
-    amount: '330.57',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(BWOJAXYWAQ-BNOBJLKYGO)',
-    courierName: 'TNT',
-    totalPrice: '330.57',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'second',
-      pickupLastName: 'address',
-      pickupCompanyName: '',
-      pickupEmail: 'second+add@gmail.com',
-      pickupAddress1: 'st no 2 cemeron street',
-      pickupAddress2: null,
-      pickupPhone: '04587878784',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Melbourne',
-      destinationState: 'VIC',
-      destinationPostcode: '3000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: null,
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '3000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '600',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+}
+[2024-09-04T16:50:28.675] [INFO] default - codes (GPOKMKZJEO-BLMPVDAZAM),(BWQJAWZGNO-ZPOLRWJYDO)~[PAID,PAID]~[22.7,112.38]
+[2024-09-04T16:52:36.234] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"ZPOLRWJYDO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=ZPOLRWJYDO","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:36.235] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"BLMPVDAZAM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=BLMPVDAZAM","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:36.236] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T16:52:36.240] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T16:52:41.204] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"ZPOLRWJYDO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=ZPOLRWJYDO","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:41.206] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T16:52:42.244] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"BLMPVDAZAM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=BLMPVDAZAM","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:42.245] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T16:52:47.020] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"ZPOLRWJYDO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=ZPOLRWJYDO","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:47.021] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T16:52:47.991] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"BLMPVDAZAM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=BLMPVDAZAM","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904589029595","is_reprocessable":true}]
+[2024-09-04T16:52:47.993] [INFO] default - Shopify Order id == 5904589029595
+[2024-09-04T17:02:28.826] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"GRMRPEXJNM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRMRPEXJNM","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904582213851","is_reprocessable":true}]
+[2024-09-04T17:02:28.827] [INFO] default - Shopify Order id == 5904582213851
+[2024-09-04T17:02:33.814] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"GRMRPEXJNM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRMRPEXJNM","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904582213851","is_reprocessable":true}]
+[2024-09-04T17:02:33.815] [INFO] default - Shopify Order id == 5904582213851
+[2024-09-04T17:09:14.295] [INFO] default - order-create-webhook== {
+  id: 5904552886491,
+  admin_graphql_api_id: 'gid://shopify/Order/5904552886491',
+  app_id: 580111,
+  browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+  buyer_accepts_marketing: false,
+  cancel_reason: null,
+  cancelled_at: null,
+  cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjZZOUgzQUhFQ1ZITUpTTjJKSEg5Q1pU',
+  checkout_id: 35341291913435,
+  checkout_token: 'daec09871db2616d30d738884188a73f',
+  client_details: {
+    accept_language: 'en-AU',
+    browser_height: null,
+    browser_ip: '2401:4900:1c73:7d7a:da1:2abd:865e:da16',
+    browser_width: null,
+    session_hash: null,
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  },
+  closed_at: null,
+  company: null,
+  confirmation_number: 'PM85ZYUJN',
+  confirmed: true,
+  contact_email: null,
+  created_at: '2024-09-04T06:36:22-04:00',
+  currency: 'AUD',
+  current_subtotal_price: '1359.90',
+  current_subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  current_total_additional_fees_set: null,
+  current_total_discounts: '0.00',
+  current_total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  current_total_duties_set: null,
+  current_total_price: '1494.98',
+  current_total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  current_total_tax: '0.00',
+  current_total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  customer_locale: 'en-AU',
+  device_id: null,
+  discount_codes: [],
+  email: '',
+  estimated_taxes: false,
+  financial_status: 'paid',
+  fulfillment_status: null,
+  landing_site: '/',
+  landing_site_ref: null,
+  location_id: null,
+  merchant_of_record_app_id: null,
+  name: '#1248',
+  note: null,
+  note_attributes: [],
+  number: 248,
+  order_number: 1248,
+  order_status_url: 'https://test-development-fc-app.myshopify.com/67825205467/orders/0ae491de74c72820f3ad8502e8d0d0c3/authenticate?key=e85665c226d62b4a3393e0e115e11e9f&none=VQVXAVJGXVBaQV1G',
+  original_total_additional_fees_set: null,
+  original_total_duties_set: null,
+  payment_gateway_names: [ 'bogus' ],
+  phone: '+61256555888',
+  po_number: null,
+  presentment_currency: 'AUD',
+  processed_at: '2024-09-04T06:36:20-04:00',
+  reference: '670eb804a195796f935c6cca357e51e6',
+  referring_site: '',
+  source_identifier: '670eb804a195796f935c6cca357e51e6',
+  source_name: 'web',
+  source_url: null,
+  subtotal_price: '1359.90',
+  subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  tags: '',
+  tax_exempt: false,
+  tax_lines: [],
+  taxes_included: false,
+  test: true,
+  token: '0ae491de74c72820f3ad8502e8d0d0c3',
+  total_discounts: '0.00',
+  total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_line_items_price: '1359.90',
+  total_line_items_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  total_outstanding: '0.00',
+  total_price: '1494.98',
+  total_price_set: {
+    shop_money: { amount: '1494.98', currency_code: 'AUD' },
+    presentment_money: { amount: '1494.98', currency_code: 'AUD' }
+  },
+  total_shipping_price_set: {
+    shop_money: { amount: '135.08', currency_code: 'AUD' },
+    presentment_money: { amount: '135.08', currency_code: 'AUD' }
+  },
+  total_tax: '0.00',
+  total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_tip_received: '0.00',
+  total_weight: 0,
+  updated_at: '2024-09-04T06:36:28-04:00',
+  user_id: null,
+  billing_address: {
+    first_name: 'Multi',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'Location',
+    address2: null,
+    company: null,
+    latitude: null,
+    longitude: null,
+    name: 'Multi Location',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  customer: {
+    id: 7539230605531,
+    email: null,
+    created_at: '2024-06-05T08:04:42-04:00',
+    updated_at: '2024-09-04T07:20:26-04:00',
+    first_name: 'RRR',
+    last_name: 'RRR',
+    state: 'disabled',
+    note: null,
+    verified_email: true,
+    multipass_identifier: null,
+    tax_exempt: false,
+    phone: '+61256555888',
+    email_marketing_consent: null,
+    sms_marketing_consent: {
+      state: 'not_subscribed',
+      opt_in_level: 'single_opt_in',
+      consent_updated_at: null,
+      consent_collected_from: 'SHOPIFY'
+    },
+    tags: '',
+    currency: 'AUD',
+    tax_exemptions: [],
+    admin_graphql_api_id: 'gid://shopify/Customer/7539230605531',
+    default_address: {
+      id: 9340532818139,
+      customer_id: 7539230605531,
+      first_name: 'RRR',
+      last_name: 'RRR',
+      company: null,
+      address1: '238 Wilson Street',
+      address2: null,
+      city: 'Newtown',
+      province: 'New South Wales',
+      country: 'Australia',
+      zip: '2042',
+      phone: null,
+      name: 'RRR RRR',
+      province_code: 'NSW',
+      country_code: 'AU',
+      country_name: 'Australia',
+      default: true
     }
-  }
-] quotes
-[2024-07-12T17:01:08.357] [INFO] default - {
-  rates: [
+  },
+  discount_applications: [],
+  fulfillments: [],
+  line_items: [
     {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(BWOJAXYWAQ-BNOBJLKYGO)~[PAID]~[330.57]',
-      total_price: '0',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+      id: 14348326863067,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348326863067',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-managed Snowboard',
+      price: '629.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706890459,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: 'sku-managed-1',
+      taxable: true,
+      title: 'The Multi-managed Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528908507,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'Multi-managed Vendor',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    },
+    {
+      id: 14348326895835,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348326895835',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-location Snowboard',
+      price: '729.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706726619,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: '',
+      taxable: true,
+      title: 'The Multi-location Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528449755,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'test-development-fc-app',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    }
+  ],
+  payment_terms: null,
+  refunds: [],
+  shipping_address: {
+    first_name: 'Multi',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Newtown',
+    zip: '2042',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'Location',
+    address2: null,
+    company: null,
+    latitude: -33.8939382,
+    longitude: 151.189119,
+    name: 'Multi Location',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  shipping_lines: [
+    {
+      id: 4876867862747,
+      carrier_identifier: '650f1a14fa979ec5c74d063e968411d4',
+      code: '(LJQPPXLZPQ-PLOGGQXALO),(NPOAYPZVDO-NXOJQYRDVM)~[PAID,PAID]~[22.7,112.38]',
+      discounted_price: '135.08',
+      discounted_price_set: [Object],
+      is_removed: false,
+      phone: null,
+      price: '135.08',
+      price_set: [Object],
+      requested_fulfillment_service_id: null,
+      source: 'Fast Courier',
+      title: 'Fast Courier [Star Track,Star Track]',
+      tax_lines: [],
+      discount_allocations: []
     }
   ]
-} response
-[2024-07-12T17:01:18.157] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+}
+[2024-09-04T17:09:14.298] [INFO] default - codes (LJQPPXLZPQ-PLOGGQXALO),(NPOAYPZVDO-NXOJQYRDVM)~[PAID,PAID]~[22.7,112.38]
+[2024-09-04T17:14:11.737] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
 ] _bins 0
-[2024-07-12T17:01:18.160] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'second',
-  pickupLastName: 'address',
-  pickupCompanyName: '',
-  pickupEmail: 'second+add@gmail.com',
-  pickupAddress1: 'st no 2 cemeron street',
-  pickupAddress2: null,
-  pickupPhone: '04587878784',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Melbourne',
-  destinationState: 'VIC',
-  destinationPostcode: '3000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'AQQ AQSWW',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '3000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '600',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T17:01:19.898] [INFO] default - [
-  {
-    amount: '330.57',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(WVQXPVZDBQ-PLOGGWXLNO)',
-    courierName: 'TNT',
-    totalPrice: '330.57',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'second',
-      pickupLastName: 'address',
-      pickupCompanyName: '',
-      pickupEmail: 'second+add@gmail.com',
-      pickupAddress1: 'st no 2 cemeron street',
-      pickupAddress2: null,
-      pickupPhone: '04587878784',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Melbourne',
-      destinationState: 'VIC',
-      destinationPostcode: '3000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'AQQ AQSWW',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '3000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '600',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"20","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+[2024-09-04T17:14:38.464] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:15:00.748] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:15:24.344] [INFO] default - order-create-webhook== {
+  id: 5904610033883,
+  admin_graphql_api_id: 'gid://shopify/Order/5904610033883',
+  app_id: 580111,
+  browser_ip: '38.137.16.44',
+  buyer_accepts_marketing: false,
+  cancel_reason: null,
+  cancelled_at: null,
+  cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjZZREc0TjEyNlo3Rk1NNTJCWlc0NVpE',
+  checkout_id: 35341427278043,
+  checkout_token: 'cc504ff05e47e84a88558bdd8d4c21b6',
+  client_details: {
+    accept_language: 'en-AU',
+    browser_height: null,
+    browser_ip: '38.137.16.44',
+    browser_width: null,
+    session_hash: null,
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  },
+  closed_at: null,
+  company: null,
+  confirmation_number: 'GAW58HTWH',
+  confirmed: true,
+  contact_email: null,
+  created_at: '2024-09-04T07:45:21-04:00',
+  currency: 'AUD',
+  current_subtotal_price: '729.95',
+  current_subtotal_price_set: {
+    shop_money: { amount: '729.95', currency_code: 'AUD' },
+    presentment_money: { amount: '729.95', currency_code: 'AUD' }
+  },
+  current_total_additional_fees_set: null,
+  current_total_discounts: '0.00',
+  current_total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  current_total_duties_set: null,
+  current_total_price: '969.34',
+  current_total_price_set: {
+    shop_money: { amount: '969.34', currency_code: 'AUD' },
+    presentment_money: { amount: '969.34', currency_code: 'AUD' }
+  },
+  current_total_tax: '0.00',
+  current_total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  customer_locale: 'en-AU',
+  device_id: null,
+  discount_codes: [],
+  email: '',
+  estimated_taxes: false,
+  financial_status: 'paid',
+  fulfillment_status: null,
+  landing_site: '/',
+  landing_site_ref: null,
+  location_id: null,
+  merchant_of_record_app_id: null,
+  name: '#1251',
+  note: null,
+  note_attributes: [],
+  number: 251,
+  order_number: 1251,
+  order_status_url: 'https://test-development-fc-app.myshopify.com/67825205467/orders/a29b7129f34bbbd7a0775691ccef5a38/authenticate?key=13de526b13d31d22df0af1eeec2a374f&none=VQVXAVJGXVBaQV1G',
+  original_total_additional_fees_set: null,
+  original_total_duties_set: null,
+  payment_gateway_names: [ 'bogus' ],
+  phone: '+61487878787',
+  po_number: null,
+  presentment_currency: 'AUD',
+  processed_at: '2024-09-04T07:45:20-04:00',
+  reference: 'd9f6bd15058900a9c436073246a26be0',
+  referring_site: '',
+  source_identifier: 'd9f6bd15058900a9c436073246a26be0',
+  source_name: 'web',
+  source_url: null,
+  subtotal_price: '729.95',
+  subtotal_price_set: {
+    shop_money: { amount: '729.95', currency_code: 'AUD' },
+    presentment_money: { amount: '729.95', currency_code: 'AUD' }
+  },
+  tags: '',
+  tax_exempt: false,
+  tax_lines: [],
+  taxes_included: false,
+  test: true,
+  token: 'a29b7129f34bbbd7a0775691ccef5a38',
+  total_discounts: '0.00',
+  total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_line_items_price: '729.95',
+  total_line_items_price_set: {
+    shop_money: { amount: '729.95', currency_code: 'AUD' },
+    presentment_money: { amount: '729.95', currency_code: 'AUD' }
+  },
+  total_outstanding: '0.00',
+  total_price: '969.34',
+  total_price_set: {
+    shop_money: { amount: '969.34', currency_code: 'AUD' },
+    presentment_money: { amount: '969.34', currency_code: 'AUD' }
+  },
+  total_shipping_price_set: {
+    shop_money: { amount: '239.39', currency_code: 'AUD' },
+    presentment_money: { amount: '239.39', currency_code: 'AUD' }
+  },
+  total_tax: '0.00',
+  total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_tip_received: '0.00',
+  total_weight: 0,
+  updated_at: '2024-09-04T07:45:22-04:00',
+  user_id: null,
+  billing_address: {
+    first_name: 'test',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Colac',
+    zip: '3250',
+    province: 'Victoria',
+    country: 'Australia',
+    last_name: '55',
+    address2: null,
+    company: null,
+    latitude: null,
+    longitude: null,
+    name: 'test 55',
+    country_code: 'AU',
+    province_code: 'VIC'
+  },
+  customer: {
+    id: 7602011635931,
+    email: null,
+    created_at: '2024-06-20T01:53:38-04:00',
+    updated_at: '2024-09-04T07:45:21-04:00',
+    first_name: 'test',
+    last_name: '55',
+    state: 'disabled',
+    note: null,
+    verified_email: true,
+    multipass_identifier: null,
+    tax_exempt: false,
+    phone: '+61487878787',
+    email_marketing_consent: null,
+    sms_marketing_consent: {
+      state: 'not_subscribed',
+      opt_in_level: 'single_opt_in',
+      consent_updated_at: null,
+      consent_collected_from: 'SHOPIFY'
+    },
+    tags: '',
+    currency: 'AUD',
+    tax_exemptions: [],
+    admin_graphql_api_id: 'gid://shopify/Customer/7602011635931',
+    default_address: {
+      id: 9340564439259,
+      customer_id: 7602011635931,
+      first_name: 'test',
+      last_name: '55',
+      company: null,
+      address1: '238 Wilson Street',
+      address2: null,
+      city: 'Colac',
+      province: 'Victoria',
+      country: 'Australia',
+      zip: '3250',
+      phone: null,
+      name: 'test 55',
+      province_code: 'VIC',
+      country_code: 'AU',
+      country_name: 'Australia',
+      default: true
     }
-  }
-] quotes
-[2024-07-12T17:01:19.899] [INFO] default - {
-  rates: [
+  },
+  discount_applications: [],
+  fulfillments: [],
+  line_items: [
     {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(WVQXPVZDBQ-PLOGGWXLNO)~[PAID]~[330.57]',
-      total_price: '0',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+      id: 14348425789659,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348425789659',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-location Snowboard',
+      price: '729.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706726619,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: '',
+      taxable: true,
+      title: 'The Multi-location Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528449755,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'test-development-fc-app',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    }
+  ],
+  payment_terms: null,
+  refunds: [],
+  shipping_address: {
+    first_name: 'test',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Colac',
+    zip: '3250',
+    province: 'Victoria',
+    country: 'Australia',
+    last_name: '55',
+    address2: null,
+    company: null,
+    latitude: -38.3436015,
+    longitude: 143.5718688,
+    name: 'test 55',
+    country_code: 'AU',
+    province_code: 'VIC'
+  },
+  shipping_lines: [
+    {
+      id: 4876917113051,
+      carrier_identifier: '650f1a14fa979ec5c74d063e968411d4',
+      code: '(WKOLDAGAJO-JNOAEWJQEO)~[PAID]~[239.39]',
+      discounted_price: '239.39',
+      discounted_price_set: [Object],
+      is_removed: false,
+      phone: null,
+      price: '239.39',
+      price_set: [Object],
+      requested_fulfillment_service_id: null,
+      source: 'Fast Courier',
+      title: 'Fast Courier [Capital Transport]',
+      tax_lines: [],
+      discount_allocations: []
     }
   ]
-} response
-[2024-07-12T17:02:28.125] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
+}
+[2024-09-04T17:15:24.349] [INFO] default - codes (WKOLDAGAJO-JNOAEWJQEO)~[PAID]~[239.39]
+[2024-09-04T17:15:49.360] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"JNOAEWJQEO","consignment_number":null,"reason":{"destinationLastName":["The destination last name format is invalid."]},"store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904610033883","is_reprocessable":true}]
+[2024-09-04T17:15:49.362] [INFO] default - Shopify Order id == 5904610033883
+[2024-09-04T17:17:53.241] [INFO] default - update-order-status-body== [{"status_for_merchant":"booked_for_collection","status_for_customer":"booked_for_collection","order_id":"JNOAEWJQEO","consignment_number":"9137","tracking_url":"https://staging.fastcourier.com.au/tracking?code=JNOAEWJQEO","reason":null,"label":"orders/175255/labels/52ce5a05-6209-4ad0-bef5-df4226a5ede1.pdf","invoice":"orders/175255/invoices/65b0c6c2-8822-4238-94f7-cd808a4eef6f.pdf","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904610033883","is_reprocessable":false}]
+[2024-09-04T17:17:53.241] [INFO] default - Shopify Order id == 5904610033883
+[2024-09-04T17:19:37.320] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
 ] _bins 0
-[2024-07-12T17:02:28.131] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'new',
-  pickupLastName: 'Test',
-  pickupCompanyName: '',
-  pickupEmail: 'test+user123@gmail.com',
-  pickupAddress1: 'street no 627 hometown',
-  pickupAddress2: null,
-  pickupPhone: '0123456789',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Melbourne',
-  destinationState: 'VIC',
-  destinationPostcode: '3000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'AQQ AQSWW',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '3000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '1025',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T17:02:30.312] [INFO] default - [
-  {
-    amount: '330.57',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(ZDQYNDBJXO-NXOJQXRKGM)',
-    courierName: 'TNT',
-    totalPrice: '330.57',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'new',
-      pickupLastName: 'Test',
-      pickupCompanyName: '',
-      pickupEmail: 'test+user123@gmail.com',
-      pickupAddress1: 'street no 627 hometown',
-      pickupAddress2: null,
-      pickupPhone: '0123456789',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Melbourne',
-      destinationState: 'VIC',
-      destinationPostcode: '3000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'AQQ AQSWW',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '3000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '1025',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+[2024-09-04T17:19:37.333] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:19:49.750] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:19:49.758] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:16.271] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:16.279] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:40.008] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:40.017] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:58.013] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:20:58.020] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:21:21.039] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:21:21.045] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:22:01.297] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:22:01.301] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:22:11.600] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:22:11.607] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:22:59.422] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"DZMYYQPXNM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=DZMYYQPXNM","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"7897454","is_reprocessable":true}]
+[2024-09-04T17:22:59.424] [INFO] default - Shopify Order id == 7897454
+[2024-09-04T17:22:59.906] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: cdcf4854-934e-4f1a-a387-2e11c80ad284-1725450778
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
     }
   }
-] quotes
-[2024-07-12T17:02:30.313] [INFO] default - {
-  rates: [
-    {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(ZDQYNDBJXO-NXOJQXRKGM)~[PAID]~[330.57]',
-      total_price: '33057',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
-    }
-  ]
-} response
-[2024-07-12T17:03:10.876] [INFO] default - codes (ZDQYNDBJXO-NXOJQXRKGM)~[PAID]~[330.57]
-[2024-07-12T17:52:58.720] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
-] _bins 0
-[2024-07-12T17:52:58.726] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'new',
-  pickupLastName: 'Test',
-  pickupCompanyName: '',
-  pickupEmail: 'test+user123@gmail.com',
-  pickupAddress1: 'street no 627 hometown',
-  pickupAddress2: null,
-  pickupPhone: '0123456789',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Melbourne',
-  destinationState: 'VIC',
-  destinationPostcode: '3000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: null,
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '3000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '1025',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T17:53:01.026] [INFO] default - [
-  {
-    amount: '330.57',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(GPOKMYLVDO-YEOQQRWZXO)',
-    courierName: 'TNT',
-    totalPrice: '330.57',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'new',
-      pickupLastName: 'Test',
-      pickupCompanyName: '',
-      pickupEmail: 'test+user123@gmail.com',
-      pickupAddress1: 'street no 627 hometown',
-      pickupAddress2: null,
-      pickupPhone: '0123456789',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Melbourne',
-      destinationState: 'VIC',
-      destinationPostcode: '3000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: null,
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '3000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '1025',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+}
+[2024-09-04T17:23:04.202] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"DZMYYQPXNM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=DZMYYQPXNM","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"7897454","is_reprocessable":true}]
+[2024-09-04T17:23:04.203] [INFO] default - Shopify Order id == 7897454
+[2024-09-04T17:23:04.629] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: ebb24df1-c39e-41b0-a3ea-46c057139e61-1725450783
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
     }
   }
-] quotes
-[2024-07-12T17:53:01.028] [INFO] default - {
-  rates: [
-    {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(GPOKMYLVDO-YEOQQRWZXO)~[PAID]~[330.57]',
-      total_price: '33057',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
-    }
-  ]
-} response
-[2024-07-12T17:53:13.292] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
-] _bins 0
-[2024-07-12T17:53:13.295] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'new',
-  pickupLastName: 'Test',
-  pickupCompanyName: '',
-  pickupEmail: 'test+user123@gmail.com',
-  pickupAddress1: 'street no 627 hometown',
-  pickupAddress2: null,
-  pickupPhone: '0123456789',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Melbourne',
-  destinationState: 'VIC',
-  destinationPostcode: '3000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'AAA AWS',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '3000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '1025',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-12T17:53:15.084] [INFO] default - [
-  {
-    amount: '330.57',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(NPQAYRLWRQ-JNMAELJXBM)',
-    courierName: 'TNT',
-    totalPrice: '330.57',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'new',
-      pickupLastName: 'Test',
-      pickupCompanyName: '',
-      pickupEmail: 'test+user123@gmail.com',
-      pickupAddress1: 'street no 627 hometown',
-      pickupAddress2: null,
-      pickupPhone: '0123456789',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Melbourne',
-      destinationState: 'VIC',
-      destinationPostcode: '3000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'AAA AWS',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '3000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '1025',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"30","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1},{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+}
+[2024-09-04T17:23:09.576] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"DZMYYQPXNM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=DZMYYQPXNM","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"7897454","is_reprocessable":true}]
+[2024-09-04T17:23:09.578] [INFO] default - Shopify Order id == 7897454
+[2024-09-04T17:23:10.008] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: e0cf50b5-bf4e-4f55-8454-6612d5889745-1725450788
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
     }
   }
-] quotes
-[2024-07-12T17:53:15.085] [INFO] default - {
-  rates: [
+}
+[2024-09-04T17:24:08.562] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:24:08.565] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:24:15.370] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:24:15.373] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:25:13.643] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:25:13.650] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:28:16.249] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:28:16.256] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:29:10.859] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:29:10.862] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:29:25.838] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:29:25.845] [INFO] default - [
+  { name: 'Le petite box-0', width: 50, height: 50, length: 50 },
+  { name: 'Le petite box-1', width: 5, height: 5, length: 5 }
+] _bins 0
+[2024-09-04T17:29:43.225] [INFO] default - order-create-webhook== {
+  id: 5904624648411,
+  admin_graphql_api_id: 'gid://shopify/Order/5904624648411',
+  app_id: 580111,
+  browser_ip: '38.137.16.44',
+  buyer_accepts_marketing: false,
+  cancel_reason: null,
+  cancelled_at: null,
+  cart_token: 'Z2NwLXVzLWVhc3QxOjAxSjZZRFZRQ1NWV0Y0RkhRUUdTVDc1NldH',
+  checkout_id: 35341441532123,
+  checkout_token: '0b14c4f792a4abe9eb7afee9a93b81d0',
+  client_details: {
+    accept_language: 'en-AU',
+    browser_height: null,
+    browser_ip: '38.137.16.44',
+    browser_width: null,
+    session_hash: null,
+    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  },
+  closed_at: null,
+  company: null,
+  confirmation_number: 'DPALXZX7I',
+  confirmed: true,
+  contact_email: null,
+  created_at: '2024-09-04T07:59:40-04:00',
+  currency: 'AUD',
+  current_subtotal_price: '1359.90',
+  current_subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  current_total_additional_fees_set: null,
+  current_total_discounts: '0.00',
+  current_total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  current_total_duties_set: null,
+  current_total_price: '1541.36',
+  current_total_price_set: {
+    shop_money: { amount: '1541.36', currency_code: 'AUD' },
+    presentment_money: { amount: '1541.36', currency_code: 'AUD' }
+  },
+  current_total_tax: '0.00',
+  current_total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  customer_locale: 'en-AU',
+  device_id: null,
+  discount_codes: [],
+  email: '',
+  estimated_taxes: false,
+  financial_status: 'paid',
+  fulfillment_status: null,
+  landing_site: '/',
+  landing_site_ref: null,
+  location_id: null,
+  merchant_of_record_app_id: null,
+  name: '#1252',
+  note: null,
+  note_attributes: [],
+  number: 252,
+  order_number: 1252,
+  order_status_url: 'https://test-development-fc-app.myshopify.com/67825205467/orders/a1905dfe09d82af604212cd758750d67/authenticate?key=c07ac66d9db9c3fbd3716118dfae4159&none=VQVXAVJGXVBaQV1G',
+  original_total_additional_fees_set: null,
+  original_total_duties_set: null,
+  payment_gateway_names: [ 'bogus' ],
+  phone: '+61487878787',
+  po_number: null,
+  presentment_currency: 'AUD',
+  processed_at: '2024-09-04T07:59:39-04:00',
+  reference: '8f03aa1c955b17cf1ddb6b7fab1b547b',
+  referring_site: '',
+  source_identifier: '8f03aa1c955b17cf1ddb6b7fab1b547b',
+  source_name: 'web',
+  source_url: null,
+  subtotal_price: '1359.90',
+  subtotal_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  tags: '',
+  tax_exempt: false,
+  tax_lines: [],
+  taxes_included: false,
+  test: true,
+  token: 'a1905dfe09d82af604212cd758750d67',
+  total_discounts: '0.00',
+  total_discounts_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_line_items_price: '1359.90',
+  total_line_items_price_set: {
+    shop_money: { amount: '1359.90', currency_code: 'AUD' },
+    presentment_money: { amount: '1359.90', currency_code: 'AUD' }
+  },
+  total_outstanding: '0.00',
+  total_price: '1541.36',
+  total_price_set: {
+    shop_money: { amount: '1541.36', currency_code: 'AUD' },
+    presentment_money: { amount: '1541.36', currency_code: 'AUD' }
+  },
+  total_shipping_price_set: {
+    shop_money: { amount: '181.46', currency_code: 'AUD' },
+    presentment_money: { amount: '181.46', currency_code: 'AUD' }
+  },
+  total_tax: '0.00',
+  total_tax_set: {
+    shop_money: { amount: '0.00', currency_code: 'AUD' },
+    presentment_money: { amount: '0.00', currency_code: 'AUD' }
+  },
+  total_tip_received: '0.00',
+  total_weight: 0,
+  updated_at: '2024-09-04T07:59:41-04:00',
+  user_id: null,
+  billing_address: {
+    first_name: 'multi order',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Broken Hill',
+    zip: '2880',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'test',
+    address2: null,
+    company: null,
+    latitude: null,
+    longitude: null,
+    name: 'multi order test',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  customer: {
+    id: 7602011635931,
+    email: null,
+    created_at: '2024-06-20T01:53:38-04:00',
+    updated_at: '2024-09-04T07:59:40-04:00',
+    first_name: 'multi order',
+    last_name: 'test',
+    state: 'disabled',
+    note: null,
+    verified_email: true,
+    multipass_identifier: null,
+    tax_exempt: false,
+    phone: '+61487878787',
+    email_marketing_consent: null,
+    sms_marketing_consent: {
+      state: 'not_subscribed',
+      opt_in_level: 'single_opt_in',
+      consent_updated_at: null,
+      consent_collected_from: 'SHOPIFY'
+    },
+    tags: '',
+    currency: 'AUD',
+    tax_exemptions: [],
+    admin_graphql_api_id: 'gid://shopify/Customer/7602011635931',
+    default_address: {
+      id: 9340584165595,
+      customer_id: 7602011635931,
+      first_name: 'multi order',
+      last_name: 'test',
+      company: null,
+      address1: '238 Wilson Street',
+      address2: null,
+      city: 'Broken Hill',
+      province: 'New South Wales',
+      country: 'Australia',
+      zip: '2880',
+      phone: null,
+      name: 'multi order test',
+      province_code: 'NSW',
+      country_code: 'AU',
+      country_name: 'Australia',
+      default: true
+    }
+  },
+  discount_applications: [],
+  fulfillments: [],
+  line_items: [
     {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(NPQAYRLWRQ-JNMAELJXBM)~[PAID]~[330.57]',
-      total_price: '33057',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+      id: 14348451578075,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348451578075',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-managed Snowboard',
+      price: '629.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706890459,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: 'sku-managed-1',
+      taxable: true,
+      title: 'The Multi-managed Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528908507,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'Multi-managed Vendor',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    },
+    {
+      id: 14348451610843,
+      admin_graphql_api_id: 'gid://shopify/LineItem/14348451610843',
+      attributed_staffs: [],
+      current_quantity: 1,
+      fulfillable_quantity: 1,
+      fulfillment_service: 'manual',
+      fulfillment_status: null,
+      gift_card: false,
+      grams: 0,
+      name: 'The Multi-location Snowboard',
+      price: '729.95',
+      price_set: [Object],
+      product_exists: true,
+      product_id: 8191706726619,
+      properties: [],
+      quantity: 1,
+      requires_shipping: true,
+      sku: '',
+      taxable: true,
+      title: 'The Multi-location Snowboard',
+      total_discount: '0.00',
+      total_discount_set: [Object],
+      variant_id: 44544528449755,
+      variant_inventory_management: 'shopify',
+      variant_title: null,
+      vendor: 'test-development-fc-app',
+      tax_lines: [],
+      duties: [],
+      discount_allocations: []
+    }
+  ],
+  payment_terms: null,
+  refunds: [],
+  shipping_address: {
+    first_name: 'multi order',
+    address1: '238 Wilson Street',
+    phone: null,
+    city: 'Broken Hill',
+    zip: '2880',
+    province: 'New South Wales',
+    country: 'Australia',
+    last_name: 'test',
+    address2: null,
+    company: null,
+    latitude: -31.9783836,
+    longitude: 141.4650082,
+    name: 'multi order test',
+    country_code: 'AU',
+    province_code: 'NSW'
+  },
+  shipping_lines: [
+    {
+      id: 4876929925339,
+      carrier_identifier: '650f1a14fa979ec5c74d063e968411d4',
+      code: '(PEORLZVRRO-GRORPEXBNO),(REOEAPYJMO-WKMVEGVBWO)~[PAID,PAID]~[69.08,112.38]',
+      discounted_price: '181.46',
+      discounted_price_set: [Object],
+      is_removed: false,
+      phone: null,
+      price: '181.46',
+      price_set: [Object],
+      requested_fulfillment_service_id: null,
+      source: 'Fast Courier',
+      title: 'Fast Courier [Star Track,Star Track]',
+      tax_lines: [],
+      discount_allocations: []
     }
   ]
-} response
-[2024-07-12T17:53:39.923] [INFO] default - codes (NPQAYRLWRQ-JNMAELJXBM)~[PAID]~[330.57]
-[2024-07-15T10:38:44.238] [INFO] default - [
-  { name: 'Le petite box-0', width: 15, height: 15, length: 15 },
-  { name: 'Le petite box-1', width: 50, height: 50, length: 50 }
-] _bins 0
-[2024-07-15T10:38:44.244] [INFO] default - {
-  request_type: 'wp',
-  pickupFirstName: 'new',
-  pickupLastName: 'Test',
-  pickupCompanyName: '',
-  pickupEmail: 'test+user123@gmail.com',
-  pickupAddress1: 'street no 627 hometown',
-  pickupAddress2: null,
-  pickupPhone: '0123456789',
-  pickupSuburb: 'SYDNEY',
-  pickupState: 'NSW',
-  pickupPostcode: '2000',
-  pickupBuildingType: 'residential',
-  pickupTimeWindow: '9am to 5pm',
-  isPickupTailLift: '0',
-  destinationSuburb: 'Perth',
-  destinationState: 'WA',
-  destinationPostcode: '6000',
-  destinationBuildingType: 'residential',
-  destinationFirstName: 'dds dd',
-  destinationLastName: '',
-  destinationCompanyName: 'NA',
-  destinationEmail: null,
-  destinationAddress1: '6000',
-  destinationAddress2: '',
-  destinationPhone: null,
-  parcelContent: 'Order from Main Hub',
-  valueOfContent: '1359.9',
-  items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-  isDropOffTailLift: 1,
-  orderType: '8'
-} payload
-[2024-07-15T10:38:47.042] [INFO] default - [
-  {
-    amount: '446.7',
-    description: 'Includes tracking and insurance',
-    eta: '4 Business Days',
-    serviceCode: '(WVOXPVMVVO-EYMKYAVNKM)',
-    courierName: 'TNT',
-    totalPrice: '446.7',
-    quoteData: {
-      status: 1,
-      data: [Object],
-      request_type: 'wp',
-      pickupFirstName: 'new',
-      pickupLastName: 'Test',
-      pickupCompanyName: '',
-      pickupEmail: 'test+user123@gmail.com',
-      pickupAddress1: 'street no 627 hometown',
-      pickupAddress2: null,
-      pickupPhone: '0123456789',
-      pickupSuburb: 'SYDNEY',
-      pickupState: 'NSW',
-      pickupPostcode: '2000',
-      pickupBuildingType: 'residential',
-      pickupTimeWindow: '9am to 5pm',
-      isPickupTailLift: '0',
-      destinationSuburb: 'Perth',
-      destinationState: 'WA',
-      destinationPostcode: '6000',
-      destinationBuildingType: 'residential',
-      destinationFirstName: 'dds dd',
-      destinationLastName: '',
-      destinationCompanyName: 'NA',
-      destinationEmail: null,
-      destinationAddress1: '6000',
-      destinationAddress2: '',
-      destinationPhone: null,
-      parcelContent: 'Order from Main Hub',
-      valueOfContent: '1359.9',
-      items: '[{"name":"Le petite box-0-0","type":"box","quantity":"1","width":"15","height":"15","length":"15","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]},{"name":"Le petite box-1-0","type":"box","quantity":"1","width":"50","height":"50","length":"50","weight":"10","sub_packs":[{"width":10,"height":10,"length":10,"weight":10,"type":"box","quantity":1}]}]',
-      isDropOffTailLift: 1,
-      orderType: '8'
+}
+[2024-09-04T17:29:43.229] [INFO] default - codes (PEORLZVRRO-GRORPEXBNO),(REOEAPYJMO-WKMVEGVBWO)~[PAID,PAID]~[69.08,112.38]
+[2024-09-04T17:30:57.606] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"YQMXXVLGQM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=YQMXXVLGQM","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"8789798","is_reprocessable":true}]
+[2024-09-04T17:30:57.607] [INFO] default - Shopify Order id == 8789798
+[2024-09-04T17:30:58.195] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: 5d18c5d0-aabd-4766-938a-c80d270af189-1725451257
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
     }
   }
-] quotes
-[2024-07-15T10:38:47.043] [INFO] default - {
-  rates: [
-    {
-      service_name: 'Fast Courier [TNT]',
-      service_code: '(WVOXPVMVVO-EYMKYAVNKM)~[PAID]~[446.7]',
-      total_price: '44670',
-      description: 'Includes tracking and insurance',
-      currency: 'AUD'
+}
+[2024-09-04T17:31:03.081] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"YQMXXVLGQM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=YQMXXVLGQM","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"8789798","is_reprocessable":true}]
+[2024-09-04T17:31:03.106] [INFO] default - Shopify Order id == 8789798
+[2024-09-04T17:31:03.549] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: e399dce6-431a-4618-9d13-576e77dc4571-1725451262
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
     }
-  ]
-} response
-[2024-07-15T10:40:56.208] [INFO] default - codes (WVOXPVMVVO-EYMKYAVNKM)~[PAID]~[446.7]
+  }
+}
+[2024-09-04T17:31:08.632] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"YQMXXVLGQM","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=YQMXXVLGQM","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"8789798","is_reprocessable":true}]
+[2024-09-04T17:31:08.633] [INFO] default - Shopify Order id == 8789798
+[2024-09-04T17:31:09.108] [ERROR] default - update-order-status-error== HttpResponseError: Received an error response (404 Not Found) from Shopify:
+"Not Found"
+If you report this error, please include this id: 6d0f8d2a-1b6b-45db-bed8-0e2f88a41167-1725451268
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 404,
+    statusText: 'Not Found',
+    body: { errors: 'Not Found' },
+    headers: {
+      'Alt-Svc': [Array],
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
+    }
+  }
+}
+[2024-09-04T17:31:29.598] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"GRORPEXBNO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRORPEXBNO","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:29.600] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:31:29.622] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:29.622] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:31:35.332] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"GRORPEXBNO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRORPEXBNO","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:35.333] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:31:36.340] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:36.341] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:31:41.544] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"GRORPEXBNO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRORPEXBNO","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:41.545] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:31:42.196] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:31:42.197] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:42:03.988] [INFO] default - update-order-status-body== [{"status_for_merchant":"booked_for_collection","status_for_customer":"booked_for_collection","order_id":"GRORPEXBNO","consignment_number":"112Z50025094","tracking_url":"https://staging.fastcourier.com.au/tracking?code=GRORPEXBNO","reason":null,"label":"orders/175294/labels/66e3c276-1af7-4c46-be4d-b8c51071eec2.pdf","invoice":"orders/175294/invoices/460a9cee-b3a3-436d-bd63-147045b9d81c.pdf","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":false}]
+[2024-09-04T17:42:03.990] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:43:36.417] [INFO] default - update-order-status-body== [{"status_for_merchant":"payment_failure","status_for_customer":"payment_failure","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"StarTrack failed to validate order. Client exception.","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:43:36.419] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:43:41.192] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"StarTrack failed to create shipment","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:43:41.193] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:43:46.927] [INFO] default - update-order-status-body== [{"status_for_merchant":"order_rejected","status_for_customer":"order_rejected","order_id":"WKMVEGVBWO","consignment_number":null,"tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":"compact(): Undefined variable: orderResult","label":"","invoice":"","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":true}]
+[2024-09-04T17:43:46.929] [INFO] default - Shopify Order id == 5904624648411
+[2024-09-04T17:46:57.517] [INFO] default - update-order-status-body== [{"status_for_merchant":"booked_for_collection","status_for_customer":"booked_for_collection","order_id":"WKMVEGVBWO","consignment_number":"112Z50025095","tracking_url":"https://staging.fastcourier.com.au/tracking?code=WKMVEGVBWO","reason":null,"label":"orders/175295/labels/5244c0ef-69e6-4c9d-81d0-43091c702baa.pdf","invoice":"orders/175295/invoices/9b9d0b9c-913a-4562-b4e1-57454dcb9f73.pdf","additional":"","doc_prefix":"https://fc-order-files-stage.s3.ap-southeast-2.amazonaws.com/","store-domain":"offline_test-development-fc-app.myshopify.com","wpOrderId":"5904624648411","is_reprocessable":false}]
+[2024-09-04T17:46:57.518] [INFO] default - Shopify Order id == 5904624648411

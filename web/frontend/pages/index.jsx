@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 // import { MerchantBillingDetails } from "../components/merchantBillingDetails";
-import "./style.css";
+import axios from "axios";
+import "./style.scss";
 import { Configuration } from "../components/configuration";
-import { NewOrders } from "../components/newOrders";
-import { ChangePassword } from "../components/changePassword";
-import { ProcessedOrders } from "../components/processedOrders";
-import { HoldOrders } from "../components/holdOrders";
-import { RejectedOrders } from "../components/rejectedOrders/RejectedOrders";
-import { FallbackOrders } from "../components/fallbackOrders";
+import { NewOrders } from "../components/newOrders"; 
+import { ProcessedOrders } from "../components/processedOrders"; 
 import { useAuthenticatedFetch } from "../hooks";
 import { Loader } from "../components/loader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 //import { OrderDetails } from "../components/orderDetails/OrderDetails";
 
 export default function HomePage(props) {
@@ -21,7 +19,50 @@ export default function HomePage(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [userSetupConfigured, setUserSetupConfigured] = useState(false);
 
+  function refreshToken() {
+    return
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          `${
+            localStorage.getItem("isProduction") === "1"
+              ? process.env.PROD_API_ENDPOINT
+              : process.env.API_ENDPOINT
+          }/api/refresh-token`,
+          {
+            refresh_token: localStorage.getItem("refresh_token"),
+            client_id: localStorage.getItem("client_id"),
+            client_secret: localStorage.getItem("client_secret"),
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(async (response) => {
+          localStorage.setItem("accessToken", response.data.access_token);
+          localStorage.setItem("refresh_token", response.data.refresh_token);
+          localStorage.setItem("expires_at", response.data.expires_at);
+
+          await setDataIntoData("merchant_token", response.data.access_token);
+          await setDataIntoData(
+            "merchant_refresh_token",
+            response.data.refresh_token
+          );
+          await setDataIntoData(
+            "merchant_token_expires_at",
+            response.data.expires_at
+          );
+
+          resolve(response.data);
+        })
+        .catch((error) => reject(error));
+    });
+  }
+  
   useEffect(() => {
+     
     if (location.state?.redirectedtab) {
       setActiveNavItem(location.state?.redirectedtab);
     } else {
@@ -45,15 +86,7 @@ export default function HomePage(props) {
       return <NewOrders setActiveNavItem={setActiveNavItem} />;
     } else if (activeNavItem == "processedOrders") {
       return <ProcessedOrders setActiveNavItem={setActiveNavItem} />;
-    } else if (activeNavItem == "holdOrders") {
-      return <HoldOrders setActiveNavItem={setActiveNavItem} />;
-    } else if (activeNavItem == "rejectedOrders") {
-      return <RejectedOrders setActiveNavItem={setActiveNavItem} />;
-    } else if (activeNavItem == "fallbackOrders") {
-      return <FallbackOrders setActiveNavItem={setActiveNavItem} />;
-    } else if (activeNavItem == "changePassword") {
-      return <ChangePassword setActiveNavItem={setActiveNavItem} />;
-    }
+    }  
   };
 
   async function logOutUser() {
@@ -126,7 +159,28 @@ export default function HomePage(props) {
       {isLoading && <Loader />}
       <div className="homepage-left">
         <div className="logo-image">
-          <img src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png" />
+          <span className="hide_on_hover">
+            <img
+              src="https://encrypted-tbn2.gstatic.com/faviconV2?url=https://fastcourier.com.au&client=VFE&size=64&type=FAVICON&fallback_opts=TYPE,SIZE,URL&nfrp=2"
+              className="position-absolute"
+              style={{
+                width: "35px",
+                transform: "translate(-50%, -50%)",
+                top: "27px",
+                left: "50%",
+              }}
+            />
+          </span>
+          <img
+            src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png"
+            className="show_on_hover position-absolute"
+            style={{
+              width: "80%",
+              transform: "translate(-50%, -50%)",
+              top: "27px",
+              left: "50%",
+            }}
+          />
         </div>
         <div className="side-nav-bar">
           <div
@@ -137,8 +191,16 @@ export default function HomePage(props) {
             }
             onClick={() => setActiveNavItem("configuration")}
           >
-            <span>Configuration</span>{" "}
-            <span> {activeNavItem == "configuration" && ">>"} </span>
+            <span>
+              {" "}
+              <FontAwesomeIcon
+                icon="fa-solid fa-gear"
+                size="sm"
+                style={{ width: "18px", marginRight: "4px" }}
+              />{" "}
+              <span className="show_on_hover"> Configuration</span>{" "}
+            </span>{" "}
+            <span> {activeNavItem == "configuration" && " >>"} </span>
           </div>
           {/* <div className={activeNavItem == "about" ? "nav-bar-item-active" : "nav-bar-item"} onClick={() => setActiveNavItem("about")}>
             <span>About Plugin</span><span>{activeNavItem == "about" && ">>"}</span>
@@ -154,10 +216,17 @@ export default function HomePage(props) {
                 }
                 onClick={() => setActiveNavItem("newOrders")}
               >
-                <span>New Orders</span>
-                <span>{activeNavItem == "newOrders" && ">>"}</span>
+                <span>
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-list"
+                    size="sm"
+                    style={{ width: "18px", marginRight: "4px" }}
+                  />{" "}
+                  <span className="show_on_hover">Orders</span>
+                </span>
+                <span>{activeNavItem == "newOrders" && " >>"}</span>
               </div>
-              <div
+              {/* <div
                 className={
                   activeNavItem == "processedOrders"
                     ? "nav-bar-item-active"
@@ -167,8 +236,8 @@ export default function HomePage(props) {
               >
                 <span>Processed Orders</span>
                 <span>{activeNavItem == "processedOrders" && ">>"}</span>
-              </div>
-              <div
+              </div> */}
+              {/* <div
                 className={
                   activeNavItem == "holdOrders"
                     ? "nav-bar-item-active"
@@ -178,8 +247,8 @@ export default function HomePage(props) {
               >
                 <span>Hold Orders</span>
                 <span>{activeNavItem == "holdOrders" && ">>"}</span>
-              </div>
-              <div
+              </div> */}
+              {/* <div
                 className={
                   activeNavItem == "rejectedOrders"
                     ? "nav-bar-item-active"
@@ -189,8 +258,8 @@ export default function HomePage(props) {
               >
                 <span>Rejected Orders</span>
                 <span>{activeNavItem == "rejectedOrders" && ">>"}</span>
-              </div>
-              <div
+              </div> */}
+              {/* <div
                 className={
                   activeNavItem == "fallbackOrders"
                     ? "nav-bar-item-active"
@@ -200,10 +269,10 @@ export default function HomePage(props) {
               >
                 <span>Fallback Orders</span>
                 <span>{activeNavItem == "fallbackOrders" && ">>"}</span>
-              </div>
+              </div> */}
             </>
           )}
-          <div
+          {/* <div
             className={
               activeNavItem == "changePassword"
                 ? "nav-bar-item-active"
@@ -213,9 +282,17 @@ export default function HomePage(props) {
           >
             <span>Change Password</span>
             <span>{activeNavItem == "changePassword" && ">>"}</span>
-          </div>
-          <div className="nav-bar-item" onClick={() => logout()}>
-            Logout
+          </div> */}
+          <div className="nav-bar-item d-flex" onClick={() => logout()}>
+            <span>
+              <FontAwesomeIcon
+                icon="fa-solid fa-right-from-bracket"
+                size="sm"
+                style={{ width: "18px", marginRight: "4px" }}
+              />
+            </span>
+
+            <span className="show_on_hover">Logout</span>
           </div>
         </div>
       </div>

@@ -89,7 +89,8 @@
 }
 
 .table-head th {
-    padding-left: 5px;
+    /* padding-left: 5px; */
+    text-align: center;
 }
 
 .assign-location {
@@ -123,8 +124,8 @@
 }
 
 .products-row td {
-    text-align: left;
-    padding-left: 5px;
+    text-align: center;
+    /* padding-left: 0px; */
 }
 
 .dimension-container .input-row {

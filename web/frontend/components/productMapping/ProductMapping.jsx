@@ -946,10 +946,30 @@ export function ProductMapping(props) {
 
         <div className="product-actions">
           <button
-            className="submit-btn"
+            className="submit-btn "
             onClick={() => setShowShippingBoxesModal(true)}
           >
+            <div className="d-flex align-items-center">
+              <div>
             Shipping Boxes
+
+              </div>
+               
+              {!shippingBoxes?.length &&
+              <FontAwesomeIcon
+                icon="fa-solid fa-exclamation-circle"
+                size="sm"
+                color="black"
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  marginLeft: "10px",
+                }}
+              />
+            }
+              
+
+            </div>
           </button>
           <button
             className="submit-btn"

@@ -289,7 +289,8 @@ export function RejectedOrders(props) {
             collectionDate: collectionDate,
             destinationEmail: element?.contact_email,
             destinationPhone: element?.customer?.phone,
-            wpOrderId: element?.order_number,
+            // wpOrderId: element?.order_number,
+            wpOrderId:element?.id,
             destinationFirstName: element?.shipping_address.first_name,
             destinationLastName: element?.shipping_address.last_name,
             destinationCompanyName: element?.shipping_address.company,
@@ -692,7 +693,7 @@ export function RejectedOrders(props) {
                 // getMetaValue(
                 //   element.node?.metafields?.edges,
                 //   "fc_order_status"
-                // ) != "Booked for collection" &&
+                // ) != "Booked for Collection" &&
                 // getMetaValue(
                 //   element.node?.metafields?.edges,
                 //   "fc_order_status"

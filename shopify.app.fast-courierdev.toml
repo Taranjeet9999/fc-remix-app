@@ -1,15 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://proof-genome-jacket-abandoned.trycloudflare.com"
+application_url = "https://model-developing-identified-boxing.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
 dev_store_url = "test-development-fc-app.myshopify.com"
-include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -17,18 +16,21 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://proof-genome-jacket-abandoned.trycloudflare.com/auth/callback",
-  "https://proof-genome-jacket-abandoned.trycloudflare.com/auth/shopify/callback",
-  "https://proof-genome-jacket-abandoned.trycloudflare.com/api/auth/callback"
+  "https://model-developing-identified-boxing.trycloudflare.com/auth/callback",
+  "https://model-developing-identified-boxing.trycloudflare.com/auth/shopify/callback",
+  "https://model-developing-identified-boxing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-04"
 
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
-  customer_data_request_url = "https://fctest-api.fastcourier.com.au/api/wp/get_merchant"
-  shop_deletion_url = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
+  [[webhooks.subscriptions]]
+  uri = "https://fctest-api.fastcourier.com.au/api/wp/delete_merchant"
+  compliance_topics = [ "customers/redact", "shop/redact" ]
+
+  [[webhooks.subscriptions]]
+  uri = "https://fctest-api.fastcourier.com.au/api/wp/get_merchant"
+  compliance_topics = [ "customers/data_request" ]
 
 [pos]
 embedded = false

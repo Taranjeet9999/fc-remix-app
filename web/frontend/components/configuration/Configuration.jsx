@@ -8,17 +8,16 @@ import { ProductMapping } from "../productMapping";
 import axios from "axios";
 import { useAuthenticatedFetch } from "../../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-;
-
 export function Configuration(props) {
   const [activeNavItem, setActiveNavItem] = useState("basic");
   const [activateApiPayload, setActiveApiPayload] = useState(null);
   const [merchantDetails, setMerchantDetails] = useState({});
-  const [pickupLocations, setPickupLocations] = useState([])
-  const [products, setProducts] = useState([])
-  const [shippingBoxes, setShippingBoxes] = useState([])
+  const [pickupLocations, setPickupLocations] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [shippingBoxes, setShippingBoxes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [paymentMethods, setPaymentMethods] = useState([]);
+
   const getComponent = () => {
     if (activeNavItem == "paymentMethods") {
       return (
@@ -55,10 +54,38 @@ export function Configuration(props) {
       />
     );
   };
-  const getPickupLocations = () => {
-     
+  const getPickupLocations = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const merchantDomainId = localStorage.getItem("merchantDomainId");
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+      Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      "store-domain": localStorage.getItem("userData")
+        ? JSON.parse(localStorage.getItem("userData")).id
+        : "",
+    };
+    axios
+      .get(
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        { headers: headers }
+      )
+      .then((response) => {
+        setPickupLocations(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const  getPaymentMethods = async () => {
+     
+    
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -69,20 +96,22 @@ export function Configuration(props) {
     }
     axios
       .get(
-        `${localStorage.getItem("isProduction")==="1"?process.env.PROD_API_ENDPOINT : process.env.API_ENDPOINT}/api/wp/merchant_domain/locations/${merchantDomainId}`,
+        `${
+          localStorage.getItem("isProduction") === "1"
+            ? process.env.PROD_API_ENDPOINT
+            : process.env.API_ENDPOINT
+        }/api/wp/payment_method`,
         { headers: headers }
       )
       .then((response) => {
-        
-        
-        setPickupLocations(response.data.data);
+        setPaymentMethods(response.data.data);
         
       })
       .catch((error) => {
-         
+        
         console.log(error);
       });
-  };
+  }
 
   const fetch = useAuthenticatedFetch();
   function getProductIdFromGID(gid) {
@@ -129,8 +158,8 @@ export function Configuration(props) {
       const formattedProducts = formatProductData(data.body.data.products);
       console.log("formattedproducts", formattedProducts);
 
-      setProducts(formattedProducts); 
-      setIsLoading(false);
+      setProducts(formattedProducts);
+      
     }
   };
 
@@ -152,7 +181,7 @@ export function Configuration(props) {
   }
 
   function isPaymentMethodsFilled() {
-    if (merchantDetails.payment_method) {
+    if (paymentMethods.length > 0) {
       localStorage.setItem("isPaymentMethodsFilled", true);
       return true;
     }
@@ -171,12 +200,14 @@ export function Configuration(props) {
 
   function isProductMappingFilled() {
     for (let product of products) {
-       
       // Check metafields of the product
       for (let metafield of product.metafields) {
-        
         // Check if the metafield key is 'product_dimentions'
-        if (metafield.key === "product_dimentions" && metafield.value && shippingBoxes.length > 0) {
+        if (
+          metafield.key === "product_dimentions" &&
+          metafield.value &&
+          shippingBoxes.length > 0
+        ) {
           window.localStorage.setItem("isProductMappingFilled", true);
           return true;
         }
@@ -184,30 +215,37 @@ export function Configuration(props) {
     }
     window.localStorage.setItem("isProductMappingFilled", false);
 
-    return false
+    return false;
   }
   const getShippingBoxes = async () => {
-     
     const response = await fetch(`/api/shipping-boxes`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-
       },
     });
 
     const data = await response.json();
 
     setShippingBoxes(data);
-     
   };
 
   useEffect(() => {
-    getShippingBoxes()
-    getPickupLocations()
-    getAllProducts()
-    
-  }, [ ])
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+      
+    }, 10000);
+    Promise.all([
+      getShippingBoxes(),
+      getPickupLocations(),
+      getAllProducts(),
+      getPaymentMethods()
+    ]).then(()=>{
+      setIsLoading(false)
+     
+    })
+  }, []);
 
   function getProgress() {
     let progress = 0;
@@ -224,16 +262,19 @@ export function Configuration(props) {
       progress += 25;
     }
     return progress;
-    
   }
 
-
   useEffect(() => {
-    if(isMerchantDetailsFilled() && isPaymentMethodsFilled() && isPickupLocationsFilled() && isProductMappingFilled()){
-      props.setUserSetupConfigured(true)
+    if (
+      isMerchantDetailsFilled() &&
+      isPaymentMethodsFilled() &&
+      isPickupLocationsFilled() &&
+      isProductMappingFilled()
+    ) {
+      props.setUserSetupConfigured(true);
       window.localStorage.setItem("isUserSetupConfigured", true);
-    }else{
-      props.setUserSetupConfigured(false)
+    } else {
+      props.setUserSetupConfigured(false);
       window.localStorage.setItem("isUserSetupConfigured", false);
     }
   }, [
@@ -245,16 +286,13 @@ export function Configuration(props) {
     products,
     pickupLocations,
     merchantDetails,
-  ])
-  
-  
- 
+  ]);
 
   return (
     <div className="configuration">
       <div className="progress-bar">
         <div className="progress" style={{ width: `${getProgress()}%` }}>
-          {`${getProgress()}%`}
+          {isLoading  ?   "Fetching data.."   :    `${getProgress()}%`}
         </div>
       </div>
       <div className="top-nav-bar" style={{ marginTop: "20px" }}>
@@ -266,17 +304,23 @@ export function Configuration(props) {
         >
           <span></span>
           <span>Basic</span>
-          <span className="nav-icon">{isMerchantDetailsFilled() ?   <FontAwesomeIcon
-                      icon="fa-solid fa-check-circle"
-                      size="2xs"
-                      color="green"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    /> :   <FontAwesomeIcon
-                      icon="fa-solid fa-exclamation-circle"
-                      size="2xs"
-                      color="red"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    />}</span>
+          <span className="nav-icon">
+            {isMerchantDetailsFilled() ? (
+              <FontAwesomeIcon
+                icon="fa-solid fa-check-circle"
+                size="2xs"
+                color="green"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon="fa-solid fa-exclamation-circle"
+                size="2xs"
+                color="red"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            )}
+          </span>
         </div>
         <div
           className={
@@ -289,17 +333,23 @@ export function Configuration(props) {
           <span></span>
 
           <span>Payment Methods</span>
-          <span className="nav-icon">{isPaymentMethodsFilled() ?   <FontAwesomeIcon
-                      icon="fa-solid fa-check-circle"
-                      color="green"
-                      size="2xs"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    /> :   <FontAwesomeIcon
-                      icon="fa-solid fa-exclamation-circle"
-                      color="red"
-                      size="2xs"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    />}</span>
+          <span className="nav-icon">
+            {isPaymentMethodsFilled() ? (
+              <FontAwesomeIcon
+                icon="fa-solid fa-check-circle"
+                color="green"
+                size="2xs"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon="fa-solid fa-exclamation-circle"
+                color="red"
+                size="2xs"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            )}
+          </span>
         </div>
         <div
           className={
@@ -311,17 +361,23 @@ export function Configuration(props) {
         >
           <span></span>
           <span>Pickup Locations</span>
-          <span className="nav-icon">{isPickupLocationsFilled() ?   <FontAwesomeIcon
-                      icon="fa-solid fa-check-circle"
-                      color="green"
-                      size="2xs"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    /> :   <FontAwesomeIcon
-                      icon="fa-solid fa-exclamation-circle"
-                      color="red"
-                      size="2xs"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    />}</span>
+          <span className="nav-icon">
+            {isPickupLocationsFilled() ? (
+              <FontAwesomeIcon
+                icon="fa-solid fa-check-circle"
+                color="green"
+                size="2xs"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon="fa-solid fa-exclamation-circle"
+                color="red"
+                size="2xs"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            )}
+          </span>
         </div>
         <div
           className={
@@ -334,17 +390,23 @@ export function Configuration(props) {
           <span></span>
 
           <span>Product Mapping</span>
-          <span className="nav-icon">{isProductMappingFilled() ?   <FontAwesomeIcon
-                      icon="fa-solid fa-check-circle"
-                      color="green"
-                      size="2xs"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    /> :   <FontAwesomeIcon
-                      icon="fa-solid fa-exclamation-circle"
-                      size="2xs"
-                      color="red"
-                      onClick={() => handleEditClick(pickupLocations[i])}
-                    />}</span>
+          <span className="nav-icon">
+            {isProductMappingFilled() ? (
+              <FontAwesomeIcon
+                icon="fa-solid fa-check-circle"
+                color="green"
+                size="2xs"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon="fa-solid fa-exclamation-circle"
+                size="2xs"
+                color="red"
+                // onClick={() => handleEditClick(pickupLocations[i])}
+              />
+            )}
+          </span>
         </div>
       </div>
       <div className="configuration-steps">{getComponent()}</div>

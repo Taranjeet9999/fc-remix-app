@@ -607,7 +607,7 @@ export function FallbackOrders() {
                 //   getMetaValue(
                 //     element.node?.metafields?.edges,
                 //     "fc_order_status"
-                //   ) != "Booked for collection"
+                //   ) != "Booked for Collection"
                 //   &&
                   getMetaValue(
                     element.node?.metafields?.edges,

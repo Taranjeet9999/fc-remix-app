@@ -132,6 +132,44 @@ function getKeyValueArray(objects) {
   });
 }
 
+const AllOrderStatuses = {
+  "": "Draft",
+  draft: "Draft",
+  package_details_completed: "Draft",
+  select_quote_completed: "Draft",
+  shipment_details_completed: "Draft",
+  additional_info_completed: "Draft",
+  payment_failure: "Payment Failure",
+  pay_now: "Payment Pending",
+  pay_now_button_clicked: "Payment Pending",
+  payment_pending: "Payment Pending",
+  payment_completed: "Payment Completed",
+  order_rejected:"Rejected",// "Order Rejected",
+  order_completed: "Order Completed",
+  booked_for_collection: "Booked for Collection",
+  not_collected: "Not Collected",
+  collected: "Collected",
+  in_transit: "In Transit",
+  out_for_delivery: "Out For Delivery",
+  partially_delivered: "Partially Delivered",
+  proof_of_delivery: "Proof of Delivery",
+  under_investigation: "Under Investigation",
+  rebooked_for_collection: "Rebooked for Collection",
+  futile: "Futile",
+  rejected: "Rejected",
+  driver_error: "Driver Error",
+  no_scans: "No Scans",
+  cancelled: "Cancelled",
+  refunded: "Refunded",
+  fulfilled: "Fulfilled",
+  "label:sent": "Label Sent",
+  shipment_created: "Shipment Created",
+  delivered: "Delivered",
+  missed_delivery: "Delivery missed",
+  on_route_to_pickup: "On Route To Pickup",
+  processing: "Processing",
+};
+
 // app.use((req, res, next) => {
 //   if (req.url === "/api/shipping-rates") {
 //     const start = process.hrtime();
@@ -155,65 +193,246 @@ const getOrderId = (orderIdString) => {
   const orderId = match ? match[0] : null;
   return orderId;
 };
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
+// MULTI ORDER IMPLEMEBTATION START
 
-const getCodes = (data) => {
-  const item = data.find((obj) => obj.source === "Fast Courier");
-  return item ? item.code : null;
+
+
+
+ 
+
+app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
+  try {
+    const ordersBodyArray = _req.body;
+    logger.info("update-order-status-body==", JSON.stringify(ordersBodyArray));
+
+    const updateOrderStatus = async (order) => {
+      const storeDomain = order["store-domain"]
+        ?.replace("offline_", "")
+        .toLowerCase();
+      const session = await getSession(storeDomain);
+      logger.info("Shopify Order id ==", parseInt(order["wpOrderId"]));
+
+      const orderMetafields = await shopify.api.rest.Metafield.all({
+        session: session[0],
+        metafield: {
+          owner_id: parseInt(order["wpOrderId"]), // Shopify Order id
+          owner_resource: "order",
+        },
+      });
+
+      const metafieldsList = orderMetafields.data.map((item) => ({
+        key: item.key,
+        value: item.value,
+      })); // List of all metafields of that Order
+
+      const orderDataField = metafieldsList.find(
+        (obj) => obj.key === "order_data"
+      );
+      if (!orderDataField) {
+        throw new Error("Order data metafield not found");
+      }
+
+      const orderData = JSON.parse(orderDataField.value);
+      const orderIndex = orderData.findIndex(
+        (obj) => obj.order_id === order["order_id"]
+      );
+      if (orderIndex === -1) {
+        throw new Error("Order ID not found in order data");
+      }
+
+      orderData[orderIndex].order_status =
+        AllOrderStatuses[order["status_for_merchant"]];
+      if (order["status_for_merchant"] === "order_rejected") {
+        orderData[orderIndex].errors = typeof order.reason === 'object' ? Object.values(order.reason)
+          .map((_value) => _value.join(","))
+          .join(",")
+          
+          :
+          order.reason;
+          
+          
+          ;
+      }
+      orderData[orderIndex] = { ...orderData[orderIndex], ...order };
+
+      const metafield = new shopify.api.rest.Metafield({
+        session: session[0],
+      });
+      metafield.order_id = parseInt(order["wpOrderId"]);
+      metafield.key = "order_data";
+      metafield.value = JSON.stringify(orderData);
+      metafield.type = "single_line_text_field";
+      metafield.namespace = "Order";
+
+      await metafield.save({ update: true });
+
+      return orderData;
+    };
+
+    const results = await Promise.all(ordersBodyArray.map(updateOrderStatus));
+
+    res.status(200).send(results);
+  } catch (error) {
+    logger.error("update-order-status-error==", error);
+    res
+      .status(500)
+      .send({ error: "An error occurred while updating order status" });
+  }
+});
+
+
+app.get("/api/oauth-callback", async (req, res) => {
+  try {
+    const { state, code, access_token, refresh_token, expires_at,error } = req.query;
+
+    if (error) {
+      const decodedState = JSON.parse(atob(state));
+       
+      const redirectURI = decodedState?.extra?.additional_redirect_uri;
+      const redirectURL = new URL(redirectURI);
+      const redirectOrigin = redirectURL.origin;
+      const queryParams = new URLSearchParams(redirectURL.search);
+        // Construct and redirect with updated query params
+        const params = Object.fromEntries(queryParams);
+        const queryParamsString = new URLSearchParams(params).toString();
+  
+        return res.redirect(
+          `${redirectOrigin}/oauth-callback?${queryParamsString}`
+        );
+    }
+
+    if (code) {
+      const decodedState = JSON.parse(atob(state));
+      const redirectURI = encodeURIComponent(
+        decodedState?.extra?.additional_redirect_uri
+      );
+      
+
+      return res.redirect(
+        `https://portal-staging.fastcourier.com.au/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+      );
+    }
+
+    if (access_token && refresh_token) {
+      const decodedState = JSON.parse(atob(state));
+      const client_id = decodedState?.client_id;
+      const client_secret = decodedState?.client_secret;
+      const redirectURI = decodedState?.extra?.additional_redirect_uri;
+      const redirectURL = new URL(redirectURI);
+      const redirectOrigin = redirectURL.origin;
+      const queryParams = new URLSearchParams(redirectURL.search);
+
+      const shop = queryParams.get("shop");
+
+      // Update access token and refresh token in the database
+      db.run(
+        "UPDATE shopify_sessions SET merchant_token = ?, merchant_refresh_token = ?, merchant_token_expires_at = ?, client_id = ?, client_secret = ? WHERE shop = ?",
+        [
+          access_token,
+          refresh_token,
+          expires_at,
+          client_id,
+          client_secret,
+          shop,
+        ],
+        
+        function (err) {
+          if (err) {
+            console.error("Database update error:", err);
+            logger.info("Database update error:", err);
+            return res.status(500).send("Internal Server Error");
+          }
+        }
+      );
+
+      // Construct and redirect with updated query params
+      const params = Object.fromEntries(queryParams);
+      const queryParamsString = new URLSearchParams(params).toString();
+
+      return res.redirect(
+        `${redirectOrigin}/oauth-callback?${queryParamsString}`
+      );
+    }
+
+    res.status(400).send("Bad Request");
+  } catch (error) {
+    console.error("OAuth callback error:", error);
+    logger.info("oauth-callback-error==", error);
+    // res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/api/oauth-callback", async (req, res) => {
+  console.log("req.query==", req.query);
+  const { state, code } = req.query;
+  //  const {state}= success;
+
+  const decodedString = atob(state);
+  //  res.redirect(`https://google.com?${req.query}`);
+  res.status(200).send({ state: JSON.parse(decodedString), code: code });
+});
+
+app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
+
+      logger.info(
+      "order-create-webhook==",
+      _req.body,
+    )
+    const getCarrier = (data) => {
+      const item = data.find((obj) => obj.source === "Fast Courier");
+      const title = item ? item.title : null;
+      const startIndex = title.indexOf("[");
+      const endIndex = title.indexOf("]");
+      // Extract the substring between '[' and ']'
+      const carrierName = title.substring(startIndex + 1, endIndex);
+      return carrierName;
+    };
+
+    const getCodes = (data) => {
+const item = data.find((obj) => obj.source === "Fast Courier");
+return item ? item.code : null;
 };
 
 function extractQuoteIds(array) {
-  let quoteIds = array[0]
-    .split(",")
-    .map((item) => item?.match(/\(([^-]+)-/)[1])
-    .join(",");
-  return quoteIds;
+let quoteIds = array[0]
+.split(",")
+.map((item) => item?.match(/\(([^-]+)-/)[1])
+.join(",");
+return quoteIds;
 }
 
 function extractOrderIds(array) {
-  let orderIds = array[0]
-    .split(",")
-    .map((item) => item?.match(/-([^\)]+)\)/)[1])
-    .join(",");
-  return orderIds;
+let orderIds = array[0]
+.split(",")
+.map((item) => item?.match(/-([^\)]+)\)/)[1])
+.join(",");
+return orderIds;
 }
 
-const getCarrier = (data) => {
-  const item = data.find((obj) => obj.source === "Fast Courier");
-  const title = item ? item.title : null;
-  const startIndex = title.indexOf("[");
-  const endIndex = title.indexOf("]");
-  // Extract the substring between '[' and ']'
-  const carrierName = title.substring(startIndex + 1, endIndex);
-  return carrierName;
+
+const getOrderId = (orderIdString) => {
+const regex = /(\d+)/;
+const match = orderIdString.match(regex);
+
+// Check if there is a match and extract the numeric portion
+const orderId = match ? match[0] : null;
+return orderId;
 };
-
-app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
-try {
-  const body = _req.body;
-  logger.info("update-order-status-body==", body);
-  const session = await getSession(
-    `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
-  );
-
-
-
-
-} catch (error) {
-  
-}
-
-
-
-
-})
-
-
-
-
-
-
-
-app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
     const session = await getSession(
       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
@@ -236,7 +455,9 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
           order_id: orderIds.split(",")[index],
           price: JSON.parse(valuesArray[2])[index],
           courierName: carrierName.split(",")[index],
-          order_status: "Ready to Book",
+          order_status:
+            valuesArray[1][index] === "FALLBACK" ? "Fallback" : "Ready to Book",
+
           order_type:
             valuesArray[1][index] === "FALLBACK"
               ? "Fallback"
@@ -244,6 +465,18 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
               ? "Freeshipping"
               : "Paid",
         });
+        try {
+          await update_shopify_order_id_on_portal(
+            orderIds.split(",")[index],
+            parseInt(orderDetails.id),
+            _req.body?.phone,
+            _req.body?.shipping_address?.first_name,
+            _req.body?.shipping_address?.last_name
+          );
+        } catch (error) {
+          logger.info(`Failed to update Shopify order ID on portal: ${error}`);
+          // You can decide how to handle errors in updating each order individually.
+        }
       }
       const order = new shopify.api.rest.Order({
         session: session[0],
@@ -302,6 +535,152 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     logger.info("order-create-webhook-error==", error);
   }
 });
+
+
+
+
+// WEBHOOK FOR TWI SEPEARTE FLOW
+// app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
+  // const getCodes = (data) => {
+  //   const items = data.filter((obj) => obj.source === "Fast Courier");
+  //   return items;
+  // };
+  
+  // function extractQuoteIds(array) {
+  //   let quoteIds = array[0]
+  //     .split(",")
+  //     .map((item) => item?.match(/\(([^-]+)-/)[1])
+  //     .join(",");
+  //   return quoteIds;
+  // }
+  
+  // function extractOrderIds(array) {
+  //   let orderIds = array[0]
+  //     .split(",")
+  //     .map((item) => item?.match(/-([^\)]+)\)/)[1])
+  //     .join(",");
+  //   return orderIds;
+  // }
+  
+  // let getCarrier = (item) => {
+  //   // const item = data.find((obj) => obj.source === "Fast Courier");
+  //   const title = item ? item.title : null;
+  //   const startIndex = title.indexOf("[");
+  //   const endIndex = title.indexOf("]");
+  //   // Extract the substring between '[' and ']'
+  //   const carrierName = title.substring(startIndex + 1, endIndex);
+  //   return carrierName;
+  // };
+//   try {
+//     const session = await getSession(
+//       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
+//     );
+//     logger.info(
+//       "order-create-webhook==",
+//       _req.body,
+//     )
+//     let orderDetails = _req.body;
+//     const codes = getCodes(orderDetails.shipping_lines);
+
+//     if (codes.length > 0) {
+//       // const valuesArray = codes.split("~"); // FORMAT = = = = = (WKQLDRPXEQ-WKMVEZBDPO)~[PAID]~[31.98]
+
+//       // Trim the quotes from each value and assign them to variables
+//       // const carrierName = getCarrier(orderDetails.shipping_lines);
+ 
+//       let ordersData = [];
+//       for (let index = 0; index < codes.length; index++) {
+//         const [quote_id, order_id] = codes[index].code?.match(/\(([^-]+)-([^)]+)\)/).slice(1);
+//         const price = codes[index].code?.match(/-?\d+(\.\d+)?/)[0];
+//         const carrierName = getCarrier(codes[index]);
+//         const orderType = codes[index].code?.match(/\[([A-Z]+)\]/)[1];
+
+//         ordersData.push({
+//           quote_id: quote_id,
+//           order_id: order_id,
+//           price: price,
+//           courierName: carrierName ,
+//           order_status:
+//             orderType === "FALLBACK" ? "Fallback" : "Ready to Book",
+//           order_type:
+//             orderType === "FALLBACK"
+//               ? "Fallback"
+//               : orderType === "FREESHIPPING"
+//               ? "Freeshipping"
+//               : "Paid",
+//         });
+
+         
+//         try {
+//           await update_shopify_order_id_on_portal(
+//             order_id,
+//             parseInt(orderDetails.id),
+//             _req.body?.phone,
+//             _req.body?.shipping_address?.first_name,
+//             _req.body?.shipping_address?.last_name,
+//           );
+//         } catch (error) {
+//           logger.info(`Failed to update Shopify order ID on portal: ${error}`);
+//           // You can decide how to handle errors in updating each order individually.
+//         }
+//       }
+//       const order = new shopify.api.rest.Order({
+//         session: session[0],
+//       });
+//       order.id = parseInt(orderDetails.id);
+//       order.metafields = [
+//         {
+//           key: "quote_id",
+//           value: "quoteIds",
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//         {
+//           key: "order_hash_id",
+//           value: "orderIds",
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//         {
+//           key: "carrier_name",
+//           value: "carrierName",
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//         {
+//           key: "fc_order_status",
+//           value:
+//             "valuesArray[1]" === "FALLBACK"
+//               ? "Fallback"
+//               : "valuesArray[1]" === "FREESHIPPING"
+//               ? "Freeshipping"
+//               : "Paid",
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//         {
+//           key: "courier_charges",
+//           value: "valuesArray[2]",
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//         {
+//           key: "order_data",
+//           value: JSON.stringify(ordersData),
+//           type: "single_line_text_field",
+//           namespace: "Order",
+//         },
+//       ];
+
+//       await order.save({
+//         update: true,
+//       });
+//       res.status(200).send(order);
+//     }
+//   } catch (error) {
+//     logger.info("order-create-webhook-error==", error);
+//   }
+// });
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
     const session = await getSession(
@@ -326,7 +705,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       res.status(500).json({ error: "Shipping boxes not found" });
       return;
     }
-
     const destination = _req.body.rate.destination;
     const merchant_locations = JSON.parse(session[0].merchant_locations);
     const merchant_default_location = merchant_locations.find(
@@ -463,7 +841,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       Object.entries(groupByLocation(courierData)).map(
         async ([location, _items], index) => {
           // Only Process those items those are not free shipping
-          let items = _items.filter((_item) => !_item.free); 
+          let items = _items.filter((_item) => !_item.free);
           if (items.length === 0) {
             return {
               amount: 0,
@@ -580,16 +958,16 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                 ? Number(totalWeightOfItems > merchant.weighht)
                 : 0
             }`,
-            destinationSuburb: destination.city,
-            destinationState: destination.province,
-            destinationPostcode: destination.postal_code,
+            destinationSuburb: destination.city ?? "",
+            destinationState: destination.province ?? "",
+            destinationPostcode: destination.postal_code ?? "",
             destinationBuildingType: destination.company
               ? "commercial"
               : "residential",
             destinationFirstName: destination.name,
             destinationLastName: "",
-            destinationCompanyName: "NA",
-            destinationEmail: destination.email,
+            destinationCompanyName: "",
+            destinationEmail: destination.email ?? "",
             destinationAddress1: destination.address1,
             destinationAddress2: destination.address2 ?? "",
             destinationPhone: destination.phone,
@@ -610,10 +988,9 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             orderType: "8",
           };
 
-          logger.info(payload, "payload");
 
           const quote = await fetch(
-            `https://fctest-api.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
+            `https://portal-staging.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
               payload
             )}`,
             {
@@ -625,11 +1002,14 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                 "request-type": "shopify_development",
                 version: "3.1.1",
                 Authorization: `Bearer ${merchant.access_token}`,
+                "store-domain":
+                  `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
               },
             }
           );
           const data = await quote.json();
 
+          
           courier_data_to_Show_end_user[location] = items.map((xitem) => {
             return {
               ...xitem,
@@ -671,7 +1051,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         }
       )
     );
-    logger.info(quotes, "quotes");
 
     // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
@@ -714,7 +1093,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         },
       ],
     };
-    logger.info(response, "response");
 
     // const response = {
     //   rates: quotes.map((quote) => ({
@@ -795,7 +1173,7 @@ async function getMerchantData(access_token) {
     Authorization: "Bearer " + access_token,
   };
   const merchant = await fetch(
-    `https://fctest-api.fastcourier.com.au/api/wp/get_merchant`,
+    `https://portal-staging.fastcourier.com.au/api/wp/get_merchant`,
     {
       method: "GET",
       credentials: "include",
@@ -816,7 +1194,7 @@ async function getMerchantDefaultLocation(access_token, merchant_id) {
   };
 
   const pickupLocations = await fetch(
-    `https://fctest-api.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
+    `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
     {
       method: "GET",
       credentials: "include",
@@ -845,7 +1223,7 @@ async function getMerchantLocationDataFromTagId(
     Authorization: "Bearer " + access_token,
   };
   const merchant_location = await fetch(
-    `https://fctest-api.fastcourier.com.au/api/wp/merchant_locations/` +
+    `https://portal-staging.fastcourier.com.au/api/wp/merchant_locations/` +
       merchant_id +
       "/" +
       tagId,
@@ -872,7 +1250,7 @@ async function getMerchantLocationDataFromLocationId(
     Authorization: "Bearer " + access_token,
   };
   const merchant_location = await fetch(
-    `https://fctest-api.fastcourier.com.au/api/wp/merchant_domain/location/` +
+    `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/location/` +
       // merchant_id +
       // "/" +
       locationId,
@@ -886,6 +1264,33 @@ async function getMerchantLocationDataFromLocationId(
   let merchant_location_details = await merchant_location.json();
   console.log(merchant_location_details, "merchant_location_details");
   return merchant_location_details;
+}
+
+async function update_shopify_order_id_on_portal(
+  fastcourier_hash_id,
+  shopify_order_id,
+  destination_phone,
+  destination_first_name,
+  destination_last_name
+) {
+  await fetch("https://portal-staging.fastcourier.com.au/api/update-order-id", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "request-type": "shopify_development",
+      version: "3.1.1",
+    },
+    body: JSON.stringify({
+      hash_id: fastcourier_hash_id,
+      order_id: shopify_order_id,
+      destination_phone,
+      destination_first_name,
+      destination_last_name
+
+    }),
+  });
 }
 
 // Set up Shopify authentication and webhook handling
@@ -920,6 +1325,18 @@ const getValueByKey = (data, key) => {
   const item = data.find((obj) => obj.key === key);
   return item ? item.value : null;
 };
+
+// APIs with authenticaion
+// app.get('/oauth/shopify', (req, res) => {
+
+//   res.redirect(`https://google.com`);
+// });
+app.get("/oauth/callback", async (req, res) => {
+  console.log("Query Parameters:", req.query);
+  // "http://portal.fastcourier.test/oauth/redirect?client_id=11&client_secret=r8i7gKonVYBS0CJQPlacd4QZFxp7FPmK4Fx6TguJ&redirect_uri=http://portal.fastcourier.test/oauth/callback"
+
+  // res.json(user);
+});
 
 app.get("/api/get-merchant", async (_req, res) => {
   try {
@@ -1660,7 +2077,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://fc-app.vuwork.com/api/shipping-rates";
+      "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -1675,6 +2092,8 @@ app.post(
   "/api/carrier-service/update",
   bodyParser.json(),
   async (_req, res) => {
+
+     
     try {
       const body = _req.body;
       const id = body?.id;
@@ -1684,14 +2103,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://fc-app.vuwork.com/api/shipping-rates";
+        "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://fc-app.vuwork.com/api/webhook/order-create";
+        "https://noticed-placing-sense-cord.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -1775,7 +2194,7 @@ app.get("/api/order-metafields", async (_req, res) => {
     const session = res.locals.shopify.session;
     const client = new shopify.api.clients.Graphql({ session });
     const queryString = `{
-    orders(first: 130) {
+    orders(first: 200, sortKey: CREATED_AT, reverse: true) {
       edges {
         node {
           id
@@ -1791,6 +2210,25 @@ app.get("/api/order-metafields", async (_req, res) => {
       }
     }
   }`;
+  //   const queryString = `{
+  //   orders(first: 200) {
+  //     edges {
+  //       node {
+  //         id
+  //         metafields(first: 15) {
+  //           edges {
+  //             node {
+  //               key
+  //               value
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }`;
+   
+
 
     const data = await client.query({
       data: queryString,
@@ -1798,6 +2236,7 @@ app.get("/api/order-metafields", async (_req, res) => {
     res.status(200).send(data);
   } catch (error) {
     console.log("order-metafields=", error);
+    logger.info("order-metafields-==", error);
   }
 });
 
@@ -1814,32 +2253,24 @@ app.post("/api/hold-orders", async (_req, res) => {
           ...item,
           order_status: "Hold",
         };
-      })
-  
+      });
+
       const metafield = new shopify.api.rest.Metafield({ session });
       metafield.order_id = parseInt(order.id);
-      metafield.key = 'order_data';
+      metafield.key = "order_data";
       metafield.value = JSON.stringify(order_data_metafield);
       metafield.type = "single_line_text_field";
       metafield.namespace = "Order";
-  
+
       // Assign value from metaFields_list
       return metafield.save({ update: true });
     });
-  
+
     await Promise.all(metafieldsPromises);
   }
-  
+
   res.status(200).send({});
-  return
-
-
-
-
-
-
-   
- 
+  return;
 });
 
 app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
@@ -1848,127 +2279,62 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
     const session = res.locals.shopify.session;
 
     let _orders = parseOrderData(orders);
-    // let metaFields_list = ["Booked for collection", collectionDate];
-    // const metafields_Item = [
-    //   {
-    //     key: "fc_order_status",
-
-    //     type: "single_line_text_field",
-    //     namespace: "Order",
-    //   },
-    //   {
-    //     key: "collection_date",
-
-    //     type: "single_line_text_field",
-    //     namespace: "Order",
-    //   },
-    // ];
-  
+    var processedOrders = 0;
+    var rejectedOrders = 0;
     
-    
-
     if (_orders?.length > 0) {
       const metafieldsPromises = _orders.map(async (order, orderIndex) => {
-        let order_data_metafield = getOrderDataMetaField(order);
-    
+        let order_data_metafield = getOrderDataMetaField(order); 
         orderStatuses[orderIndex].forEach((orderStatus, orderStatusIndex) => {
           const { status, errors } = orderStatus;
-          order_data_metafield[orderStatusIndex].order_status = status ? "Processed" : "Rejected";
-          order_data_metafield[orderStatusIndex].errors = status ? null : errors.join(",");
+          order_data_metafield[orderStatusIndex].order_status = status
+            ? "Processed"
+            : "Rejected";
+          order_data_metafield[orderStatusIndex].errors = status
+            ? null
+            : errors.join(",");
+
+            if (status) {
+              processedOrders++;
+            } else {
+              rejectedOrders++;
+            }
         });
-    
+
+       
+
+        
+
         const metafield = new shopify.api.rest.Metafield({ session });
         metafield.order_id = parseInt(order.id);
-        metafield.key = 'order_data';
+        metafield.key = "order_data";
         metafield.value = JSON.stringify(order_data_metafield);
         metafield.type = "single_line_text_field";
         metafield.namespace = "Order";
-    
+
         // Assign value from metaFields_list
         return metafield.save({ update: true });
       });
-    
+
       await Promise.all(metafieldsPromises);
+      res.status(200).send({
+        metafieldsPromises,
+        processedOrders,
+        rejectedOrders,
+        success:true
+      });
+       return
     }
-    
-    res.status(200).send({});
+    res.status(200).send({
+      processedOrders: 0
+    });
+
     return
-
-    if (orderIds.length > 0) {
-      for (const [parentIndex, productId] of orderIds.entries()) {
-        const metafieldPromises = metafields_Item.map(async (item, index) => {
-          if (orderStatuses[parentIndex]?.status === true) {
-            const metafield = new shopify.api.rest.Metafield({ session });
-            metafield.order_id = parseInt(productId);
-            metafield.key = item.key;
-            metafield.value = metaFields_list[index];
-            metafield.type = "single_line_text_field";
-            metafield.namespace = "Order";
-            // Assign value from metaFields_list
-            await metafield.save({ update: true });
-            return metafield;
-          } else if (orderStatuses[parentIndex]?.status === false) {
-            const metafield = new shopify.api.rest.Metafield({ session });
-            metafield.order_id = parseInt(productId);
-            metafield.key = item.key;
-            metafield.value =
-              item.key === "fc_order_status"
-                ? "Rejected"
-                : metaFields_list[index];
-            metafield.type = "single_line_text_field";
-            metafield.namespace = "Order";
-            // Assign value from metaFields_list
-            await metafield.save({ update: true });
-
-            const metafield_for_errors = new shopify.api.rest.Metafield({
-              session,
-            });
-            metafield_for_errors.order_id = parseInt(productId);
-            metafield_for_errors.key = "errors";
-            metafield_for_errors.value =
-              orderStatuses[index]?.errors?.join(",");
-            metafield_for_errors.type = "single_line_text_field";
-            metafield_for_errors.namespace = "Order";
-            // Assign value from metaFields_list
-            await metafield_for_errors.save({ update: true });
-            return metafield;
-          }
-        });
-
-        const savedMetafields = await Promise.all(metafieldPromises);
-        orders.push(...savedMetafields);
-      }
-    }
-    res.status(200).send(orders);
-
-    // orderIds.forEach(async (id) => {
-    //   const order = new shopify.api.rest.Order({ session: session });
-    //   order.id = parseInt(id);
-    //   order.metafields = [
-    //     {
-    //       key: "fc_order_status",
-    //       value: "Booked for collection",
-    //       type: "single_line_text_field",
-    //       namespace: "Order",
-    //     },
-    //     {
-    //       key: "collection_date",
-    //       value: collectionDate,
-    //       type: "single_line_text_field",
-    //       namespace: "Order",
-    //     },
-    //   ];
-    //   await order.save({
-    //     update: true,
-    //   });
-
-    //   orders.push(order);
-    // });
-    // res.status(200).send(orders);
+ 
   } catch (error) {
     console.log("book-orders=", error);
     logger.info("book-orders-error==", error);
-    res.status(200).send({ error: error });
+    res.status(200).send({ error: error,processedOrders: 0 });
   }
 });
 
@@ -2158,7 +2524,7 @@ app.post("/api/products", async (_req, res) => {
 });
 
 function parseOrderData(orders) {
-  return orders.map((order) => {
+  return orders?.map((order) => {
     const newEdges = order.node.metafields.edges.map((edge) => {
       if (edge.node.key === "order_data") {
         try {
@@ -2209,6 +2575,7 @@ async function addMerchantToken(merchantToken, merchantId, shop) {
       if (!columnExists) {
         Promise.all([
           addColumn("merchant_token", "TEXT"),
+          addColumn("merchant_refresh_token", "TEXT"),
           addColumn("merchant_id", "TEXT"),
           addColumn("merchant_locations", "TEXT"), // Add other columns as needed
           addColumn("merchant_tags", "TEXT"),
@@ -2241,11 +2608,15 @@ async function createColumnsIfNotExist(
   shop,
   columnNames = [
     { name: "merchant_token", type: "TEXT", defaultValue: null },
+    { name: "merchant_refresh_token", type: "TEXT", defaultValue: null },
+    { name: "merchant_token_expires_at", type: "TEXT", defaultValue: null },
+    { name: "client_id", type: "TEXT", defaultValue: null },
+    { name: "client_secret", type: "TEXT", defaultValue: null },
     { name: "merchant_id", type: "TEXT", defaultValue: null },
     { name: "merchant_locations", type: "TEXT", defaultValue: null },
     { name: "merchant_tags", type: "TEXT", defaultValue: null },
     { name: "merchant", type: "TEXT", defaultValue: null },
-    { name: "is_production", type: "TEXT", defaultValue: false },
+    { name: "is_production", type: "TEXT", defaultValue: true },
     { name: "shipping_boxes", type: "TEXT", defaultValue: null },
   ]
 ) {
@@ -2332,7 +2703,7 @@ async function deleteMerchantTokenAndId(
   reject = (data) => {}
 ) {
   db.run(
-    "UPDATE shopify_sessions SET merchant_token = NULL, merchant_id = NULL WHERE shop = ?",
+    "UPDATE shopify_sessions SET merchant_token = NULL, merchant_refresh_token = NULL, merchant_id = NULL WHERE shop = ?",
     [shop],
     function (err) {
       if (err) {
@@ -2472,3 +2843,7 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 });
 
 app.listen(PORT);
+
+
+ 
+ 

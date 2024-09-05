@@ -211,6 +211,7 @@ export function PickupLocations(props) {
         <Modal showModal={showModal} width="60%">
           <AddLocation
             setShowModal={setShowModal}
+            showModal={showModal}
             getPickupLocations={getPickupLocations}
             isDefaultLocationExist={
               pickupLocations?.filter((location) => location.is_default == 1)
@@ -272,7 +273,7 @@ export function PickupLocations(props) {
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />
-                    {element.is_default != 1 && (
+                    {element.is_default != 1  && (
                       <FontAwesomeIcon
                         icon="fa-solid fa-trash-can"
                         size="2xs"
@@ -284,6 +285,8 @@ export function PickupLocations(props) {
                         <Modal showModal={showEditModal} width="60%">
                           <AddLocation
                             setShowModal={setShowEditModal}
+            showModal={showModal}
+
                             getPickupLocations={getPickupLocations}
                             editLocation={pickupLocations[i]}
                             {...props}

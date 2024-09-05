@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   AppBridgeProvider,
   QueryProvider,
@@ -24,6 +25,7 @@ import { Modal } from "./components/modal";
 import React from "react"; 
 import { ToastContainer  } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
+import OAuthCallBack from "./pages/OAuthCallBack";
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
   // See documentation for <Routes /> for more info
@@ -49,6 +51,9 @@ export default function App() {
     setIsLoggedIn(accessToken);
     // getMerchantTokenAndDomainId()
   });
+
+
+  
 
   return (
     <PolarisProvider>
@@ -79,11 +84,12 @@ export default function App() {
                 </label>
               </div>
               <div className="app-mode">
-                {isLoggedIn && <div className="mode-left"></div>}
+                {/* {isLoggedIn && <div className="mode-left"></div>} */}
                 <div
                   className="mode-right"
                   style={{
-                    width: isLoggedIn ? "80%" : "100%",
+                    // width: isLoggedIn ? "80%" : "100%",
+                    width: "100%",
                     background: isLoggedIn ? "white" : "transparent",
                   }}
                 >
@@ -92,7 +98,8 @@ export default function App() {
               </div>
               {/* <BrowserRouter> */}
               <Routes>
-                <Route index element={<Navigate to="/login" />} />
+                <Route index element={<Navigate to={`/login${window.location.search}`} />} />
+                {/* <Route index element={<Navigate to={`/login`} />} /> */}
                 <Route path="/exitiframe" element={<ExitIframe />} />
                 <Route
                   path="/login"
@@ -115,12 +122,20 @@ export default function App() {
                   }
                 />
                 <Route
+                  path="/oauth-callback"
+                  element={
+                    <OAuthCallBack
+                     
+                    />
+                  }
+                />
+                <Route
                   path="/orderDetails"
                   element={
                     <OrderDetails executeSandboxStatus={executeSandboxStatus} />
                   }
                 />
-                <Route
+                {/* <Route
                   path="/signup"
                   element={
                     <Signup
@@ -128,15 +143,15 @@ export default function App() {
                       executeSandboxStatus={executeSandboxStatus}
                     />
                   }
-                />
-                <Route
+                /> */}
+                {/* <Route
                   path="/forgotPassword"
                   element={
                     <ForgotPassword
                       executeSandboxStatus={executeSandboxStatus}
                     />
                   }
-                />
+                /> */}
                 <Route
                   path="/merchantBillingDetails"
                   element={
@@ -150,7 +165,7 @@ export default function App() {
               {/* SandBox Modal */}
               <ToastContainer
 position="top-right"
-autoClose={2000}
+autoClose={6000}
 hideProgressBar={false}
 newestOnTop={false}
 closeOnClick
@@ -159,7 +174,7 @@ pauseOnFocusLoss
 draggable
 pauseOnHover
 theme="light" 
-transition={"Bounce"}
+// transition={"Bounce"}
 />
 
  

@@ -29,7 +29,8 @@
     width: 40%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: start;
+    padding-left: 8px;
 }
 
 .svg-inline--fa {
@@ -61,7 +62,7 @@
 }
 
 .payment-methods .submit-btn {
-    width: 100px;
+    width: fit-content;
 }
 
 .add-payment-methods {

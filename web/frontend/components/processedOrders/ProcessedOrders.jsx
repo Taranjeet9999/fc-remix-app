@@ -280,7 +280,8 @@ export function ProcessedOrders(props) {
             collectionDate: collectionDate,
             destinationEmail: element?.contact_email,
             destinationPhone:  element?.customer?.phone,
-            wpOrderId: element?.order_number,
+            // wpOrderId: element?.order_number,
+            wpOrderId:element?.id,
             destinationFirstName: element?.shipping_address.first_name,
             destinationLastName: element?.shipping_address.last_name,
             destinationCompanyName: element?.shipping_address.company,
@@ -593,7 +594,9 @@ export function ProcessedOrders(props) {
           </button>
         </div>}
         <div className="pickup-locations-table">
-          <table>
+          <table width={
+            "100%"
+          }>
             <tr className="table-head">
               {/* <th className="select-all">
                 <input type="checkbox" onChange={(e) => handleSelectAll(e)} />
@@ -608,7 +611,7 @@ export function ProcessedOrders(props) {
               <th>packages</th>
               <th>Carrier Details</th>
               <th>Shipping type</th>
-              <th>Documents</th>
+              <th>Actions</th>
             </tr>
             {orders?.length > 0 &&
               orders?.map((element, i) => {
@@ -616,13 +619,16 @@ export function ProcessedOrders(props) {
                     // getMetaValue(
                     //     element.node?.metafields?.edges,
                     //     "fc_order_status"
-                    //   ) == "Booked for collection" ||
+                    //   ) == "Booked for Collection" ||
                     //   getMetaValue(
                     //     element.node?.metafields?.edges,
                     //     "fc_order_status"
                     //   ) == "Processed"
+                    getOrderDataMetaField(element)?.every(
+                      (item) => item?.order_status === "Rejected" || item?.order_status === "Fallback" 
+                    ) !== true ||
                     getOrderDataMetaField(element)?.some(
-                      (item) => item?.order_status === "Processed"
+                      (item) => item?.order_status !== "Ready to Book" 
                     ) === true
                 ) {
                   return (
@@ -667,7 +673,7 @@ export function ProcessedOrders(props) {
                         ?.map((item) => item?.order_id)
                         .join(", ")}
                     </td>
-                      <td width="10%">
+                      <td width="5%">
                         {element?.shipping_address != null
                           ? element?.shipping_address?.first_name +
                             " " +
@@ -724,7 +730,73 @@ export function ProcessedOrders(props) {
                         : ""} */}
                       </td>
                       <td width="10%">{element.financial_status}</td>
-                      <td width="8%">{"NA"}</td>
+                      <td width="8%">
+                        {
+                          JSON.parse(
+                            getMetaValue(
+                              element.node?.metafields?.edges,
+                              "order_data"
+                            )
+                          )?.map((item) => {
+                            return (
+                              <div
+                                className="d-flex align-items-center "
+                                style={{
+                                  justifyContent: "space-around",
+                                }}
+                              >
+                            {item?.label &&    <div className="d-flex" title="Label">
+                                  <a
+                                    href={item?.doc_prefix+ item?.label}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon="note-sticky"
+                                      style={{
+                                        color: "black",
+                                        width: "15px",
+                                      }}
+                                    />
+                                  </a>
+                                </div>}
+
+                            {item?.invoice &&    <div className="d-flex" title="Invoice">
+                                  <a
+                                    href={item?.doc_prefix+ item?.invoice}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon="fa-solid fa-receipt"
+                                      style={{
+                                        color: "black",
+                                        width: "15px",
+                                      }}
+                                    />
+                                  </a>
+                                </div>}
+
+                             {item?.additional?.[1] &&   <div className="d-flex" title="Additional Documents">
+                                  <a
+                                    href={item?.doc_prefix+ item?.additional?.[1]?.slice(1)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon="fa-solid fa-file-invoice"
+                                      style={{
+                                        color: "black",
+                                        width: "15px",
+                                      }}
+                                    />
+                                  </a>
+                                </div>}
+                              </div>
+                            );
+                          })
+                        }
+                      </td>
                     </tr>
                   );
                 }
