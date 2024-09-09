@@ -19,6 +19,7 @@ export function PickupLocations(props) {
   const [editLocation, setEditLocation] = useState(null);
   const [merchantTags, setMerchantTags] = useState([]);
   const fetch = useAuthenticatedFetch();
+  const [pickUpLocationData, setPickUpLocationData] = useState()
 
   const getPickupLocations = () => {
     setIsLoading(true);
@@ -140,7 +141,7 @@ export function PickupLocations(props) {
   }, [showEditModal]);
 
   function handleEditClick(location) {
-    console.log("location==", location);
+    
     setEditLocation(location);
     setShowEditModal(true);
   }
@@ -198,6 +199,24 @@ export function PickupLocations(props) {
     });
   }
 
+  useEffect(() => {
+
+    if (showEditModal===false) {
+      setEditLocation()
+    }
+    
+  }, [ showEditModal,])
+  
+  useEffect(() => {
+
+    if (showDeleteModal===false) {
+      setEditLocation()
+      
+    }
+    
+  }, [ showDeleteModal])
+  
+
   return (
     <div className="pickup-locations">
       {isLoading && <Loader />}
@@ -207,8 +226,29 @@ export function PickupLocations(props) {
           Add New Location
         </button>
       </div>
+
+      { editLocation && (
+                      <>
+                        <Modal className="full-screen-modal" showModal={showEditModal}  >
+                          <AddLocation
+                            setShowModal={setShowEditModal}
+                             showModal={showModal}
+
+                            getPickupLocations={getPickupLocations}
+                            editLocation={editLocation}
+                            {...props}
+                          />
+                        </Modal>
+                        <ConfirmModal
+                          showModal={showDeleteModal}
+                          message="You want to delete location."
+                          onConfirm={() => deleteLocation(editLocation)}
+                          onCancel={() => setShowDeleteModal(false)}
+                        />
+                      </>
+                    )}
       {showModal && (
-        <Modal showModal={showModal} width="60%">
+        <Modal className="full-screen-modal" showModal={showModal}  >
           <AddLocation
             setShowModal={setShowModal}
             showModal={showModal}
@@ -239,7 +279,7 @@ export function PickupLocations(props) {
             pickupLocations.map((element, i) => {
               return (
                 <tr
-                  className="locations"
+                  className="products-row "
                   key={i}
                   style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
                 >
@@ -280,26 +320,7 @@ export function PickupLocations(props) {
                         onClick={() => handleDeleteClick(pickupLocations[i])}
                       />
                     )}
-                    {editLocation?.id === element.id && (
-                      <>
-                        <Modal showModal={showEditModal} width="60%">
-                          <AddLocation
-                            setShowModal={setShowEditModal}
-            showModal={showModal}
-
-                            getPickupLocations={getPickupLocations}
-                            editLocation={pickupLocations[i]}
-                            {...props}
-                          />
-                        </Modal>
-                        <ConfirmModal
-                          showModal={showDeleteModal}
-                          message="You want to delete location."
-                          onConfirm={() => deleteLocation(pickupLocations[i])}
-                          onCancel={() => setShowDeleteModal(false)}
-                        />
-                      </>
-                    )}
+                 
                   </td>
                 </tr>
               );

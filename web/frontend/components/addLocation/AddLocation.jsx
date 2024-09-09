@@ -7,6 +7,7 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
+import { Form } from "react-bootstrap";
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +43,14 @@ export function AddLocation(props) {
   const [selectedFreeShippingCodes, setSelectedFreeShippingCodes] = useState(
     []
   );
+ 
+  const [flatRateData, setFlatRateData] = useState({
+    flatRate: "",
+    flatRatePostCodes: "",
+    flatRateEnabled: false,
+    flatRateError: null,
+    flatRatePostCodesError: null,
+  })
 
   const buildingTypes = [
     {
@@ -208,23 +217,23 @@ export function AddLocation(props) {
         );
 
         const payload = {
-          location_name: locationName,
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          phone: phoneNumber,
-          address1: address1,
-          address2: address2,
-          building_type: buildingType,
-          time_window: timeWindow,
-          suburb: selectedSuburb,
-          state: selectedState,
-          postcode: selectedPostcode,
-          is_default: isDefaultLocation,
-          tag: selectedTags.map((element) => element.value),
-          free_shipping_postcodes: JSON.stringify(freeShippingCodes),
-          merchant_domain_id: merchantDomainId,
-          tail_lift: tailLift,
+          location_name: locationName?? "",
+          first_name: firstName?? "",
+          last_name: lastName?? "",
+          email: email?? "",
+          phone: phoneNumber?? "",
+          address1: address1?? "",
+          address2: address2 ?? "",
+          building_type: buildingType?? "",
+          time_window: timeWindow?? "",
+          suburb: selectedSuburb?? "",
+          state: selectedState?? "",
+          postcode: selectedPostcode?? "",
+          is_default: isDefaultLocation?? "",
+          tag: selectedTags.map((element) => element.value)?? "",
+          free_shipping_postcodes: JSON.stringify(freeShippingCodes)?? "",
+          merchant_domain_id: merchantDomainId?? "",
+          tail_lift: tailLift?? "",
           longitude: "144.956776",
           latitude: "-37.817403",
         };
@@ -288,20 +297,20 @@ export function AddLocation(props) {
   };
 
   const setEditLocationData = (location) => {
-    setLocationName(location.location_name);
-    setFirstName(location.first_name);
-    setLastName(location.last_name);
-    setEmail(location.email);
-    setAddress1(location.address1);
-    setAddress2(location.address2);
-    setPhoneNumber(location.phone);
-    setBuildingType(location.building_type);
-    setTimeWindow(location.time_window);
-    setSelectedState(location.state);
-    setSelectedPostcode(location.postcode);
-    setSelectedSuburb(location.suburb);
-    setTailLift(location.tail_lift);
-    setIsDefaultLocation(location.is_default);
+    setLocationName(location.location_name ?? "");
+    setFirstName(location.first_name ?? "");
+    setLastName(location.last_name ?? "");
+    setEmail(location.email ??"");
+    setAddress1(location.address1 ??"");
+    setAddress2(location.address2 ??"");
+    setPhoneNumber(location.phone ??"");
+    setBuildingType(location.building_type ??"");
+    setTimeWindow(location.time_window ??"");
+    setSelectedState(location.state ??"");
+    setSelectedPostcode(location.postcode ??"");
+    setSelectedSuburb(location.suburb ??"");
+    setTailLift(location.tail_lift ??"");
+    setIsDefaultLocation(location.is_default ??"");
     const freeShippingCodes = JSON.parse(location.free_shipping_postcodes)?.map(
       (element) => {
         return { value: element, label: element };
@@ -593,10 +602,10 @@ export function AddLocation(props) {
         message={errorMessage}
         onConfirm={() => setOpenErrorModal(false)}
       /> */}
-      <div className="modal-header">
+      <div className="modal-header d-flex justify-content-center">
         <div className="header-text">New Location</div>
       </div>
-      <div className="modal-body">
+      <div className="modal-body p-3">
         <div className="input-row">
           <div className="input-container1">
             <div className="input-lebel1">
@@ -606,7 +615,7 @@ export function AddLocation(props) {
                 <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
               )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -624,7 +633,7 @@ export function AddLocation(props) {
                 <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
               )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -644,7 +653,7 @@ export function AddLocation(props) {
                 <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
               )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -665,7 +674,7 @@ export function AddLocation(props) {
                 </span>
               )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -689,7 +698,7 @@ export function AddLocation(props) {
                   </span>
                 )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -707,7 +716,7 @@ export function AddLocation(props) {
                 <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
               )}
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -723,7 +732,7 @@ export function AddLocation(props) {
             <div className="input-lebel1">
               <span> Address 2&nbsp;</span>
             </div>
-            <div className="input-field">
+            <div className="input-field highlight-input">
               <input
                 className="input-field-text1"
                 type="text"
@@ -869,7 +878,7 @@ export function AddLocation(props) {
           </div>
         </div>
         <div className="choose-file-row">
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               type="file"
               className="choose-file"
@@ -886,6 +895,109 @@ export function AddLocation(props) {
             <a href="#"> Sample CSV </a>
           </div>
         </div>
+        {/* FLAT RATE FUNCTIONALITY */}
+
+        <div className="input-row">
+          <div className="input-container1">
+            <div className="d-flex align-items-center justify-content-between">
+              <div>
+                <div className="fw-bold ">Apply Flat rate option : </div>
+                <div className="text-muted">
+                  By turning on this option, you can apply a flat rate to all
+                  the orders that are placed for selected postcodes.
+                </div>
+              </div>
+
+              <div>
+                <Form>
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch"
+                    label=""
+                    className="flat-rate-switch"
+                    value={flatRateData.flatRateEnabled}
+                    onChange={(e) => {
+                      setFlatRateData((prevValue) => ({
+                        ...prevValue,
+                        flatRateEnabled: !prevValue.flatRateEnabled,
+                      }));
+                    }}
+                  />
+                </Form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {flatRateData.flatRateEnabled && (
+          <>
+            <div className="input-row">
+              <div className="input-container1">
+                <div className="input-lebel1">
+                  <span> Flat Rate&nbsp;</span>
+                  <span style={{ color: "red" }}> *</span>
+                  {flatRateData.flatRateError && (
+                    <span>{flatRateData.flatRateError}</span>
+                  )}
+                </div>
+                <div className="input-field highlight-input">
+                  <input
+                    className="input-field-text1"
+                    type="number"
+                    placeholder="Flat Rate"
+                    value={flatRateData.flatRate}
+                    onChange={(event) => {
+                      const regex = /^[0-9]*$/;
+                      const newValue = event.target.value;
+                      if (regex.test(newValue)) {
+                        setFlatRateData((prevValue) => ({
+                          ...prevValue,
+                          flatRate: newValue,
+                          flatRateError: null,
+                        }));
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="input-row">
+              <div className="input-container1">
+                <div className="input-lebel1">
+                  <span> Flat Rate Shipping postcodes&nbsp;</span>
+                  <span style={{ color: "red" }}> *</span>
+                  {flatRateData.flatRatePostCodesError && (
+                    <span>{flatRateData.flatRatePostCodesError}</span>
+                  )}
+                </div>
+
+                <div className="input-field highlight-input">
+                  <textarea
+                    className="w-100"
+                    rows="5"
+                    placeholder="Comma seperated postcodes or postcode range
+                 1111 , 2222, 3333,
+                 3000-4000,
+                 5000-6000"
+                    value={flatRateData.flatRatePostCodes}
+                    onChange={(event) => {
+                      const regex = /^[0-9, -]*$/;
+                      const newValue = event.target.value;
+                      if (regex.test(newValue)) {
+                        setFlatRateData((prevValue) => ({
+                          ...prevValue,
+                          flatRatePostCodes: newValue,
+                          flatRatePostCodesError: null,
+                        }));
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className="modal-footer">
         <button
@@ -901,3 +1013,24 @@ export function AddLocation(props) {
     </div>
   );
 }
+
+function isPostCodeIncludedInFlatRate(postCode, flatRatePostCodes = 
+  "1000,2000,300-800"
+) {
+  const postCodes = flatRatePostCodes.split(",");
+  for (let i = 0; i < postCodes.length; i++) {
+    const postCodeRange = postCodes[i].split("-");
+    if (postCodeRange.length === 1) {
+      if (postCode === parseInt(postCodes[i])) {
+        return true;
+      }
+    } else if (postCodeRange.length === 2) {
+      const start = parseInt(postCodeRange[0]);
+      const end = parseInt(postCodeRange[1]);
+      if (postCode >= start && postCode <= end) {
+        return true;
+      }
+    }
+  }
+  return false;
+} 

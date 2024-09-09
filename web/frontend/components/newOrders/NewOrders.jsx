@@ -378,6 +378,7 @@ export function NewOrders(props) {
 
   const create2DArray = (_orders) => { 
     return _orders.map((element) => { 
+      
       const orderDataEdge = element.node.metafields.edges.find(
         (edge) => edge.node.key === "order_data"
       );
@@ -393,7 +394,7 @@ export function NewOrders(props) {
             wpOrderId:element?.id,
             collectionDate: collectionDate,
             destinationEmail: element?.contact_email ?? "",
-            destinationPhone: element?.customer?.phone  ,
+            destinationPhone: element?.shipping_address?.phone  ,
             // wpOrderId: element?.order_number,
             destinationFirstName: element?.shipping_address?.first_name,
             destinationLastName: element?.shipping_address?.last_name,
@@ -708,10 +709,10 @@ export function NewOrders(props) {
       <Modal showModal={showBookOrderModal} width="30%">
         <div className="booking-modal">
           <div className="modal-header">
-            <div className="shipping-heading">Process</div>
+            <div className="shipping-heading w-100 text-center">Process</div>
           </div>
           <div className="modal-body">
-            <div className="input-container">
+            <div className="input-container w-100">
               <div className="input-lebel">
                 <span> Collection Date&nbsp;</span>
               </div>
@@ -745,10 +746,10 @@ export function NewOrders(props) {
       <Modal showModal={bookRejectedOrder} width="30%">
         <div className="booking-modal">
           <div className="modal-header">
-            <div className="shipping-heading">Process</div>
+            <div className="shipping-heading w-100 text-center">Process</div>
           </div>
           <div className="modal-body">
-            <div className="input-container">
+            <div className="input-container w-100">
               <div className="input-lebel">
                 <span> Collection Date&nbsp;</span>
               </div>
@@ -780,7 +781,7 @@ export function NewOrders(props) {
       <Modal showModal={showHoldOrderModal} width="30%">
         <div className="booking-modal">
           <div className="modal-header">
-            <div className="shipping-heading">Hold Order</div>
+            <div className="shipping-heading w-100 text-center">Hold Order</div>
           </div>
           <div className="modal-body">Do you want to hold selected orders?</div>
           <div className="modal-footer">
@@ -1036,14 +1037,14 @@ export function NewOrders(props) {
                             )}
                           />
                         </td>
-                        <td
+                        <td className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
-                              // state: {
-                              //   order: element,
-                              //   redirectedtab: "newOrders",
-                              // },
+                              state: {
+                                order: element,
+                                // redirectedtab: "newOrders",
+                              },
                             })
                           }
                           style={{ cursor: "pointer" }}
@@ -1085,23 +1086,12 @@ export function NewOrders(props) {
                         </td>
                         <td width="15%">
                           {/* Carrier Details */}
-                          {`$${element?.orderData?.price}(${element?.orderData?.courierName})`}
+                          
+                          {`$${element?.orderData?.price}`}<br />
+                          {`(${element?.orderData?.courierName})`}
 
-                          {/* {getMetaValue(
-                        element.node?.metafields?.edges,
-                        "fc_order_status"
-                      ) === "Freeshipping"
-                        ? getFreeShippingPrice(element)
-                        : "$" + Number(element?.shipping_lines?.[0]?.price).toFixed(2)}{" "}
-                      {element?.shipping_lines?.[0]?.title
-                        ? `(${
-                            element?.shipping_lines?.[0]?.title
-                              ?.replace("Fast Courier", "")
-                              ?.replace("[", "")
-                              ?.replace("]", "")
-                              ?.replace(" ", "") ?? "Free"
-                          })`
-                        : ""} */}
+
+ 
                         </td>
                         <td width="10%">{element.financial_status}</td>
                         <td width="8%">{"NA"}</td>
@@ -1148,14 +1138,14 @@ export function NewOrders(props) {
                           background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
                         }}
                       >
-                        <td
+                        <td className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
-                              // state: {
-                              //   order: element,
-                              //   redirectedtab: "processedOrders",
-                              // },
+                              state: {
+                                order: element,
+                                // redirectedtab: "processedOrders",
+                              },
                             })
                           }
                           style={{ cursor: "pointer" }}
@@ -1194,9 +1184,10 @@ export function NewOrders(props) {
                         <td width="7%">
                           {element.line_items[0].fulfillable_quantity}
                         </td>
-                        <td width="15%">
+                        <td width="15% text-center">
                           {/* Carrier Details */}
-                          {`$${element?.orderData?.price}(${element?.orderData?.courierName})`}
+                          {`$${element?.orderData?.price}`}<br />
+                          {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%">
                           {/* {element.financial_status} */}
@@ -1423,13 +1414,14 @@ export function NewOrders(props) {
                           />
                         </td>
                         <td
+                        className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
-                              // state: {
-                              //   order: element,
-                              //   redirectedtab: "holdOrders",
-                              // },
+                              state: {
+                                order: element,
+                                // redirectedtab: "holdOrders",
+                              },
                             })
                           }
                           style={{ cursor: "pointer" }}
@@ -1478,18 +1470,10 @@ export function NewOrders(props) {
                         <td width="7%">
                           {element.line_items[0].fulfillable_quantity}
                         </td>
-                        <td width="15%">
+                        <td width="15% text-center">
                           {/* Carrier Details */}
-                          {JSON.parse(
-                            getMetaValue(
-                              element.node?.metafields?.edges,
-                              "order_data"
-                            )
-                          )
-                            ?.map(
-                              (item) => `$${item?.price}(${item?.courierName})`
-                            )
-                            .join(", ")}
+                          {`$${element?.orderData?.price}`}<br />
+                          {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%" className="order-actions">
                           {/* <FontAwesomeIcon
@@ -1534,13 +1518,14 @@ export function NewOrders(props) {
                         }}
                       >
                         <td
+                        className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
-                              // state: {
-                              //   order: element,
-                              //   redirectedtab: "processedOrders",
-                              // },
+                              state: {
+                                order: element,
+                                // redirectedtab: "processedOrders",
+                              },
                             })
                           }
                           style={{ cursor: "pointer" }}
@@ -1578,10 +1563,11 @@ export function NewOrders(props) {
                         <td width="7%">
                           {element.line_items[0].fulfillable_quantity}
                         </td>
-                        <td width="15%">
+                        <td width="15% text-center">
                           {/* Carrier Details */}
 
-                          {`$${element?.orderData?.price}(${element?.orderData?.courierName})`}
+                          {`$${element?.orderData?.price}`}<br />
+                          {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%">
                           {/* {element.financial_status} */}

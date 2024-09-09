@@ -165,9 +165,16 @@ export function ProductMapping(props) {
   };
 
   useEffect(() => {
+
+
+
+
+    getMerchantTags();
+    getPackageTypes();
+    getPickupLocations();
     getShippingBoxes();
     getAllProducts();
-    // getVariantMeta();
+    
   }, []);
 
   // const uniqueTags = new Set();
@@ -215,11 +222,7 @@ export function ProductMapping(props) {
     setProductData(data);
   }, [selectedCategory]);
 
-  useEffect(() => {
-    getMerchantTags();
-    getPackageTypes();
-    getPickupLocations();
-  }, []);
+ 
 
   const handleCsvInputChange = (e) => {
     setCsvData(e.target.files[0]);
@@ -903,7 +906,7 @@ export function ProductMapping(props) {
             <div className="input-lebel">
               <span> Product Name&nbsp;</span>
             </div>
-            <div className="input-field1">
+            <div className="input-field1 highlight-input">
               <input
                 className="input-field-text"
                 type="text"
@@ -1048,7 +1051,7 @@ export function ProductMapping(props) {
           </div>
         </div>
       </Modal>
-      <Modal showModal={showShippingBoxesModal} width="60%">
+      <Modal className={"full-screen-modal"} showModal={showShippingBoxesModal}  >
         {isLoading && <Loader />}
         <div className="shipping-boxes">
           <div className="modal-header">
@@ -1068,7 +1071,7 @@ export function ProductMapping(props) {
                 <div className="modal-header">
                   <div className="shipping-heading">Add Shipping Box</div>
                 </div>
-                <div className="modal-body">
+                <div className="modal-body p-3">
                   <div className="input-container">
                     <div className="input-lebel">
                       <span> Package Name&nbsp;</span>
@@ -1079,7 +1082,7 @@ export function ProductMapping(props) {
                         </span>
                       )}
                     </div>
-                    <div className="input-field">
+                    <div className="input-field highlight-input">
                       <input
                         className="input-field-text1"
                         placeholder="Package Name"
@@ -1132,7 +1135,7 @@ export function ProductMapping(props) {
                           </span>
                         )}
                       </div>
-                      <div className="input-field">
+                      <div className="input-field highlight-input">
                         <input
                           className="input-field-text1"
                           type="number"
@@ -1154,7 +1157,7 @@ export function ProductMapping(props) {
                           </span>
                         )}
                       </div>
-                      <div className="input-field">
+                      <div className="input-field highlight-input">
                         <input
                           className="input-field-text1"
                           type="number"
@@ -1176,7 +1179,7 @@ export function ProductMapping(props) {
                           </span>
                         )}
                       </div>
-                      <div className="input-field">
+                      <div className="input-field highlight-input">
                         <input
                           className="input-field-text1"
                           type="number"
@@ -1217,10 +1220,11 @@ export function ProductMapping(props) {
                           }
                           checked={isDefaultShippingPackage == "Yes"}
                         />
-                        <label htmlFor={"yes"}>&nbsp;Yes</label>
+                        <label   htmlFor={"yes"}>&nbsp;Yes</label>
                         <input
                           type="radio"
                           name={"isDefault"}
+                        className="ml-2"
                           id={"no"}
                           // it should be disabled if its id machtes with any of the shipping box id and its default is yes
                           disabled={
@@ -1650,11 +1654,11 @@ export function ProductMapping(props) {
         <table>
           <tr className="table-head">
             <th className="select-all">
-              <input
+              {/* <input
                 type="checkbox"
                 checked={selectedProducts?.length === products?.length}
                 onChange={(e) => handleSelectAll(e)}
-              />
+              /> */}
             </th>
             <th>Name</th>
             {/* <th>SKU</th> */}
@@ -1692,7 +1696,7 @@ export function ProductMapping(props) {
                       {element?.variants[0]?.requires_shipping && (
                         <input
                           type="checkbox"
-                          style={{ width: "40px" }}
+                        
                           value={element.id}
                           onChange={(e) => selectProduct(e)}
                           checked={selectedProducts.includes(
@@ -1890,7 +1894,7 @@ export function ProductMapping(props) {
                             <td>
                               <input
                                 type="checkbox"
-                                style={{ width: "40px" }}
+                                
                                 value={value.id}
                                 onChange={(e) => selectVariant(e)}
                                 checked={selectedVariants.includes(

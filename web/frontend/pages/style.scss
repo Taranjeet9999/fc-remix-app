@@ -9,14 +9,19 @@
 }
 
 .homepage-left {
+    z-index: 5;
+
     width: 5%;
     transition: 0.5s ease width; 
-    position: sticky;
+    position: fixed;
     height: 100vh;
     top: 0px;
+    left: 0px;
     background-color: #f5f8fa;
     overflow-x: hidden;
     &:hover {
+        z-index: 5;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         width: 20%;
         transition: 0.5s ease width; 
         .show_on_hover{

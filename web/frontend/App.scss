@@ -1,0 +1,392 @@
+.app {
+  width: 100%;
+  height: 100%;
+  font-family: "Poppins";
+  font-weight: 500;
+}
+#app{
+  height: 100vh;
+}
+
+button{
+  font-weight: 500;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.top-bar {
+  width: 100%;
+  height: 40px;
+  background-color: #f5f8fa;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #ff6900;
+}
+
+.modal-main{
+  z-index: 1;
+}
+
+.toggle-text {
+  font-size: 16px;
+  color: black;
+  font-weight: 500;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 35px;
+  height: 20px;
+  margin: 0 10px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #ff6900;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #ff6900;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.app-mode {
+  width: 100%;
+  height: 25px;
+  display: flex;
+}
+
+.mode-left {
+  width: 20%;
+  background-color: #f5f8fa;
+}
+
+.mode-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mode-text {
+  width: 100px;
+  height: 100%;
+  background-color: #ff6900;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  border-radius: 0px 0px  4px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ 
+
+.d-flex{
+  display: flex;
+}
+.align-items-center{
+  align-items: center;
+}
+.justify-content-center{
+  justify-content: center;
+
+}
+.align-items-end{
+  align-items: end;
+}
+.flex-1{
+  flex: 1;
+
+}
+
+.mr-2{
+  margin-right: 8px;
+}
+
+.ml-2{
+  margin-left: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Apply styles to the scrollbar track */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  height: 13px; /* Height of the scrollbar */
+}
+
+/* Style the scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar handle */
+  border-radius: 100px; /* Rounded corners for the scrollbar handle */
+  border: 3px solid #eee; /* Border around the scrollbar handle */
+}
+
+/* Style the scrollbar handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color when hovering */
+}
+
+/* Style the scrollbar track (background) */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Background color of the track */
+  border-radius: 6px; /* Rounded corners for the track */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Hide the default checkbox appearance */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none; /* For Safari */
+  width: 20px;
+  height: 20px;
+  background-color: #e0e0e0;
+  border: 1px solid #9e9b9b;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Styling the custom checkbox when checked */
+input[type="checkbox"]:checked {
+  background-color: #ff6900;
+  border-color: #636363;
+}
+
+/* Add checkmark symbol */
+input[type="checkbox"]:checked::after {
+  content: '✔';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: white;
+}
+
+
+
+.shipment-table{
+  padding: 10px !important;
+}
+
+
+ 
+
+
+.highlight-input input[type="text"]:focus {
+  border-color: #ff6900; 
+  box-shadow: 0 0 5px 3px #ff690050; 
+  border: 2px solid #ff6900;  
+}
+.highlight-input input[type="number"]:focus {
+  border-color: #ff6900; 
+  box-shadow: 0 0 5px 3px #ff690050; 
+  border: 2px solid #ff6900;  
+}
+.highlight-input textarea:focus {
+  border-color: #ff6900; 
+  box-shadow: 0 0 5px 3px #ff690050; 
+  border: 2px solid #ff6900;  
+}
+.highlight-input textarea:focus-visible {
+  border-color: #ff6900; 
+  box-shadow: 0 0 5px 3px #ff690050; 
+  border: 2px solid #ff6900;  
+  outline: none;
+}
+.highlight-input input[type="text"] {
+  border-color: transparent; 
+   
+  border: 1px solid rgb(180, 177, 177);  
+}
+.highlight-input input[type="number"] {
+  border-color: transparent; 
+   
+  border: 1px solid rgb(180, 177, 177);  
+}
+.highlight-input textarea {
+  border-color: transparent; 
+   
+  border: 1px solid rgb(180, 177, 177);  
+}
+
+.custom-react-select-colouring [class*="-menu"] [class*="-option"][aria-selected="true"] {
+  background-color: #ff6900 !important;
+}
+.custom-react-select-colouring [class*="-menu"] [class*="-option"]:hover {
+  background-color: #ff690045;
+}
+.custom-react-select-colouring [class*="-menu"] [class*="-option"]  {
+  background-color: transparent;
+}
+
+
+.full-screen-modal {
+  .modal-inner {
+    position: fixed;
+    // width: 95%;
+    border-radius: 0px;
+    top: 0;
+    left: 5%;
+    right: 0;
+    bottom: 0;
+
+    .add-location-modal{
+      height: 100%;
+    }
+
+    .shipping-boxes {
+      display: flex;
+      flex-direction: column;
+      .modal-body{
+        padding: 0px;
+      }
+    }
+  }
+}
+ 
+
+
+
+
+
+
+ /* Hide the default radio button */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #ff6900; /* Border color */
+  border-radius: 50%; /* Make it round */
+  width: 20px; /* Size of the radio button */
+  height: 20px; /* Size of the radio button */
+  background-color: white; /* Background color */
+  position: relative; /* Positioning for the checkmark */
+  cursor: pointer; /* Cursor style on hover */
+}
+
+/* Style the radio button when it is checked */
+input[type="radio"]:checked {
+  background-color: white; /* Radio button color when checked */
+  border: 2px solid #ff6900; /* Keep the border color the same */
+}
+
+/* Style the checkmark inside the radio button */
+input[type="radio"]:checked::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: #ff6900;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.flat-rate-switch{
+  input{
+
+    width: 40px !important;
+  }
+}
+
+textarea{
+border-radius: 8px;
+padding: 4px;
+}
+
+.f-error{
+  color: red !important;
+  font-size: 12px !important;
+}

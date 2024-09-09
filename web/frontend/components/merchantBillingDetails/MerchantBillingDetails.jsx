@@ -359,7 +359,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates"
+        "https://retrieve-continuous-involved-distance.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }
@@ -993,7 +993,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1011,7 +1011,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1031,7 +1031,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1049,7 +1049,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="number"
@@ -1069,7 +1069,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1087,7 +1087,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1107,7 +1107,7 @@ export function MerchantBillingDetails(props) {
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1121,7 +1121,7 @@ export function MerchantBillingDetails(props) {
           <div className="input-lebel1">
             <span> Address 2</span>
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="text"
@@ -1144,6 +1144,8 @@ export function MerchantBillingDetails(props) {
           {/* {defaultSuburb != null && ( */}
           {showSuburbModal && (
             <Select
+            className="custom-react-select-colouring"
+             
               options={suburbs}
               onInputChange={(e) => {
                 handleInputChange({ target: { value: e } });
@@ -1170,7 +1172,7 @@ export function MerchantBillingDetails(props) {
             <span> Set your shipping costs preferences&nbsp;</span>
             <span style={{ color: "red" }}> *</span>
           </div>
-          <div className="input-radio">
+          <div className="input-radio d-flex">
             <input
               type="radio"
               name="bookingPreference"
@@ -1181,7 +1183,7 @@ export function MerchantBillingDetails(props) {
             />
             <label htmlFor="freeForAllOrders">&nbsp;Free For All orders</label>
           </div>
-          <div className="input-radio">
+          <div className="input-radio d-flex">
             <input
               type="radio"
               name="bookingPreference"
@@ -1206,7 +1208,7 @@ export function MerchantBillingDetails(props) {
               </span>
             )}
           </div>
-          <div className="input-radio">
+          <div className="input-radio d-flex">
             <input
               type="radio"
               name="bookingPreference"
@@ -1237,7 +1239,7 @@ export function MerchantBillingDetails(props) {
               price&nbsp;
             </span>
           </div>
-          <div className="input-field">
+          <div className="input-field highlight-input">
             <input
               className="input-field-text1"
               type="number"
@@ -1265,7 +1267,7 @@ export function MerchantBillingDetails(props) {
           {activeCouriers.length > 0 &&
             couriers.map((courier, i) => {
               return (
-                <div className="input-checkbox" key={i}>
+                <div className="input-checkbox d-flex" key={i}>
                   <input
                     type="checkbox"
                     name={courier.id}
@@ -1311,7 +1313,7 @@ export function MerchantBillingDetails(props) {
           <span> Insurance Types&nbsp;</span>
           <span style={{ color: "red" }}> *</span>
         </div>
-        <div className="input-radio">
+        <div className="input-radio d-flex">
           <input
             type="radio"
             name="insuranceType"
@@ -1324,7 +1326,7 @@ export function MerchantBillingDetails(props) {
             &nbsp;Complimentary Coverage - No Additional Charge
           </label>
         </div>
-        <div className="input-radio">
+        <div className="input-radio d-flex">
           <input
             type="radio"
             name="insuranceType"
@@ -1349,7 +1351,7 @@ export function MerchantBillingDetails(props) {
             </span>
           )}
         </div>
-        <div className="input-radio">
+        <div className="input-radio d-flex">
           <input
             type="radio"
             name="insuranceType"
@@ -1362,7 +1364,7 @@ export function MerchantBillingDetails(props) {
             &nbsp;Full Insurance Coverage of Shipment Value (Max. $10,000 AUD)
           </label>
         </div>
-        <div className="input-checkbox">
+        <div className="input-checkbox d-flex">
           <input
             type="checkbox"
             name="isInsurancePaidByCustomer"
@@ -1398,6 +1400,8 @@ export function MerchantBillingDetails(props) {
                 </div>
             </div> */}
       <div className="input-checkbox">
+        <div className="d-flex">
+
         <input
           type="checkbox"
           name="isDropOffTailLift"
@@ -1409,6 +1413,7 @@ export function MerchantBillingDetails(props) {
         <label htmlFor="isDropOffTailLift">
           &nbsp;Default tail lift on delivery
         </label>
+        </div>
         {isDropOffTailLift == true && (
           <span className="conditional-price">
             {"> It will only apply for packages over "}
@@ -1428,9 +1433,12 @@ export function MerchantBillingDetails(props) {
           </span>
         )}
       </div>
-      <div className="d-flex align-items-center justify-content-center">
+  {isDropOffTailLift == true &&     <div className="d-flex align-items-center ">
+        <strong>
         (Minimum weight for tail lift is 30 Kgs)
-      </div>
+
+        </strong>
+      </div>}
 
       <div className="submit">
         <button className="submit-btn" onClick={() => activateMerchant()}>

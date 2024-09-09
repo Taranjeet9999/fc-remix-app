@@ -3,7 +3,7 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://model-developing-identified-boxing.trycloudflare.com"
+application_url = "https://meet-canada-reaction-deferred.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://model-developing-identified-boxing.trycloudflare.com/auth/callback",
-  "https://model-developing-identified-boxing.trycloudflare.com/auth/shopify/callback",
-  "https://model-developing-identified-boxing.trycloudflare.com/api/auth/callback"
+  "https://meet-canada-reaction-deferred.trycloudflare.com/auth/callback",
+  "https://meet-canada-reaction-deferred.trycloudflare.com/auth/shopify/callback",
+  "https://meet-canada-reaction-deferred.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

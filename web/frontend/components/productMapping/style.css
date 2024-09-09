@@ -74,6 +74,16 @@
     width: 100%;
     margin-top: 20px;
     font-size: 12px;
+    overflow-x: auto;
+    max-height: 450px;
+    overflow-y: auto;
+ 
+}
+
+.pickup-locations-table  .order-id-cell {
+   
+    text-decoration: underline;
+    font-weight: 600;
 }
 
 .pickup-locations-table table {
@@ -82,16 +92,93 @@
     text-align: left;
 }
 
+/* General table styling */
+/* General table styling */
+/* General table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /* font-family: 'Arial', sans-serif; */
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Head Styling */
 .table-head {
-    background-color: #F5F8FA;
-    height: 80px;
+    background: linear-gradient(135deg, #ff6a00ef, #ff7f24);
+    height: 75px;
+    color: white;
+    font-size: 1.2rem;
     text-align: left;
 }
 
-.table-head th {
-    /* padding-left: 5px; */
+.table-head th { 
     text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+/* Set minimum width for all table headers and cells */
+.table-head th, .products-row td {
+    min-width: 150px; /* Set minimum width of 150px */
+}
+
+.products-row {
+    height: 80px;
+    transition: background-color 0.3s ease;
+    color: #333;
+}
+
+/* Alternate row Background */
+.products-row:nth-child(even) {
+    background-color: #f0f0f0 !important; /* Light gray background for even rows */
+}
+
+.products-row:nth-child(odd) {
+    background-color: #FDFEFF !important; /* White background for odd rows */
+}
+
+/* Hover Effect for Entire Row */
+.products-row:hover {
+    background-color: #d9d9d9; /* Slightly darker background on hover */
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1); /* Top and bottom shadow */
+    transform: translateY(-1px); /* Light pop-out effect */
+    /* transition: all 0.1s ease-in-out; Smooth transition */
+}
+
+.products-row td {
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.table-head th, .products-row td {
+    border-right: 1px solid rgba(64, 48, 50, 0.2);
+}
+
+.table-head th:last-child, .products-row td:last-child {
+    border-right: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
+
 
 .assign-location {
     display: flex;
@@ -119,14 +206,7 @@
     text-align: center;
 }
 
-.products-row {
-    height: 80px;
-}
 
-.products-row td {
-    text-align: center;
-    /* padding-left: 0px; */
-}
 
 .dimension-container .input-row {
     width: 100%;

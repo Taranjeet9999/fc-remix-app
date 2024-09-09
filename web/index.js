@@ -12,7 +12,7 @@
 // import bodyParser from "body-parser";
 // import sqlite3 from "sqlite3";
 // import log4js from "log4js";
-const { join } = require("path");
+const { join, parse } = require("path");
 const { readFileSync } = require("fs");
 
 const express = require("express");
@@ -404,35 +404,28 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     };
 
     const getCodes = (data) => {
-const item = data.find((obj) => obj.source === "Fast Courier");
-return item ? item.code : null;
-};
+      const item = data.find((obj) => obj.source === "Fast Courier");
+      return item ? item.code : null;
+    };
 
-function extractQuoteIds(array) {
-let quoteIds = array[0]
-.split(",")
-.map((item) => item?.match(/\(([^-]+)-/)[1])
-.join(",");
-return quoteIds;
-}
+    function extractQuoteIds(array) {
+      let quoteIds = array[0]
+        .split(",")
+        .map((item) => item?.match(/\(([^-]+)-/)[1])
+        .join(",");
+      return quoteIds;
+    }
 
-function extractOrderIds(array) {
-let orderIds = array[0]
-.split(",")
-.map((item) => item?.match(/-([^\)]+)\)/)[1])
-.join(",");
-return orderIds;
-}
+    function extractOrderIds(array) {
+    let orderIds = array[0]
+    .split(",")
+    .map((item) => item?.match(/-([^\)]+)\)/)[1])
+    .join(",");
+    return orderIds;
+    }
 
 
-const getOrderId = (orderIdString) => {
-const regex = /(\d+)/;
-const match = orderIdString.match(regex);
-
-// Check if there is a match and extract the numeric portion
-const orderId = match ? match[0] : null;
-return orderId;
-};
+ 
   try {
     const session = await getSession(
       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
@@ -468,8 +461,9 @@ return orderId;
         try {
           await update_shopify_order_id_on_portal(
             orderIds.split(",")[index],
-            parseInt(orderDetails.id),
-            _req.body?.phone,
+           parseInt(orderDetails.id),
+            _req.body?.contact_email,
+            _req.body?.shipping_address?.phone,
             _req.body?.shipping_address?.first_name,
             _req.body?.shipping_address?.last_name
           );
@@ -1103,7 +1097,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     //     currency: "AUD",
     //   })),
     // }
-
+    logger.info("shipping-rates-output", response);
     res.status(200).json(response);
   } catch (error) {
     console.error("shipping-rates==", error);
@@ -1269,6 +1263,7 @@ async function getMerchantLocationDataFromLocationId(
 async function update_shopify_order_id_on_portal(
   fastcourier_hash_id,
   shopify_order_id,
+  destination_email,
   destination_phone,
   destination_first_name,
   destination_last_name
@@ -1285,6 +1280,7 @@ async function update_shopify_order_id_on_portal(
     body: JSON.stringify({
       hash_id: fastcourier_hash_id,
       order_id: shopify_order_id,
+      destination_email,
       destination_phone,
       destination_first_name,
       destination_last_name
@@ -2077,7 +2073,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates";
+      "https://retrieve-continuous-involved-distance.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2103,14 +2099,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://noticed-placing-sense-cord.trycloudflare.com/api/shipping-rates";
+        "https://retrieve-continuous-involved-distance.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://noticed-placing-sense-cord.trycloudflare.com/api/webhook/order-create";
+        "https://retrieve-continuous-involved-distance.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });

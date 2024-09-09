@@ -17,7 +17,7 @@ import { Signup } from "./components/signup";
 import { OrderDetails } from "./components/orderDetails/OrderDetails";
 import { ForgotPassword } from "./components/forgotPassword";
 import { MerchantBillingDetails } from "./components/merchantBillingDetails";
-import "./App.css";
+import "./App.scss";
 import ExitIframe from "./pages/ExitIframe";
 // import { useAuthenticatedFetch } from "./hooks";
 import { Loader } from "./components/loader";

@@ -7,7 +7,7 @@ import { useAuthenticatedFetch } from "../../hooks";
 ;
 
 export function OrderDetails(props) {
-  const [email, setEmail] = useState("");
+   
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
@@ -498,7 +498,7 @@ export function OrderDetails(props) {
           <div className="order-detail-heading">Order Details</div>
           <div
             className="back-btn"
-            onClick={() => navigate("/homepage", { state: { redirectedtab } })}
+            onClick={() => navigate("/homepage", { state: { redirectedtab:"newOrders" } })}
           >
             Back
           </div>
@@ -638,13 +638,13 @@ export function OrderDetails(props) {
                 <th>Quantity</th>
                 <th>Tax</th>
                 <th>{"Weight (kg)"}</th>
-                <th>Dimesions</th>
+                {/* <th>Dimentions</th> */}
                 <th>Shipping Required</th>
                 <th>Total</th>
               </tr>
               {order?.line_items?.map((item) => {
                 return (
-                  <tr className="table-body">
+                  <tr className="products-row">
                     <td>{item.name}</td>
                     {/* <td>{item.sku}</td> */}
                     <td>${item.price}</td>
@@ -654,7 +654,7 @@ export function OrderDetails(props) {
                     <td>
                       {getProductDimensionsById(item.product_id)["weight"]}
                     </td>
-                    <td>
+                    {/* <td>
                       {getProductDimensionsById(item.product_id)["length"]
                         ? `${
                             getProductDimensionsById(item.product_id)["length"]
@@ -662,7 +662,7 @@ export function OrderDetails(props) {
                     ${getProductDimensionsById(item.product_id)["width"]}x
                     ${getProductDimensionsById(item.product_id)["height"]}`
                         : ""}
-                    </td>
+                    </td> */}
 
                     <td>{item.requires_shipping ? "Yes" : "No"}</td>
                     <td>${item.price * item.quantity}</td>
@@ -685,7 +685,7 @@ export function OrderDetails(props) {
                 <th>Dimensions (CMs)</th>
                 <th>Sub Packs</th>
               </tr>
-              <tr className="table-body">
+              <tr className="products-row">
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -713,7 +713,7 @@ export function OrderDetails(props) {
               {
                 orderList.map((orderItem) => {
                   return(
-              <tr className="table-body">
+              <tr className="products-row">
                 <td>
                   {
                     orderItem.orderId
