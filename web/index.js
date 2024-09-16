@@ -387,148 +387,267 @@ app.get("/api/oauth-callback", async (req, res) => {
   res.status(200).send({ state: JSON.parse(decodedString), code: code });
 });
 
-app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
+// app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
 
-      logger.info(
-      "order-create-webhook==",
-      _req.body,
-    )
-    const getCarrier = (data) => {
-      const item = data.find((obj) => obj.source === "Fast Courier");
-      const title = item ? item.title : null;
-      const startIndex = title.indexOf("[");
-      const endIndex = title.indexOf("]");
-      // Extract the substring between '[' and ']'
-      const carrierName = title.substring(startIndex + 1, endIndex);
-      return carrierName;
-    };
+//       logger.info(
+//       "order-create-webhook==",
+//       _req.body,
+//     )
+//     const getCarrier = (item) => {
+//       // const item = data.find((obj) => obj.source === "Fast Courier");
+//       const title = item ? item.title : null;
+//       const startIndex = title.indexOf("[");
+//       const endIndex = title.indexOf("]");
+//       // Extract the substring between '[' and ']'
+//       const carrierName = title.substring(startIndex + 1, endIndex);
+//       return carrierName;
+//     };
 
-    const getCodes = (data) => {
-      const item = data.find((obj) => obj.source === "Fast Courier");
-      return item ? item.code : null;
-    };
+//     const getCodes = (item) => {
+//       // const item = data.find((obj) => obj.source === "Fast Courier");
+//       return item ? item.code : null;
+//     };
 
-    function extractQuoteIds(array) {
-      let quoteIds = array[0]
-        .split(",")
-        .map((item) => item?.match(/\(([^-]+)-/)[1])
-        .join(",");
-      return quoteIds;
-    }
+//     function extractQuoteIds(array) {
+//       let quoteIds = array[0]
+//         .split(",")
+//         .map((item) => item?.match(/\(([^-]+)-/)[1])
+//         .join(",");
+//       return quoteIds;
+//     }
 
-    function extractOrderIds(array) {
-    let orderIds = array[0]
-    .split(",")
-    .map((item) => item?.match(/-([^\)]+)\)/)[1])
-    .join(",");
-    return orderIds;
-    }
+//     function extractOrderIds(array) {
+//     let orderIds = array[0]
+//     .split(",")
+//     .map((item) => item?.match(/-([^\)]+)\)/)[1])
+//     .join(",");
+//     return orderIds;
+//     }
 
 
  
+//   try {
+//     const session = await getSession(
+//       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
+//     );
+//     let orderDetails = _req.body;
+//     const fast_courier_orders = orderDetails.shipping_lines.filter(
+//       (obj) => obj.source === "Fast Courier"
+//     );
+//     let ordersData = [];
+// for (let orderIndex = 0; orderIndex < fast_courier_orders.length; orderIndex++) {
+//   const codes = getCodes(fast_courier_orders[orderIndex]);
+
+//   if (codes != null) {
+    
+//     const valuesArray = codes.split("~"); // FORMAT = = = = = (WKQLDRPXEQ-WKMVEZBDPO)~[PAID]~[31.98]
+
+//     // Trim the quotes from each value and assign them to variables
+//     const carrierName = getCarrier(fast_courier_orders[orderIndex]);
+//     const quoteIds = extractQuoteIds(valuesArray);
+//     const orderIds = extractOrderIds(valuesArray);
+   
+//     for (let index = 0; index < quoteIds.split(",").length; index++) {
+//       ordersData.push({
+//         quote_id: quoteIds.split(",")[index],
+//         order_id: orderIds.split(",")[index],
+//         price: JSON.parse(valuesArray[2])[index],
+//         courierName: carrierName.split(",")[index],
+//         order_status:
+//           valuesArray[1][index] === "FALLBACK" ? "Fallback" : "Ready to Book",
+
+//         order_type:
+//           valuesArray[1][index] === "FALLBACK"
+//             ? "Fallback"
+//             : valuesArray[1][index] === "FREESHIPPING"
+//             ? "Freeshipping"
+//             : "Paid",
+//       });
+//       try {
+//         await update_shopify_order_id_on_portal(
+//           orderIds.split(",")[index],
+//          parseInt(orderDetails.id),
+//           _req.body?.contact_email,
+//           _req.body?.shipping_address?.phone,
+//           _req.body?.shipping_address?.first_name,
+//           _req.body?.shipping_address?.last_name
+//         );
+//       } catch (error) {
+//         logger.info(`Failed to update Shopify order ID on portal: ${error}`);
+//         // You can decide how to handle errors in updating each order individually.
+//       }
+//     }
+//     const order = new shopify.api.rest.Order({
+//       session: session[0],
+//     });
+//     order.id = parseInt(orderDetails.id);
+//     order.metafields = [
+//       {
+//         key: "quote_id",
+//         value: quoteIds,
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//       {
+//         key: "order_hash_id",
+//         value: orderIds,
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//       {
+//         key: "carrier_name",
+//         value: carrierName,
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//       {
+//         key: "fc_order_status",
+//         value:
+//           valuesArray[1] === "FALLBACK"
+//             ? "Fallback"
+//             : valuesArray[1] === "FREESHIPPING"
+//             ? "Freeshipping"
+//             : "Paid",
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//       {
+//         key: "courier_charges",
+//         value: valuesArray[2],
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//       {
+//         key: "order_data",
+//         value: JSON.stringify(ordersData),
+//         type: "single_line_text_field",
+//         namespace: "Order",
+//       },
+//     ];
+
+//     await order.save({
+//       update: true,
+//     });
+//     res.status(200).send(order);
+//   }
+  
+// }
+
+
+
+
+
+
+   
+//   } catch (error) {
+//     logger.info("order-create-webhook-error==", error);
+//   }
+// });
+
+
+
+
+app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
-    const session = await getSession(
-      `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
+    logger.info("order-create-webhook==", _req.body);
+
+    const orderDetails = _req.body;
+
+    // Helper functions
+    const getCarrier = (item) => {
+      const title = item?.title || null;
+      if (!title) return null;
+      const startIndex = title.indexOf("[");
+      const endIndex = title.indexOf("]");
+      return title.substring(startIndex + 1, endIndex);
+    };
+
+    const getCodes = (item) => item?.code || null;
+
+    const extractValues = (array, pattern) =>
+      array[0]
+        .split(",")
+        .map((item) => item?.match(pattern)[1])
+        .join(",");
+
+    const extractQuoteIds = (array) => extractValues(array, /\(([^-]+)-/);
+    const extractOrderIds = (array) => extractValues(array, /-([^\)]+)\)/);
+
+    const session = await getSession(new URL(orderDetails.order_status_url).hostname.toLowerCase());
+
+    // Filter for Fast Courier orders
+    const fastCourierOrders = orderDetails.shipping_lines.filter(
+      (obj) => obj.source === "Fast Courier"
     );
-    let orderDetails = _req.body;
-    const codes = getCodes(orderDetails.shipping_lines);
 
-    if (codes != null) {
-      logger.info("codes", codes);
-      const valuesArray = codes.split("~"); // FORMAT = = = = = (WKQLDRPXEQ-WKMVEZBDPO)~[PAID]~[31.98]
+    const ordersData = [];
 
-      // Trim the quotes from each value and assign them to variables
-      const carrierName = getCarrier(orderDetails.shipping_lines);
+    for (const fastCourierOrder of fastCourierOrders) {
+      const codes = getCodes(fastCourierOrder);
+      if (!codes) continue;
+
+      const valuesArray = codes.split("~");
+      const carrierName = getCarrier(fastCourierOrder);
       const quoteIds = extractQuoteIds(valuesArray);
       const orderIds = extractOrderIds(valuesArray);
-      let ordersData = [];
-      for (let index = 0; index < quoteIds.split(",").length; index++) {
-        ordersData.push({
-          quote_id: quoteIds.split(",")[index],
-          order_id: orderIds.split(",")[index],
-          price: JSON.parse(valuesArray[2])[index],
-          courierName: carrierName.split(",")[index],
-          order_status:
-            valuesArray[1][index] === "FALLBACK" ? "Fallback" : "Ready to Book",
+      const prices = JSON.parse(valuesArray[2]);
 
-          order_type:
-            valuesArray[1][index] === "FALLBACK"
-              ? "Fallback"
-              : valuesArray[1][index] === "FREESHIPPING"
-              ? "Freeshipping"
-              : "Paid",
-        });
-        try {
-          await update_shopify_order_id_on_portal(
-            orderIds.split(",")[index],
-           parseInt(orderDetails.id),
-            _req.body?.contact_email,
-            _req.body?.shipping_address?.phone,
-            _req.body?.shipping_address?.first_name,
-            _req.body?.shipping_address?.last_name
-          );
-        } catch (error) {
-          logger.info(`Failed to update Shopify order ID on portal: ${error}`);
-          // You can decide how to handle errors in updating each order individually.
-        }
-      }
-      const order = new shopify.api.rest.Order({
-        session: session[0],
-      });
-      order.id = parseInt(orderDetails.id);
-      order.metafields = [
-        {
-          key: "quote_id",
-          value: quoteIds,
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-        {
-          key: "order_hash_id",
-          value: orderIds,
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-        {
-          key: "carrier_name",
-          value: carrierName,
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-        {
-          key: "fc_order_status",
-          value:
-            valuesArray[1] === "FALLBACK"
-              ? "Fallback"
-              : valuesArray[1] === "FREESHIPPING"
-              ? "Freeshipping"
-              : "Paid",
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-        {
-          key: "courier_charges",
-          value: valuesArray[2],
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-        {
-          key: "order_data",
-          value: JSON.stringify(ordersData),
-          type: "single_line_text_field",
-          namespace: "Order",
-        },
-      ];
+      // Map over each quote and order id
+      quoteIds.split(",").forEach((quoteId, index) => {
+        const orderId = orderIds.split(",")[index];
+        const price = prices[index];
+        const courier = carrierName.split(",")[index];
+        const orderStatus = quoteIds.split(",")[index]==="FLATRATE"?"Flat-Rate": valuesArray[1] === "FALLBACK" ? "Fallback" : "Ready to Book";
+        const orderType =
+          valuesArray[1] === "FALLBACK"
+            ? "Fallback"
+            : valuesArray[1] === "FREESHIPPING"
+            ? "Freeshipping"
+            : "Paid";
 
-      await order.save({
-        update: true,
+        ordersData.push({ quote_id: quoteId, order_id: orderId, price, courierName: courier, order_status: orderStatus, order_type: orderType });
+
+        // Update Shopify order
+        update_shopify_order_id_on_portal(
+          orderId,
+          parseInt(orderDetails.id),
+          orderDetails?.contact_email,
+          orderDetails?.shipping_address?.phone,
+          orderDetails?.shipping_address?.first_name,
+          orderDetails?.shipping_address?.last_name
+        ).catch((error) =>
+          logger.info(`Failed to update Shopify order ID on portal: ${error}`)
+        );
       });
-      res.status(200).send(order);
+
+    
     }
+
+    const order = new shopify.api.rest.Order({ session: session[0] });
+    order.id = parseInt(orderDetails.id);
+    order.metafields = [
+      // { key: "quote_id", value: "quoteIds", type: "single_line_text_field", namespace: "Order" },
+      // { key: "order_hash_id", value: "orderIds", type: "single_line_text_field", namespace: "Order" },
+      // { key: "carrier_name", value: "carrierName", type: "single_line_text_field", namespace: "Order" },
+      // {
+      //   key: "fc_order_status",
+      //   value: valuesArray[1] === "FALLBACK" ? "Fallback" : valuesArray[1] === "FREESHIPPING" ? "Freeshipping" : "Paid",
+      //   type: "single_line_text_field",
+      //   namespace: "Order",
+      // },
+      // { key: "courier_charges", value: valuesArray[2], type: "single_line_text_field", namespace: "Order" },
+      { key: "order_data", value: JSON.stringify(ordersData), type: "single_line_text_field", namespace: "Order" },
+    ];
+
+    await order.save({ update: true });
+
+    res.status(200).send(ordersData);
   } catch (error) {
     logger.info("order-create-webhook-error==", error);
+    res.status(500).send({ error: "An error occurred during processing" });
   }
 });
+
 
 
 
@@ -773,6 +892,11 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             locationData = { ...merchant_default_location };
           }
         }
+       
+ 
+
+
+
 
         return {
           product_id: element.product_id,
@@ -783,7 +907,6 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           weight: getValueByKey(metaData, "weight"),
           productDimentions:
             JSON.parse(getValueByKey(metaData, "product_dimentions")) ?? [],
-          // productDimentions: getValueByKey(metaData, "product_dimentions") ?? [],
           quantity: element.quantity,
           price: parseInt(element.price) / 100,
           is_free_shipping:
@@ -808,6 +931,13 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             ? isVirtualProduct
             : !element.requires_shipping,
           pickupLocation: locationData,
+          is_flat_rate_enabled:
+            Boolean(Number(locationData?.is_flat_enable)) &&
+            isPostCodeIncludedInFlatRate(
+              destination.postal_code,
+              locationData?.flat_shipping_postcodes
+            ),
+          flat_price: Number(locationData?.flat_rate),
         };
       })
     );
@@ -830,11 +960,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     }
     let courier_data_to_Show_end_user = { ...groupByLocation(courierData) };
 
-    const quotes = await Promise.all(
-      // Object.values(groupByLocation(courierData)).map(async (_items) => {
+    const quotes = await Promise.all( 
       Object.entries(groupByLocation(courierData)).map(
         async ([location, _items], index) => {
+
           // Only Process those items those are not free shipping
+
           let items = _items.filter((_item) => !_item.free);
           if (items.length === 0) {
             return {
@@ -846,22 +977,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
               totalPrice: 0,
             };
           }
-
-          // let itemsArray = [];
-          // items.forEach((entry) => {
-          //   let product_parts = entry.productDimentions;
-          //   product_parts.forEach((__item) => {
-          //     itemsArray.push({
-          //       type: __item.packageType,
-          //       weight: __item.weight,
-          //       width: __item.width,
-          //       height: __item.height,
-          //       length: __item.length,
-          //       isIndividual: __item.isIndividual,
-          //       quantity: 1,
-          //     });
-          //   });
-          // });
+ 
           let itemsArray = [];
           items.forEach((entry) => {
             let product_parts = entry.productDimentions;
@@ -888,15 +1004,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           );
           let non_individual_items = itemsArray.filter(
             (item) => item.isIndividual === "No"
-          );
-          // const _bins = [
-          //   {
-          //     name: "Le petite box",
-          //     width: 296,
-          //     height: 296,
-          //     length: 80,
-          //   },
-          // ];
+          ); 
           const _bins = shipping_boxes.map((box, idx) => {
             return {
               // name: box.package_name,
@@ -934,19 +1042,21 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           );
 
           const payload = {
+            subOrderType: "flat_rate",
+            flatPrice: items[0]?.flat_price,
             request_type: "wp",
-            pickupFirstName: items[0].pickupLocation?.first_name,
-            pickupLastName: items[0].pickupLocation?.last_name,
+            pickupFirstName: items[0].pickupLocation?.first_name?? "",
+            pickupLastName: items[0].pickupLocation?.last_name?? "",
             pickupCompanyName: "",
-            pickupEmail: items[0].pickupLocation?.email,
-            pickupAddress1: items[0].pickupLocation?.address1,
-            pickupAddress2: items[0].pickupLocation?.address2,
-            pickupPhone: items[0].pickupLocation?.phone,
-            pickupSuburb: items[0].pickupLocation?.suburb,
-            pickupState: items[0].pickupLocation?.state,
-            pickupPostcode: items[0].pickupLocation?.postcode,
-            pickupBuildingType: items[0].pickupLocation?.building_type,
-            pickupTimeWindow: `${items[0].pickupLocation?.time_window}`,
+            pickupEmail: items[0].pickupLocation?.email?? "",
+            pickupAddress1: items[0].pickupLocation?.address1 ?? "",
+            pickupAddress2: items[0].pickupLocation?.address2 ?? "",
+            pickupPhone: items[0].pickupLocation?.phone?? "",
+            pickupSuburb: items[0].pickupLocation?.suburb?? "",
+            pickupState: items[0].pickupLocation?.state?? "",
+            pickupPostcode: items[0].pickupLocation?.postcode?? "",
+            pickupBuildingType: items[0].pickupLocation?.building_type?? "",
+            pickupTimeWindow: `${items[0].pickupLocation?.time_window?? ""}`,
             isPickupTailLift: `${
               merchant?.is_drop_off_tail_lift
                 ? Number(totalWeightOfItems > merchant.weighht)
@@ -962,9 +1072,9 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             destinationLastName: "",
             destinationCompanyName: "",
             destinationEmail: destination.email ?? "",
-            destinationAddress1: destination.address1,
+            destinationAddress1: destination.address1?? "",
             destinationAddress2: destination.address2 ?? "",
-            destinationPhone: destination.phone,
+            destinationPhone: destination.phone?? "",
             parcelContent: "Order from Main Hub",
             valueOfContent: `${totalPriceOfItems}`,
             items: JSON.stringify(
@@ -975,6 +1085,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
                   height: String(item.height),
                   length: String(item.length),
                   weight: String(item.weight),
+                  contents:"Other"
                 })
               )
             ),
@@ -982,35 +1093,71 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             orderType: "8",
           };
 
+          let data;
 
-          const quote = await fetch(
-            `https://portal-staging.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
-              payload
-            )}`,
-            {
-              method: "GET",
-              credentials: "include",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "request-type": "shopify_development",
-                version: "3.1.1",
-                Authorization: `Bearer ${merchant.access_token}`,
-                "store-domain":
-                  `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
-              },
-            }
-          );
-          const data = await quote.json();
+if (items[0]?.is_flat_rate_enabled) {
+
+  // IF FLAT RATE ENABLED
+  // IF FLAT RATE ENABLED
+  // IF FLAT RATE ENABLED
+  // IF FLAT RATE ENABLED
+  const quote = await fetch(
+    `https://portal-staging.fastcourier.com.au/api/wp/create-flate-order`,
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: `Bearer ${merchant.access_token}`,
+        "store-domain":
+          `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
+      },
+      body: JSON.stringify(payload)
+    },
+  );
+    data = await quote.json();
+
+    logger.info("data",data)
+  
+}else{
+  const quote = await fetch(
+    `https://portal-staging.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
+      payload
+    )}`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "request-type": "shopify_development",
+        version: "3.1.1",
+        Authorization: `Bearer ${merchant.access_token}`,
+        "store-domain":
+          `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
+      },
+    }
+  );
+    data = await quote.json();
+}
+     
 
           
           courier_data_to_Show_end_user[location] = items.map((xitem) => {
             return {
-              ...xitem,
+              ...xitem, 
+              totalPrice: xitem?.is_flat_rate_enabled
+                ? xitem?.flat_price
+                : xitem?.totalPrice, 
               quoteData: {
                 id: xitem?.is_free_shipping ? 999 : index,
                 amount: xitem?.is_free_shipping
                   ? 0
+                  : xitem?.is_flat_rate_enabled
+                  ? xitem?.flat_price
                   : data?.message === "No quote found"
                   ? `${merchant?.fallback_amount}`
                   : `${data?.data?.priceIncludingGst}`,
@@ -1019,22 +1166,28 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           });
 
           return {
-            amount:
-              data?.message === "No quote found"
-                ? `${merchant?.fallback_amount}`
-                : `${data?.data?.priceIncludingGst}`,
+            amount: items[0]?.is_flat_rate_enabled
+              ? items[0]?.flat_price
+              : data?.message === "No quote found"
+              ? `${merchant?.fallback_amount}`
+              : `${data?.data?.priceIncludingGst}`,
             description:
               data?.message === "No quote found"
                 ? "Incl.Tax"
                 : "Includes tracking and insurance",
-            eta: data?.data?.eta,
-            serviceCode:
-              data?.message === "No quote found"
-                ? "(FALLBACK-FALLBACK)"
-                : `(${data?.data?.id}-${data?.data?.orderHashId})`,
-            courierName: data?.data?.courierName ?? "Shipping",
+            eta: data?.data?.eta ?? "5-10 Business days",
+            serviceCode: items[0]?.is_flat_rate_enabled
+              ? `(FLATRATE-${data?.order_id})`
+              : data?.message === "No quote found"
+              ? "(FALLBACK-FALLBACK)"
+              : `(${data?.data?.id}-${data?.data?.orderHashId})`,
+            courierName: items[0]?.is_flat_rate_enabled
+              ? "Flat-Rate"
+              : data?.data?.courierName ?? "Shipping",
             totalPrice:
-              data?.message === "No quote found"
+            items[0]?.is_flat_rate_enabled
+            ? items[0]?.flat_price
+            :data?.message === "No quote found"
                 ? `${merchant?.fallback_amount}`
                 : `${data?.data?.priceIncludingGst}`,
             quoteData: {
@@ -1046,16 +1199,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       )
     );
 
-    // const totalPrice = quotes.reduce((acc, quote) => acc + parseFloat(String(quote.totalPrice)), 0);
+     
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
       (sum, quote) => sum + parseFloat(quote?.amount ?? 0),
       0
     );
-
-    const totalPriceOfItems = quotes.reduce(
-      (acc, quote) => acc + parseFloat(String(quote?.totalPrice ?? 0)),
-      0
-    );
+ 
 
     const response = {
       rates: [
@@ -1088,15 +1237,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       ],
     };
 
-    // const response = {
-    //   rates: quotes.map((quote) => ({
-    //     service_name: `Fast Courier [${quote.courierName}]`,
-    //     service_code: quote.serviceCode,
-    //     total_price: `${Number(parseFloat(String(quote.totalPrice)) * 10 * 10)}`,
-    //     description: quote.description,
-    //     currency: "AUD",
-    //   })),
-    // }
+    
     logger.info("shipping-rates-output", response);
     res.status(200).json(response);
   } catch (error) {
@@ -2073,7 +2214,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://retrieve-continuous-involved-distance.trycloudflare.com/api/shipping-rates";
+      "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2099,14 +2240,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://retrieve-continuous-involved-distance.trycloudflare.com/api/shipping-rates";
+        "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://retrieve-continuous-involved-distance.trycloudflare.com/api/webhook/order-create";
+        "https://busy-casting-soa-lucia.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -2277,6 +2418,8 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
     let _orders = parseOrderData(orders);
     var processedOrders = 0;
     var rejectedOrders = 0;
+
+  
     
     if (_orders?.length > 0) {
       const metafieldsPromises = _orders.map(async (order, orderIndex) => {
@@ -2759,8 +2902,7 @@ function groupByLocation(products) {
 function packItems(_bins, _items, level = 0) {
   // logger.info("Packing items",BinPacking3D.BinPacking);
   // logger.info("Packing items 2",BinPacking3D.BP3D);
-  logger.info(_bins, "_bins", level);
-
+   
   let packer = new Packer();
   let bin_itemsto_send = [];
 
@@ -2827,6 +2969,29 @@ function processBoxes(boxes) {
     })),
   }));
 }
+
+function isPostCodeIncludedInFlatRate(postCode, flatRatePostCodes = 
+  "1000,2000,300-800"
+) {
+  const postCodes = flatRatePostCodes.split(",");
+   
+  for (let i = 0; i < postCodes.length; i++) {
+    const postCodeRange = postCodes[i].split("-");
+    
+    if (postCodeRange.length === 1) {
+      if (parseInt(postCode) === parseInt(postCodes[i])) {
+        return true;
+      }
+    } else if (postCodeRange.length === 2) {
+      const start = parseInt(postCodeRange[0]);
+      const end = parseInt(postCodeRange[1]);
+      if (parseInt(postCode) >= start && parseInt(postCode) <= end) {
+        return true;
+      }
+    }
+  }
+  return false;
+} 
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));

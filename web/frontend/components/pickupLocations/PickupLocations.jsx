@@ -9,7 +9,7 @@ import { ConfirmModal } from "../confirmModal";
 import CustomTooltip from "../customToolTip/CustomToolTip";
 import { useAuthenticatedFetch } from "../../hooks";
 import {   toast } from 'react-toastify';
-;
+
 export function PickupLocations(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -19,8 +19,7 @@ export function PickupLocations(props) {
   const [editLocation, setEditLocation] = useState(null);
   const [merchantTags, setMerchantTags] = useState([]);
   const fetch = useAuthenticatedFetch();
-  const [pickUpLocationData, setPickUpLocationData] = useState()
-
+   
   const getPickupLocations = () => {
     setIsLoading(true);
     const accessToken = localStorage.getItem("accessToken");
@@ -273,6 +272,9 @@ export function PickupLocations(props) {
             <th>Tags</th>
             <th>Free Shipping Postcodes</th>
             <th>Default</th>
+            <th>Flat rate enabled</th>
+            <th>Flat rate amount</th>
+            <th>Flat rate postcodes</th>
             <th>Actions</th>
           </tr>
           {pickupLocations.length > 0 &&
@@ -307,20 +309,41 @@ export function PickupLocations(props) {
                     </CustomTooltip>
                   </td>
                   <td>{element.is_default == 1 ? "Yes" : "No"}</td>
+                  <td>{element.is_flat_enable == 1 ? "Yes" : "No"}</td>
+                  <td>
+                    {element.is_flat_enable == 1 ? `$${element.flat_rate}` : ""}
+                  </td>
+                  <td>
+                    {element.is_flat_enable == 1 ? (
+                      <CustomTooltip
+                        disabled={false}
+                        text={element?.flat_shipping_postcodes}
+                      >
+                        <FontAwesomeIcon
+                          icon="fa-solid fa-circle-info"
+                          style={{
+                            width: "17px",
+                            height: "17px",
+                          }}
+                        />
+                      </CustomTooltip>
+                    ) : (
+                      ""
+                    )}
+                  </td>
                   <td className="location-actions">
                     <FontAwesomeIcon
                       icon="fa-solid fa-pen-to-square"
                       size="2xs"
                       onClick={() => handleEditClick(pickupLocations[i])}
                     />
-                    {element.is_default != 1  && (
+                    {element.is_default != 1 && (
                       <FontAwesomeIcon
                         icon="fa-solid fa-trash-can"
                         size="2xs"
                         onClick={() => handleDeleteClick(pickupLocations[i])}
                       />
                     )}
-                 
                   </td>
                 </tr>
               );

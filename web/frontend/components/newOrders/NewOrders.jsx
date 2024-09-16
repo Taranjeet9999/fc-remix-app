@@ -15,14 +15,10 @@ import { ButtonGroup, Dropdown, DropdownButton } from "react-bootstrap";
 import _ from 'lodash';
 import { toast } from "react-toastify";
 export function NewOrders(props) {
-  const fetch = useAuthenticatedFetch();
-  // newOrders // processedOrders
-  const [tabKey, setTabKey] = useState('newOrders');
-  const [isLoading, setIsLoading] = useState(true);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [collectionDate, setCollectionDate] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState([]);
+  const fetch = useAuthenticatedFetch(); 
+  const [tabKey, setTabKey] = useState('newOrders'); // newOrders // processedOrders
+  const [isLoading, setIsLoading] = useState(true); 
+  const [collectionDate, setCollectionDate] = useState(""); 
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [showError, setShowError] = useState(false);
   const [showBookOrderModal, setShowBookOrderModal] = useState(false);
@@ -41,8 +37,7 @@ export function NewOrders(props) {
     orderId: "",
     shippingType: "",
   });
-  const navigate = useNavigate();
-
+  const navigate = useNavigate(); 
   const getFormattedDate = (originalDateString) => {
     const originalDate = new Date(originalDateString);
     const year = originalDate.getFullYear();
@@ -50,30 +45,13 @@ export function NewOrders(props) {
     const day = String(originalDate.getDate()).padStart(2, "0");
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
-  };
-
-  // const disabledDates = [
-  //   '2024-01-01',
-  //   '2024-01-26',
-  //   '2024-03-29',
-  //   '2024-03-30',
-  //   '2024-03-31',
-  //   '2024-04-01',
-  //   '2024-04-25',
-  //   '2024-06-10',
-  //   '2024-10-07',
-  //   '2024-12-25',
-  //   '2024-12-26',
-  // ];
-
+  }; 
   useEffect(() => {
     getPickupLocations();
     getHolidays();
-  }, []);
- 
+  }, []); 
   const getPickupLocations = () => {
-    setIsLoading(true);
-    const accessToken = localStorage.getItem("accessToken");
+    setIsLoading(true); 
     const merchantDomainId = localStorage.getItem("merchantDomainId");
     const headers = {
       Accept: "application/json",
@@ -376,14 +354,16 @@ export function NewOrders(props) {
     }
   };
 
-  const create2DArray = (_orders) => { 
+  const create2DArray = (_orders,_status_to_include) => { 
+     
     return _orders.map((element) => { 
       
       const orderDataEdge = element.node.metafields.edges.find(
         (edge) => edge.node.key === "order_data"
       );
       if (orderDataEdge) {
-        const orderData = JSON.parse(orderDataEdge.node.value);
+        let orderData = JSON.parse(orderDataEdge.node.value).filter(item=> item.order_status===_status_to_include);
+        // orderData = orderData.filter((_item)=> _item.order)
         let _orderArray = new Array(orderData.length).fill(null);
 
         for (let index = 0; index < _orderArray.length; index++) {
@@ -442,7 +422,7 @@ export function NewOrders(props) {
       });
       
 
-      const orderStructure = create2DArray(selectedOrderDetails); 
+      const orderStructure = create2DArray(selectedOrderDetails,"Ready to Book"); 
        
       const payload = {
         orders: orderStructure.flat(1),
@@ -469,12 +449,13 @@ export function NewOrders(props) {
           payload,
           { headers: headers }
         )
-        .then(async (response) => {
-          // let output = response.data.response;
+        .then(async (response) => { 
+ 
           let _output = convertTo2DArray(
             response.data.response,
             orderStructure
           )  
+ 
           let order_booking_status =  await fetch("/api/book-orders", {
             method: "POST",
             headers: {
@@ -535,7 +516,7 @@ export function NewOrders(props) {
         element.id === Number(rejectedOrderId)
       );
       console.log(selectedOrderDetails,"selectedOrderDetails")
-      const orderStructure = create2DArray([selectedOrderDetails]); 
+      const orderStructure = create2DArray([selectedOrderDetails],"Rejected"); 
        
       
       const payload = {
@@ -657,10 +638,9 @@ export function NewOrders(props) {
   };
 
 
-   const [syncing, setSyncing] = useState(false)
+  const [syncing, setSyncing] = useState(false)
   function reSyncOrderApi() {
-    setSyncing(true);
-
+    setSyncing(true); 
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -699,8 +679,7 @@ export function NewOrders(props) {
 
   return (
     <div className="new-orders">
-      {isLoading && <Loader />}
-       
+      {isLoading && <Loader />} 
       <ErrorModal
         showModal={showError}
         onConfirm={setShowError}
@@ -999,25 +978,9 @@ export function NewOrders(props) {
               {orders?.length > 0 &&
                 orders?.map((element, i) => {
                   if (
-                    // getMetaValue(
-                    //   element.node?.metafields?.edges,
-                    //   "fc_order_status"
-                    // ) != "Hold" &&
-                    // getMetaValue(
-                    //   element.node?.metafields?.edges,
-                    //   "fc_order_status"
-                    // ) != "Booked for collection" &&
-                    // getMetaValue(
-                    //   element.node?.metafields?.edges,
-                    //   "fc_order_status"
-                    // ) != "Fallback" &&
-                    // getMetaValue(
-                    //   element.node?.metafields?.edges,
-                    //   "fc_order_status"
-                    // ) != "Rejected"
-                    getOrderDataMetaField(element)?.every(
-                      (item) => item?.order_status === "Ready to Book"
-                    ) === true
+                   
+                    element?.orderData?.order_status === "Ready to Book"
+                     
                   ) {
                     return (
                       <tr
@@ -1128,6 +1091,7 @@ export function NewOrders(props) {
                     element?.orderData?.order_status !==
                       "Ready to Book" &&
                     element?.orderData?.order_status !== "Fallback" &&
+                    element?.orderData?.order_status !== "Flat-Rate" &&
                     element?.orderData?.order_status !== "Rejected"
                   ) {
                     return (
@@ -1755,6 +1719,97 @@ export function NewOrders(props) {
             </table>
           </div>
         </Tab>
+        <Tab eventKey="flatRateOrders" title="Flat Rate Orders">
+          <div className="pickup-locations-table">
+            <table>
+              <tr className="table-head">
+                
+                <th>Order Id</th>
+                <th>Date</th>
+                <th>Fastcourier Refrence No.</th>
+                <th>Customer</th>
+                <th>Ship To</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>packages</th>
+                <th>Carrier Details</th>
+                <th>Shipping type</th>
+                <th>Actions</th>
+              </tr>
+              {orders?.length > 0 &&
+                orders?.map((element, i) => {
+                  if (element?.orderData?.order_status === "Flat-Rate") {
+                    return (
+                      <tr
+                        key={i}
+                        className="products-row"
+                        style={{
+                          background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
+                        }}
+                      >
+                        {/* <td>
+                        <input
+                          type="checkbox"
+                          value={element.id}
+                          onChange={(e) => selectOrder(e)}
+                          checked={selectedOrders.includes(element.id.toString())}
+                        />
+                      </td> */}
+                        <td
+                          width="7%"
+                          // onClick={() =>
+                          //   navigate("/orderDetails", {
+                          //     state: { order: element, redirectedtab: "newOrders" },
+                          //   })
+                          // }
+                          style={{ cursor: "pointer" }}
+                        >
+                          {element.order_number}
+                        </td>
+                        <td width="10%">
+                          {getFormattedDate(element.created_at)}
+                        </td>
+                        <td width="15%">
+                          
+                          {element?.orderData?.order_id}
+                        </td>
+                        <td width="15%">
+                          {element?.shipping_address != null
+                            ? element?.shipping_address?.first_name +
+                              " " +
+                              element?.shipping_address?.last_name
+                            : element?.billing_address?.first_name +
+                              " " +
+                              element?.billing_address?.last_name}
+                        </td>
+                        <td width="15%">
+                          {element?.shipping_address != null
+                            ? getAddress(element.shipping_address)
+                            : getAddress(element.billing_address)}
+                        </td>
+
+                        <td width="8%">
+                          Ready to Book
+                          {/* {element.financial_status} */}
+                        </td>
+                        <td width={"8%"}>${element.current_total_price}</td>
+                        <td width="7%">
+                          {element.line_items[0].fulfillable_quantity}
+                        </td>
+                        <td width="15%">
+                        {`$${element?.orderData?.price}`}<br />
+                        {`(${element?.orderData?.courierName})`}
+                        </td>
+                        <td width="10%">{element.financial_status}</td>
+                        <td width="8%">{"NA"}</td>
+                      </tr>
+                    );
+                  }
+                })}
+            </table>
+          </div>
+        </Tab>
+       
         {/* <Tab eventKey="rejectedOrders" title="Rejected Orders">
         </Tab> */}
       </Tabs>

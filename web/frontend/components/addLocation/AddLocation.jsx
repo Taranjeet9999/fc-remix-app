@@ -8,6 +8,7 @@ import { ErrorModal } from "../errorModal";
 import Papa from "papaparse";
 import { toast } from "react-toastify";
 import { Form } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -200,14 +201,43 @@ export function AddLocation(props) {
       setErrorMessage("Please enter address1");
       return false;
     }
+    if (flatRateData.flatRateEnabled && flatRateData.flatRate === "") {
+      setFlatRateData((prevValue) => ({
+        ...prevValue,
+        flatRateError: "Please enter flat rate",
+      }));
+      return false;
+      
+    }
+
+    if (flatRateData.flatRateEnabled && flatRateData.flatRatePostCodes ==="") {
+      setFlatRateData((prevValue) => ({
+        ...prevValue,
+        flatRatePostCodesError: "Please enter flat rate postcodes",
+      }));
+      return false;
+    }
+    if (flatRateData.flatRateEnabled && checkFlatRatePostCodesValidation(flatRateData.flatRatePostCodes)===false ) {
+      setFlatRateData((prevValue) => ({
+        ...prevValue,
+        flatRatePostCodesError: "Please enter valid format",
+      }));
+      return false;
+    }
+
+
+
+
+
+
+
+
     return true;
   }
 
   const addLocation = () => {
     try {
-
-      
-      const isValid = validations();
+       const isValid = validations();
       if (isValid) {
         setIsLoading(true);
         const accessToken = localStorage.getItem("accessToken");
@@ -236,6 +266,9 @@ export function AddLocation(props) {
           tail_lift: tailLift?? "",
           longitude: "144.956776",
           latitude: "-37.817403",
+          flat_shipping_postcodes : flatRateData.flatRatePostCodes ?? "",
+flat_rate       : flatRateData.flatRate ?? "",
+is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
         };
         const headers = {
           Accept: "application/json",
@@ -311,6 +344,12 @@ export function AddLocation(props) {
     setSelectedSuburb(location.suburb ??"");
     setTailLift(location.tail_lift ??"");
     setIsDefaultLocation(location.is_default ??"");
+    setFlatRateData((prevValue) => ({
+      ...prevValue,
+      flatRate: location.flat_rate ?? "",
+      flatRatePostCodes: location.flat_shipping_postcodes ?? "",
+      flatRateEnabled: Boolean(location.is_flat_enable) ,
+    }));
     const freeShippingCodes = JSON.parse(location.free_shipping_postcodes)?.map(
       (element) => {
         return { value: element, label: element };
@@ -907,7 +946,7 @@ export function AddLocation(props) {
                   the orders that are placed for selected postcodes.
                 </div>
               </div>
-
+ 
               <div>
                 <Form>
                   <Form.Check
@@ -915,11 +954,13 @@ export function AddLocation(props) {
                     id="custom-switch"
                     label=""
                     className="flat-rate-switch"
+                    checked={flatRateData.flatRateEnabled}
                     value={flatRateData.flatRateEnabled}
                     onChange={(e) => {
+                      let value = e.target.checked;
                       setFlatRateData((prevValue) => ({
                         ...prevValue,
-                        flatRateEnabled: !prevValue.flatRateEnabled,
+                        flatRateEnabled: value,
                       }));
                     }}
                   />
@@ -937,7 +978,7 @@ export function AddLocation(props) {
                   <span> Flat Rate&nbsp;</span>
                   <span style={{ color: "red" }}> *</span>
                   {flatRateData.flatRateError && (
-                    <span>{flatRateData.flatRateError}</span>
+                    <span className="f-error">&nbsp;  &nbsp;({flatRateData.flatRateError})</span>
                   )}
                 </div>
                 <div className="input-field highlight-input">
@@ -967,9 +1008,51 @@ export function AddLocation(props) {
                 <div className="input-lebel1">
                   <span> Flat Rate Shipping postcodes&nbsp;</span>
                   <span style={{ color: "red" }}> *</span>
+                  <span className="pl-2 pointer parent-visible">
+                    <span
+                      className="text-muted "
+                      style={{
+                        fontSize: "12px",
+                      }}
+                    >
+                      More info
+                    </span> &nbsp;
+                    <span className="pointer">
+                      <FontAwesomeIcon
+                        icon="fa-solid fa-circle-info"
+                        style={{
+                          width: "12px",
+                          height: "12px",
+                        }}
+                      />
+                    </span>
+                    <span className="child-visible">
+                      <span>
+                        <img  
+                        src="/flat-rate-screenshot.jpg"
+                        />
+                      </span>
+
+                    </span>
+                  </span>
+
+
                   {flatRateData.flatRatePostCodesError && (
-                    <span>{flatRateData.flatRatePostCodesError}</span>
-                  )}
+                  <span style={{ color: "red" }}>
+                   &nbsp;
+                   &nbsp;
+                   
+                    ({flatRateData.flatRatePostCodesError})
+                  </span>
+                )}
+
+
+
+
+
+
+
+
                 </div>
 
                 <div className="input-field highlight-input">
@@ -994,6 +1077,7 @@ export function AddLocation(props) {
                     }}
                   />
                 </div>
+               
               </div>
             </div>
           </>
@@ -1034,3 +1118,20 @@ function isPostCodeIncludedInFlatRate(postCode, flatRatePostCodes =
   }
   return false;
 } 
+
+function checkFlatRatePostCodesValidation(flat_shipping_postcodes){
+  const postCodes = flat_shipping_postcodes.split(",");
+  for (let i = 0; i < postCodes.length; i++) {
+    const postCodeRange = postCodes[i].split("-");
+    if (postCodeRange.length === 1) {
+      if (isNaN(parseInt(postCodes[i]))) {
+        return false;
+      }
+    } else if (postCodeRange.length === 2) {
+      if (isNaN(parseInt(postCodeRange[0])) || isNaN(parseInt(postCodeRange[1]))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

@@ -108,7 +108,7 @@ table {
 /* Table Head Styling */
 .table-head {
     background: linear-gradient(135deg, #ff6a00ef, #ff7f24);
-    height: 75px;
+    height: 60px;
     color: white;
     font-size: 1.2rem;
     text-align: left;

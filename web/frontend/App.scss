@@ -390,3 +390,32 @@ padding: 4px;
   color: red !important;
   font-size: 12px !important;
 }
+
+.pointer{
+  cursor: pointer;
+}
+
+.pl-2{
+  padding-left: 8px;
+}
+
+.parent-visible{
+  position: relative;
+  &:hover{
+    .child-visible{
+      display: block;
+    }
+  }
+
+  .child-visible{
+    display: none;
+    position: absolute;
+    top: -30%;
+    z-index: 1;
+    background-color: white;
+    // border: 1px solid #ff6900;
+    border-radius: 4px;
+    padding: 8px;
+    // box-shadow: 0px 0px 5px 0px #ff6900;
+  }
+}
