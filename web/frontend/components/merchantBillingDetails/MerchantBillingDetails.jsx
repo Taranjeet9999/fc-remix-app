@@ -359,7 +359,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates"
+        "https://navigation-prediction-tel-ds.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }
