@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import { Modal } from "../modal";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { ConfirmModal } from "../confirmModal";
 import Papa from "papaparse";
 import { csv } from "csvtojson";
 import { headers, locationMetafields } from "../../globals";
+import { Dropdown } from "react-bootstrap";
 
 export function ProductMapping(props) {
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
@@ -24,7 +25,7 @@ export function ProductMapping(props) {
   const [locations, setLocations] = useState([]);
   const [variantMetafields, setVariantMetafields] = useState([]);
   const [locationBy, setLocationBy] = useState("name");
-  const [locationName, setLocationName] = useState("");
+  const [locationName, setLocationName] = useState([]);
   const [packageType, setPackageType] = useState("");
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
@@ -771,31 +772,32 @@ export function ProductMapping(props) {
   };
 
   function getLocationtagName(tagData) {
+   
     try {
       let _tagData = JSON.parse(tagData);
 
-      if (typeof _tagData == "string") {
+      if (typeof _tagData == "string" || !Array.isArray(_tagData)) {
         return "";
       }
 
-      if (_tagData?.type == "name") {
-        let IsLocationExistForLoginUser = locations.find(
-          (element) => element.id == _tagData.value.id
-        );
-        if (!IsLocationExistForLoginUser) {
-          return "";
-        }
-        return _tagData.value.location_name;
+      // if (_tagData?.type == "name") {
+      let LocationsExistForLoginUser = locations.filter((element) => {
+        return _tagData.findIndex((ite) => ite.id === element.id) !== -1;
+      });
+      if (!LocationsExistForLoginUser) {
+        return "";
       }
-      if (_tagData?.type == "tag") {
-        let IsTagExistForLoginUser = merchantTags.find(
-          (element) => element.id == _tagData.value.id
-        );
-        if (!IsTagExistForLoginUser) {
-          return "";
-        }
-        return _tagData.value.name;
-      }
+      return LocationsExistForLoginUser.map((it) => it.location_name).join(", ");
+      // }
+      // if (_tagData?.type == "tag") {
+      //   let IsTagExistForLoginUser = merchantTags.find(
+      //     (element) => element.id == _tagData.value.id
+      //   );
+      //   if (!IsTagExistForLoginUser) {
+      //     return "";
+      //   }
+      //   return _tagData.value.name;
+      // }
     } catch (error) {
       console.log(error, "error");
       return "";
@@ -953,25 +955,20 @@ export function ProductMapping(props) {
             onClick={() => setShowShippingBoxesModal(true)}
           >
             <div className="d-flex align-items-center">
-              <div>
-            Shipping Boxes
+              <div>Shipping Boxes</div>
 
-              </div>
-               
-              {!shippingBoxes?.length &&
-              <FontAwesomeIcon
-                icon="fa-solid fa-exclamation-circle"
-                size="sm"
-                color="black"
-                style={{
-                  width: "18px",
-                  height: "18px",
-                  marginLeft: "10px",
-                }}
-              />
-            }
-              
-
+              {!shippingBoxes?.length && (
+                <FontAwesomeIcon
+                  icon="fa-solid fa-exclamation-circle"
+                  size="sm"
+                  color="black"
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    marginLeft: "10px",
+                  }}
+                />
+              )}
             </div>
           </button>
           <button
@@ -990,7 +987,7 @@ export function ProductMapping(props) {
               setErrorMessage("");
 
               selectedProducts.length > 0 || selectedVariants.length > 0
-                ? setShowAssignLocationModal(true)
+                ? (setLocationName([]),setShowAssignLocationModal(true))
                 : setShowError(true);
             }}
           >
@@ -1051,7 +1048,7 @@ export function ProductMapping(props) {
           </div>
         </div>
       </Modal>
-      <Modal className={"full-screen-modal"} showModal={showShippingBoxesModal}  >
+      <Modal className={"full-screen-modal"} showModal={showShippingBoxesModal}>
         {isLoading && <Loader />}
         <div className="shipping-boxes">
           <div className="modal-header">
@@ -1220,11 +1217,11 @@ export function ProductMapping(props) {
                           }
                           checked={isDefaultShippingPackage == "Yes"}
                         />
-                        <label   htmlFor={"yes"}>&nbsp;Yes</label>
+                        <label htmlFor={"yes"}>&nbsp;Yes</label>
                         <input
                           type="radio"
                           name={"isDefault"}
-                        className="ml-2"
+                          className="ml-2"
                           id={"no"}
                           // it should be disabled if its id machtes with any of the shipping box id and its default is yes
                           disabled={
@@ -1353,72 +1350,109 @@ export function ProductMapping(props) {
           <div className="modal-header">
             Assign Location to selected product(s)
           </div>
-          <div className="modal-body">
-            <div className="input-container">
-              <div className="input-lebel">
-                <span> Location By&nbsp;</span>
-              </div>
-              <div className="input-field">
-                <select
-                  className="input-field-text"
-                  type="text"
-                  onChange={(e) => setLocationBy(e.target.value)}
-                >
-                  <option value={"name"}>Name</option>
-                  <option value={"tag"}>Tags</option>
-                </select>
-              </div>
-            </div>
+          <div className="modal-body overflow-unset">
             <div className="input-container">
               <div className="input-lebel">
                 <span> Location List&nbsp;</span>
               </div>
               <div className="input-field">
-                <select
-                  className="input-field-text"
-                  type="text"
-                  onChange={(e) => {
-                    handleLocationChange(e);
-                  }}
-                >
-                  <option>Select option</option>
-                  {locationBy == "name" &&
-                    locations.length > 0 &&
-                    locations.map((element, i) => {
+                {false && (
+                  <select
+                    className="input-field-text"
+                    type="text"
+                    onChange={(e) => {
+                      handleLocationChange(e);
+                    }}
+                  >
+                    <option>Select option</option>
+                    {locationBy == "name" &&
+                      locations.length > 0 &&
+                      locations.map((element, i) => {
+                        return (
+                          <option
+                            value={JSON.stringify(element)}
+                            onChange={(e) => {
+                              setLocationName(e.target.value);
+                            }}
+                          >
+                            {element.location_name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                )}
+
+                <Dropdown className="location-list-dropdown">
+                  <Dropdown.Toggle className="d-flex flex-wrap">
+
+                 {locationName.length===0 &&   <div className="text-muted">
+                      Select option
+
+                    </div>}
+                    {
+                      locationName?.map((item)=>{
+                        return(
+                          <div className="location-chip">
+                            {item.location_name}
+
+                            <FontAwesomeIcon icon="fa-solid fa-xmark" style={{
+                              width:"12px",
+                              height:"12px",
+                              marginLeft:"4px"
+                            }} 
+                            
+                            onClick={(e)=>{
+                              e.stopPropagation()
+
+                              let updated_data =[...locationName].filter(it=>it.id !==item.id)
+                              setLocationName(updated_data)
+
+
+                            }}
+                            
+                            />
+                          </div>
+                        )
+                      })
+                    }
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    {locations.map((element, i) => {
                       return (
-                        <option
+                        <div
+                          className="location-item"
                           value={JSON.stringify(element)}
-                          onChange={(e) => {
-                            setLocationName(e.target.value);
+                          onClick={() => {
+
+                            let updated_data = [...locationName]
+                            const map = new Map(updated_data.map(item => [item.id, item]));
+
+                            if (!map.has(element.id)) {
+                              updated_data.push(element)
+                            }  
+                            setLocationName( updated_data);
                           }}
                         >
                           {element.location_name}
-                        </option>
+                        </div>
                       );
                     })}
-                  {locationBy == "tag" &&
-                    merchantTags.length > 0 &&
-                    merchantTags.map((element, i) => {
-                      return (
-                        <option value={JSON.stringify(element)}>
-                          {element.name}
-                        </option>
-                      );
-                    })}
-                </select>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </div>
-          </div>
-          <div className="modal-footer">
-            <button
-              className="cancel-btn"
-              onClick={() => setShowAssignLocationModal(false)}
-            >
-              Close
-            </button>
-            <button className="submit-btn" onClick={() => assignLocation()}>
-              Submit
-            </button>
+            <div className="modal-footer pb-0 mt-3">
+              <button
+                className="cancel-btn"
+                onClick={() => setShowAssignLocationModal(false)}
+              >
+                Close
+              </button>
+              <button className="submit-btn" onClick={() => assignLocation()}>
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </Modal>
@@ -1674,7 +1708,7 @@ export function ProductMapping(props) {
             <th>Is Individual</th>
             {/* <th>Eligible For Shipping</th> */}
             <th>Free Shipping</th>
-            <th>Location/Tag</th>
+            <th>Location</th>
           </tr>
           {products?.length > 0 &&
             products
@@ -1692,11 +1726,9 @@ export function ProductMapping(props) {
                     style={{ background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF" }}
                   >
                     <td>
-                       
                       {element?.variants[0]?.requires_shipping && (
                         <input
                           type="checkbox"
-                        
                           value={element.id}
                           onChange={(e) => selectProduct(e)}
                           checked={selectedProducts.includes(
@@ -1733,76 +1765,83 @@ export function ProductMapping(props) {
                       )}
                     </td>
                     <td width="10%">
-                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
-                        getProductMetaField(
-                          element.metafields,
-                          "product_dimentions"
-                        )
-                      )?.map((item, i) => {
-                        return <div>{item.packageType}</div>;
-                      })}
+                      {element?.variants[0]?.requires_shipping &&
+                        getProductDimentionArray(
+                          getProductMetaField(
+                            element.metafields,
+                            "product_dimentions"
+                          )
+                        )?.map((item, i) => {
+                          return <div>{item.packageType}</div>;
+                        })}
                     </td>
                     <td width="20%">
-                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
-                        getProductMetaField(
-                          element.metafields,
-                          "product_dimentions"
-                        )
-                      )?.map((item, i) => {
-                        return (
-                          <div>
-                            {item.length} x {item.width} x {item.height}
-                          </div>
-                        );
-                      })}
+                      {element?.variants[0]?.requires_shipping &&
+                        getProductDimentionArray(
+                          getProductMetaField(
+                            element.metafields,
+                            "product_dimentions"
+                          )
+                        )?.map((item, i) => {
+                          return (
+                            <div>
+                              {item.length} x {item.width} x {item.height}
+                            </div>
+                          );
+                        })}
                     </td>
                     <td width="10%">
-                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
-                        getProductMetaField(
-                          element.metafields,
-                          "product_dimentions"
-                        )
-                      )?.map((item, i) => {
-                        return <div>{item.weight}kg</div>;
-                      })}
+                      {element?.variants[0]?.requires_shipping &&
+                        getProductDimentionArray(
+                          getProductMetaField(
+                            element.metafields,
+                            "product_dimentions"
+                          )
+                        )?.map((item, i) => {
+                          return <div>{item.weight}kg</div>;
+                        })}
                     </td>
                     <td width="10%">
-                      {element?.variants[0]?.requires_shipping && getProductDimentionArray(
-                        getProductMetaField(
-                          element.metafields,
-                          "product_dimentions"
-                        )
-                      )?.map((item, i) => {
-                        return <div>{item.isIndividual}</div>;
-                      })}
+                      {element?.variants[0]?.requires_shipping &&
+                        getProductDimentionArray(
+                          getProductMetaField(
+                            element.metafields,
+                            "product_dimentions"
+                          )
+                        )?.map((item, i) => {
+                          return <div>{item.isIndividual}</div>;
+                        })}
                     </td>
                     {/* <td width="10%"><label className="switch">
                                     <input type="checkbox" />
                                     <span className="slider round"></span>
                                 </label></td> */}
                     <td width="10%">
-               {element?.variants[0]?.requires_shipping &&       <label className="switch">
-                        <input
-                          type="checkbox"
-                          onChange={(e) =>
-                            handleFreeShippingChange(e, element.id)
-                          }
-                          checked={
-                            getProductMetaField(
-                              element.metafields,
-                              "is_free_shipping"
-                            ) == "1"
-                              ? true
-                              : false
-                          }
-                        />
-                        <span className="slider round"></span>
-                      </label>}
+                      {element?.variants[0]?.requires_shipping && (
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            onChange={(e) =>
+                              handleFreeShippingChange(e, element.id)
+                            }
+                            checked={
+                              getProductMetaField(
+                                element.metafields,
+                                "is_free_shipping"
+                              ) == "1"
+                                ? true
+                                : false
+                            }
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                      )}
                     </td>
                     <td width="10%">
-                      {element?.variants[0]?.requires_shipping &&getLocationtagName(
-                        getProductMetaField(element.metafields, "location")
-                      )}
+                      {element?.variants[0]?.requires_shipping &&
+                        getLocationtagName(
+                          getProductMetaField(element.metafields, "location")
+                        )}
                     </td>
                   </tr>
                 ) : (
@@ -1894,7 +1933,6 @@ export function ProductMapping(props) {
                             <td>
                               <input
                                 type="checkbox"
-                                
                                 value={value.id}
                                 onChange={(e) => selectVariant(e)}
                                 checked={selectedVariants.includes(

@@ -359,7 +359,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://navigation-prediction-tel-ds.trycloudflare.com/api/shipping-rates"
+        "https://serve-victor-anatomy-items.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }

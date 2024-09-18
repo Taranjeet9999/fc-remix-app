@@ -328,3 +328,50 @@ table {
     margin-right: 10px;
     margin-top: unset;
 }
+
+
+
+.location-list-dropdown {
+    width: 100%;
+
+    button,
+    button:hover,
+    button:active {
+        width: 100% !important;
+        background-color: white !important;
+        border: 1px solid #181c32 !important;
+        padding: 4px;
+        color: #333 !important;
+        min-height: 35px;
+        &::after{
+            right: 4px;
+            position: absolute;
+            top: 50%;
+        }
+    }
+    .location-chip{
+        padding: 3px 5px;
+        background-color: #81818140;
+        margin: 3px;
+        border-radius: 3px;
+    }
+
+    .dropdown-menu.show{
+        width: 100%;
+        padding: 4px;
+        .location-item{
+            cursor: pointer;
+            padding: 5px;
+            &:hover{
+                background: #181c3220;
+                border-radius: 4px;
+            }
+        }
+        transform: translate(0px,0px) !important;
+        // inset: ;
+    }
+}
+
+.overflow-unset{
+    overflow: unset !important;
+}
