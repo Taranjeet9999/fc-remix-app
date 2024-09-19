@@ -25,6 +25,7 @@ export function ProductMapping(props) {
   const [variantMetafields, setVariantMetafields] = useState([]);
   const [locationBy, setLocationBy] = useState("name");
   const [locationName, setLocationName] = useState("");
+  
   const [packageType, setPackageType] = useState("");
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
@@ -64,6 +65,7 @@ export function ProductMapping(props) {
       isIndividual: "Yes",
     },
   ]);
+  
   const [csvData, setCsvData] = useState(null);
   const [dataArray, setDataArray] = useState([]);
   const [products, setProducts] = useState(null);
@@ -988,7 +990,6 @@ export function ProductMapping(props) {
             className="submit-btn"
             onClick={() => {
               setErrorMessage("");
-
               selectedProducts.length > 0 || selectedVariants.length > 0
                 ? setShowAssignLocationModal(true)
                 : setShowError(true);
