@@ -823,8 +823,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     const merchant_default_location = merchant_locations.find(
       (element) => element.is_default == 1
     );
-    const merchant_tags = JSON.parse(session[0].merchant_tags);
-
+    
     let courierData = await Promise.all(
       _req.body.rate.items.map(async (element) => {
         const productMetafields = await shopify.api.rest.Metafield.all({
@@ -842,56 +841,91 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
 
         let isVirtualProduct =
           getValueByKey(metaData, "is_virtual") === "1" ? true : false;
-        var locationData;
+        let locationData;
         var cal_locationData = JSON.parse(getValueByKey(metaData, "location"));
-        if (cal_locationData.type === "tag") {
-          const filteredLocations = merchant_locations.filter((location) => {
-            if (location.tag && location.tag !== "[]") {
-              const tags = location.tag.split(",").map(Number);
-              return tags.includes(Number(cal_locationData.value.id));
-            }
-            return false;
-          });
 
-          if (filteredLocations.length === 0) {
-            locationData = { ...merchant_default_location };
-          } else {
-            locationData = filteredLocations[0];
-
-            if (destination.latitude && destination.longitude) {
-              let minDistance = haversineDistance(
-                parseFloat(destination.latitude),
-                parseFloat(destination.longitude),
-                parseFloat(locationData.latitude),
-                parseFloat(locationData.longitude)
-              );
-
-              for (let i = 1; i < filteredLocations.length; i++) {
-                const location = filteredLocations[i];
-                const distance = haversineDistance(
-                  parseFloat(destination.latitude),
-                  parseFloat(destination.longitude),
-                  parseFloat(location.latitude),
-                  parseFloat(location.longitude)
-                );
-
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  locationData = { ...location };
-                }
-              }
-            } else {
-              locationData = { ...merchant_default_location };
-            }
-          }
-        } else {
-          locationData = merchant_locations.find(
-            (element) => element.id == cal_locationData.value.id
-          );
-          if (!locationData) {
-            locationData = { ...merchant_default_location };
-          }
+        // Get The Locations to Compare with the Destination Location
+        let locations_to_compare=[];
+        if (cal_locationData?.length >0) {
+          locations_to_compare =[...cal_locationData]
+        }else{
+          locations_to_compare = [...merchant_locations]
         }
+
+        let minDistance = Infinity;
+       
+
+        for (let location of locations_to_compare) {
+         let distance   = haversineDistance(
+            parseFloat(destination.latitude),
+            parseFloat(destination.longitude),
+            parseFloat(location.latitude),
+            parseFloat(location.longitude)
+          );
+
+
+          if (distance < minDistance) {
+            minDistance = distance
+            locationData = {...location}
+          }
+          
+        }
+
+
+
+
+
+
+
+
+        // if (cal_locationData.type === "tag") {
+        //   const filteredLocations = merchant_locations.filter((location) => {
+        //     if (location.tag && location.tag !== "[]") {
+        //       const tags = location.tag.split(",").map(Number);
+        //       return tags.includes(Number(cal_locationData.value.id));
+        //     }
+        //     return false;
+        //   });
+
+        //   if (filteredLocations.length === 0) {
+        //     locationData = { ...merchant_default_location };
+        //   } else {
+        //     locationData = filteredLocations[0];
+
+        //     if (destination.latitude && destination.longitude) {
+        //       let minDistance = haversineDistance(
+        //         parseFloat(destination.latitude),
+        //         parseFloat(destination.longitude),
+        //         parseFloat(locationData.latitude),
+        //         parseFloat(locationData.longitude)
+        //       );
+
+        //       for (let i = 1; i < filteredLocations.length; i++) {
+        //         const location = filteredLocations[i];
+        //         const distance = haversineDistance(
+        //           parseFloat(destination.latitude),
+        //           parseFloat(destination.longitude),
+        //           parseFloat(location.latitude),
+        //           parseFloat(location.longitude)
+        //         );
+
+        //         if (distance < minDistance) {
+        //           minDistance = distance;
+        //           locationData = { ...location };
+        //         }
+        //       }
+        //     } else {
+        //       locationData = { ...merchant_default_location };
+        //     }
+        //   }
+        // } else {
+        //   locationData = merchant_locations.find(
+        //     (element) => element.id == cal_locationData.value.id
+        //   );
+        //   if (!locationData) {
+        //     locationData = { ...merchant_default_location };
+        //   }
+        // }
        
  
 
