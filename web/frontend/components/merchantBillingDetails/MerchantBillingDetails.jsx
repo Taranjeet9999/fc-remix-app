@@ -359,7 +359,11 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
+<<<<<<< HEAD
         "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates"
+=======
+        "https://serve-victor-anatomy-items.trycloudflare.com/api/shipping-rates"
+>>>>>>> multi-location-mapping
       ) {
         return;
       }

@@ -3,7 +3,11 @@
 client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
+<<<<<<< HEAD
 application_url = "https://volleyball-binding-blonde-meaningful.trycloudflare.com"
+=======
+application_url = "https://serve-victor-anatomy-items.trycloudflare.com"
+>>>>>>> multi-location-mapping
 embedded = true
 
 [build]
@@ -16,9 +20,15 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
+<<<<<<< HEAD
   "https://volleyball-binding-blonde-meaningful.trycloudflare.com/auth/callback",
   "https://volleyball-binding-blonde-meaningful.trycloudflare.com/auth/shopify/callback",
   "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/auth/callback"
+=======
+  "https://serve-victor-anatomy-items.trycloudflare.com/auth/callback",
+  "https://serve-victor-anatomy-items.trycloudflare.com/auth/shopify/callback",
+  "https://serve-victor-anatomy-items.trycloudflare.com/api/auth/callback"
+>>>>>>> multi-location-mapping
 ]
 
 [webhooks]
