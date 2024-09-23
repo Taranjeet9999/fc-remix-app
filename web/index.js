@@ -850,7 +850,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
 
         // Get The Locations to Compare with the Destination Location
         let locations_to_compare=[];
-        if (cal_locationData?.length >0) {
+        if (Array.isArray(cal_locationData) && cal_locationData?.length >0) {
           locations_to_compare =[...cal_locationData]
         }else{
           locations_to_compare = [...merchant_locations]
