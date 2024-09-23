@@ -359,7 +359,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-        "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates"
+        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates"
       ) {
         return;
       }

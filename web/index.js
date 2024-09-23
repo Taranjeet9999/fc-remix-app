@@ -608,6 +608,10 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
         ordersData.push({ quote_id: quoteId, order_id: orderId, price, courierName: courier, order_status: orderStatus, order_type: orderType });
 
         // Update Shopify order
+        logger.info(
+          "orderDetails-orderDetails-orderDetails",
+          orderDetails
+        )
         update_shopify_order_id_on_portal(
           orderId,
           parseInt(orderDetails.id),
@@ -823,7 +827,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     const merchant_default_location = merchant_locations.find(
       (element) => element.is_default == 1
     );
-    const merchant_tags = JSON.parse(session[0].merchant_tags);
+     
 
     let courierData = await Promise.all(
       _req.body.rate.items.map(async (element) => {
@@ -1043,6 +1047,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
 
           const payload = {
             subOrderType: "flat_rate",
+
             flatPrice: items[0]?.flat_price,
             request_type: "wp",
             pickupFirstName: items[0].pickupLocation?.first_name?? "",
@@ -1093,8 +1098,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             orderType: "8",
           };
 
-          let data;
-
+          let data; 
 if (items[0]?.is_flat_rate_enabled) {
 
   // IF FLAT RATE ENABLED
@@ -1142,6 +1146,8 @@ if (items[0]?.is_flat_rate_enabled) {
     }
   );
     data = await quote.json();
+
+    logger.info("Without fkat rate",data)
 }
      
 
@@ -1199,7 +1205,7 @@ if (items[0]?.is_flat_rate_enabled) {
       )
     );
 
-     
+   
     const totalPrice = getUniqueQuoteData(courier_data_to_Show_end_user).reduce(
       (sum, quote) => sum + parseFloat(quote?.amount ?? 0),
       0
@@ -2214,7 +2220,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates";
+      "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2240,14 +2246,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://busy-casting-soa-lucia.trycloudflare.com/api/shipping-rates";
+        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://busy-casting-soa-lucia.trycloudflare.com/api/webhook/order-create";
+        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
