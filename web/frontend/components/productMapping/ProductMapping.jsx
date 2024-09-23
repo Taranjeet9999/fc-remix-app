@@ -1423,7 +1423,7 @@ export function ProductMapping(props) {
                         <div
                           className="location-item"
                           value={JSON.stringify(element)}
-                          onClick={() => {
+                          onClick={(e) => {
 
                             let updated_data = [...locationName]
                             const map = new Map(updated_data.map(item => [item.id, item]));
@@ -1432,6 +1432,7 @@ export function ProductMapping(props) {
                               updated_data.push(element)
                             }  
                             setLocationName( updated_data);
+                            e.target.closest(".location-list-dropdown").click()
                           }}
                         >
                           {element.location_name}
