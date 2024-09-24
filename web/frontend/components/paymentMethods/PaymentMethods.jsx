@@ -300,7 +300,7 @@ export function PaymentMethods(props) {
                 className="submit-btn"
                 onClick={() => {
                   window.open(
-                    `https://portal-staging.fastcourier.com.au/quick-login?access_token=${localStorage.getItem(
+                    `${localStorage.getItem("isProduction").includes("1")?  "https://portal.fastcourier.com.au"  :"https://portal-staging.fastcourier.com.au"}/quick-login?access_token=${localStorage.getItem(
                       "accessToken"
                     )}&redirect_page=payment`,
                     "popupWindow",
