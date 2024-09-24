@@ -3,7 +3,7 @@
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://fantasy-donations-lm-msgstr.trycloudflare.com"
+application_url = "https://involvement-provider-sublime-bodies.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://fantasy-donations-lm-msgstr.trycloudflare.com/auth/callback",
-  "https://fantasy-donations-lm-msgstr.trycloudflare.com/auth/shopify/callback",
-  "https://fantasy-donations-lm-msgstr.trycloudflare.com/api/auth/callback"
+  "https://involvement-provider-sublime-bodies.trycloudflare.com/auth/callback",
+  "https://involvement-provider-sublime-bodies.trycloudflare.com/auth/shopify/callback",
+  "https://involvement-provider-sublime-bodies.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

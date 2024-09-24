@@ -528,12 +528,20 @@ const storeDomain = urlParams.get('shop');
               }); 
               const queryParams = new URLSearchParams(params).toString(); 
               const url = encodeURIComponent(
-                `${window.location.origin}/api/oauth-callback?isProduction=${localStorage.getItem("isProduction")}&${window.localStorage.getItem("appSearchParams")}`
+                `${window.location.origin}/api/oauth-callback${window.localStorage.getItem("appSearchParams")}&isProduction=${localStorage.getItem("isProduction")}`
               );
               // const url = encodeURIComponent(
               //   `${window.location.origin}/api/oauth-callback?${queryParams}`
               // );
-           const newWindow  =   window.open(`${localStorage.getItem("isProduction").includes("1") ?  "https://portal.fastcourier.com.au"   :"https://portal-staging.fastcourier.com.au"}/oauth/redirect?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&app=shopify&redirect_uri=${url}` ,'popupWindow', 'width=7000,height=7000')
+           const newWindow = window.open(
+             `${
+               localStorage.getItem("isProduction").includes("1")
+                 ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
+                 : "https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
+             }&app=shopify&redirect_uri=${url}`,
+             "popupWindow",
+             "width=7000,height=7000"
+           );
            var pollTimer = window.setInterval(function() {
             if (newWindow.closed !== false) {   
               window.clearInterval(pollTimer);

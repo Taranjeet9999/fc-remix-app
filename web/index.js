@@ -299,7 +299,8 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
 app.get("/api/oauth-callback", async (req, res) => {
   try {
     const { state, code, access_token, refresh_token, expires_at,error ,isProduction } = req.query;
-
+ 
+ 
     if (error) {
       const decodedState = JSON.parse(atob(state));
        
@@ -321,10 +322,16 @@ app.get("/api/oauth-callback", async (req, res) => {
       const redirectURI = encodeURIComponent(
         decodedState?.extra?.additional_redirect_uri
       );
-      
+      // Decode the encoded URI to get the original URL with query parameters
+const decodedURI = decodeURIComponent(redirectURI);
 
-      return res.redirect(
-        `${isProduction?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+// Create a URLSearchParams object to parse the query parameters
+const urlParams = new URLSearchParams(new URL(decodedURI).search);
+
+// Get the value of the 'isProduction' parameter
+const _isProduction = urlParams.get('isProduction');
+       return res.redirect(
+        `${_isProduction?.toString()?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
       );
     }
 
