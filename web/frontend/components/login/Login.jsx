@@ -6,6 +6,7 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAuthenticatedFetch } from "../../hooks";
 import PasswordInput from "./PasswordInput";
+import { CLIENT_ID, CLIENT_SECRET } from "../../globals";
 ;
 
 export function Login(props) {
@@ -187,9 +188,7 @@ const storeDomain = urlParams.get('shop');
       window.location.search?.length > 0 &&
       String(window.location.search).includes("shop")
     ) {
-      console.log(
-        window.location.search,
-      )
+       
       window.localStorage.setItem("appSearchParams", window.location.search);
     }else{
       
@@ -198,6 +197,14 @@ const storeDomain = urlParams.get('shop');
     
     getUserData().then((data) => {
       if (data.data) {
+        if (data.data.is_production?.includes('1')) {
+                  
+          localStorage.setItem("isProduction", "1");
+          props.setIsStaging(false);
+        } else {
+          localStorage.setItem("isProduction", "0");
+          props.setIsStaging(true);
+        }
         if (data.data.merchant_token) {
           checkAuth(data.data.merchant_token)
             .then((response) => {
@@ -217,13 +224,7 @@ const storeDomain = urlParams.get('shop');
                 localStorage.setItem("client_id", data.data.client_id);
                 localStorage.setItem("client_secret", data.data.client_secret);
                 localStorage.setItem("merchantDomainId", response.data.id);
-                if (data.data.is_production === "1") {
-                  localStorage.setItem("isProduction", "1");
-                  props.setIsStaging(false);
-                } else {
-                  localStorage.setItem("isProduction", "0");
-                  props.setIsStaging(true);
-                }
+              
                 navigate("/homepage");
               }
             })
@@ -265,7 +266,7 @@ const storeDomain = urlParams.get('shop');
                           "merchantDomainId",
                           checkAuthResponse.data.id
                         );
-                        if (data.data.is_production === "1") {
+                        if (data.data.is_production?.includes('1')) {
                           localStorage.setItem("isProduction", "1");
                           props.setIsStaging(false);
                         } else {
@@ -334,27 +335,7 @@ const storeDomain = urlParams.get('shop');
         });
     });
   };
-  function getUserDataWithInterval  ()  {
-    return new Promise((resolve, reject) => {
-      
-
-      fetch("/api/get-current-session", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-        
-          resolve(data); // Resolve the promise with the fetched data
-        })
-        .catch((err) => {
-         
-          reject(err); // Reject the promise with the error
-        });
-    });
-  };
+  
 
   async function getMerchantTokenAndDomainId() {
     try {
@@ -399,7 +380,9 @@ const storeDomain = urlParams.get('shop');
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
-        navigate("/login");
+       
+        navigate("/login" + localStorage.getItem("appSearchParams"));
+
         props.setIsStaging(props.executeSandboxStatus.value === "1" ? false : true);
         setIsLoading(false);
       } else {
@@ -545,17 +528,24 @@ const storeDomain = urlParams.get('shop');
               }); 
               const queryParams = new URLSearchParams(params).toString(); 
               const url = encodeURIComponent(
-                `${window.location.origin}/api/oauth-callback${window.localStorage.getItem("appSearchParams")}`
+                `${window.location.origin}/api/oauth-callback?isProduction=${localStorage.getItem("isProduction")}&${window.localStorage.getItem("appSearchParams")}`
               );
               // const url = encodeURIComponent(
               //   `${window.location.origin}/api/oauth-callback?${queryParams}`
               // );
-           const newWindow  =   window.open(`https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic&app=shopify&redirect_uri=${url}` ,'popupWindow', 'width=7000,height=7000')
-           console.log(`https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic&app=shopify&redirect_uri=${url}`)
+           const newWindow  =   window.open(`${localStorage.getItem("isProduction").includes("1") ?  "https://portal.fastcourier.com.au"   :"https://portal-staging.fastcourier.com.au"}/oauth/redirect?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&app=shopify&redirect_uri=${url}` ,'popupWindow', 'width=7000,height=7000')
            var pollTimer = window.setInterval(function() {
             if (newWindow.closed !== false) {   
               window.clearInterval(pollTimer);
              getUserData().then((data) => {
+              if (data.data.is_production?.includes('1')) {
+                  
+                localStorage.setItem("isProduction", "1");
+                props.setIsStaging(false);
+              } else {
+                localStorage.setItem("isProduction", "0");
+                props.setIsStaging(true);
+              }
               if (data.data) {
                 if (data.data.merchant_token) {
                   checkAuth(data.data.merchant_token).then((response)=>{
@@ -569,13 +559,7 @@ const storeDomain = urlParams.get('shop');
                       localStorage.setItem("client_id", data.data.client_id);
                       localStorage.setItem("client_secret", data.data.client_secret);
                       localStorage.setItem("merchantDomainId", response.data.id)
-                      if (data.data.is_production === "1") {
-                        localStorage.setItem("isProduction", "1");
-                        props.setIsStaging(false);
-                      } else {
-                        localStorage.setItem("isProduction", "0");
-                        props.setIsStaging(true);
-                      }
+                      
                       navigate("/homepage");
                     }
 

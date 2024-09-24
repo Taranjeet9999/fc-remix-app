@@ -6,9 +6,12 @@ import { Loader } from "../loader";
 import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import { formatSyncTime } from "../newOrders/NewOrders";
+import { useNavigate } from "react-router-dom";
 ;
 
 export function MerchantBillingDetails(props) {
+  const navigate = useNavigate();
+
   const [billingFirstName, setBillingFirstName] = useState("");
   const [billingLastName, setBillingLastName] = useState("");
   const [billingCompanyName, setBillingCompanyName] = useState("");
@@ -359,11 +362,7 @@ export function MerchantBillingDetails(props) {
       );
       if (
         maxIdObject.callback_url ===
-<<<<<<< HEAD
-        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates"
-=======
-        "https://serve-victor-anatomy-items.trycloudflare.com/api/shipping-rates"
->>>>>>> multi-location-mapping
+        "https://shop.fastcourier.com.au/api/shipping-rates"
       ) {
         return;
       }
@@ -863,7 +862,9 @@ export function MerchantBillingDetails(props) {
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
-        navigate(`/login`);
+        
+        navigate("/login" + localStorage.getItem("appSearchParams"));
+
         props.setIsStaging(
           props.executeSandboxStatus.value === "1" ? false : true
         );

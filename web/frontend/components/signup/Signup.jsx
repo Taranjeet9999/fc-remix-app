@@ -138,7 +138,8 @@ export function Signup(props) {
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
-        navigate("/login");
+        navigate("/login" + localStorage.getItem("appSearchParams"));
+
         props.setIsStaging(
           props.executeSandboxStatus.value === "1" ? false : true
         );

@@ -65,6 +65,8 @@ export function ProductMapping(props) {
       isIndividual: "Yes",
     },
   ]);
+
+  const [showNextPageButton , setShowNextPageButton ] = useState(false)
   
   const [csvData, setCsvData] = useState(null);
   const [dataArray, setDataArray] = useState([]);
@@ -74,22 +76,42 @@ export function ProductMapping(props) {
 
   const fetch = useAuthenticatedFetch();
 
-  const getAllProducts = async () => {
+  const getAllProducts = async (params = {}) => {
     setIsLoading(true);
-    const response = await fetch(`/api/products`, {
+    // Base URL for the API
+    const baseUrl = "/api/products";
+
+    params = {
+      ...params, 
+      searchString: productSearchString,
+    };
+    // Build query string from params object
+    const queryString = new URLSearchParams(params).toString(); 
+    // Construct the full URL
+    const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    });
-
-    const data = await response.json();
-
+    }); 
+    const data = await response.json(); 
     if (data) {
-      const formattedProducts = formatProductData(data.body.data.products);
+    
+        setShowNextPageButton(data.body.data.products?.pageInfo?.hasNextPage)
+      
+      const formattedProducts = formatProductData(data.body.data.products); 
 
-      setProducts(formattedProducts);
-      props.setProducts(formattedProducts);
+      if (params.cursor) {
+        
+        setProducts([...products, ...formattedProducts]);
+        props.setProducts([...products, ...formattedProducts]);
+      }else{
+
+        setProducts(formattedProducts);
+        props.setProducts(formattedProducts);
+      }
+
       setIsLoading(false);
     }
   };
@@ -102,9 +124,11 @@ export function ProductMapping(props) {
     let formattedResponse = [];
 
     products.edges.forEach((edge) => {
+       
       let formattedProduct = {
         id: getProductIdFromGID(edge.node.id),
         title: edge.node.title,
+        cursor:edge.cursor,
         metafields: edge.node.metafields.edges.map((_edge) => _edge.node),
         variants: edge.node.variants.edges.map((variantEdge) => {
           return {
@@ -987,7 +1011,7 @@ export function ProductMapping(props) {
             onClick={() => {
               setErrorMessage("");
               selectedProducts.length > 0 || selectedVariants.length > 0
-                ? (setLocationName([]),setShowAssignLocationModal(true))
+                ? (setLocationName([]), setShowAssignLocationModal(true))
                 : setShowError(true);
             }}
           >
@@ -1384,37 +1408,33 @@ export function ProductMapping(props) {
 
                 <Dropdown className="location-list-dropdown">
                   <Dropdown.Toggle className="d-flex flex-wrap">
+                    {locationName.length === 0 && (
+                      <div className="text-muted">Select option</div>
+                    )}
+                    {locationName?.map((item) => {
+                      return (
+                        <div className="location-chip">
+                          {item.location_name}
 
-                 {locationName.length===0 &&   <div className="text-muted">
-                      Select option
-
-                    </div>}
-                    {
-                      locationName?.map((item)=>{
-                        return(
-                          <div className="location-chip">
-                            {item.location_name}
-
-                            <FontAwesomeIcon icon="fa-solid fa-xmark" style={{
-                              width:"12px",
-                              height:"12px",
-                              marginLeft:"4px"
-                            }} 
-                            
-                            onClick={(e)=>{
-                              e.stopPropagation()
-
-                              let updated_data =[...locationName].filter(it=>it.id !==item.id)
-                              setLocationName(updated_data)
-
-
+                          <FontAwesomeIcon
+                            icon="fa-solid fa-xmark"
+                            style={{
+                              width: "12px",
+                              height: "12px",
+                              marginLeft: "4px",
                             }}
-                            
-                            />
-                          </div>
-                        )
-                      })
-                    }
+                            onClick={(e) => {
+                              e.stopPropagation();
+
+                              let updated_data = [...locationName].filter(
+                                (it) => it.id !== item.id
+                              );
+                              setLocationName(updated_data);
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
@@ -1424,15 +1444,16 @@ export function ProductMapping(props) {
                           className="location-item"
                           value={JSON.stringify(element)}
                           onClick={(e) => {
-
-                            let updated_data = [...locationName]
-                            const map = new Map(updated_data.map(item => [item.id, item]));
+                            let updated_data = [...locationName];
+                            const map = new Map(
+                              updated_data.map((item) => [item.id, item])
+                            );
 
                             if (!map.has(element.id)) {
-                              updated_data.push(element)
-                            }  
-                            setLocationName( updated_data);
-                            e.target.closest(".location-list-dropdown").click()
+                              updated_data.push(element);
+                            }
+                            setLocationName(updated_data);
+                            e.target.closest(".location-list-dropdown").click();
                           }}
                         >
                           {element.location_name}
@@ -2011,6 +2032,26 @@ export function ProductMapping(props) {
               })}
         </table>
       </div>
+
+      {(showNextPageButton  ) && (
+        <div
+          className="mt-2 mb-5 w-fit-content"
+          style={{
+            float: "right",
+          }}
+        >
+          <button className="submit-btn" onClick={() => {
+         
+            getAllProducts(
+              {
+                cursor: products[products.length-1].cursor
+              }
+            )
+          }}>
+            Next Page
+          </button>
+        </div>
+      )}
     </div>
   );
 }

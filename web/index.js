@@ -298,7 +298,7 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
 
 app.get("/api/oauth-callback", async (req, res) => {
   try {
-    const { state, code, access_token, refresh_token, expires_at,error } = req.query;
+    const { state, code, access_token, refresh_token, expires_at,error ,isProduction } = req.query;
 
     if (error) {
       const decodedState = JSON.parse(atob(state));
@@ -324,7 +324,7 @@ app.get("/api/oauth-callback", async (req, res) => {
       
 
       return res.redirect(
-        `https://portal-staging.fastcourier.com.au/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+        `${isProduction?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
       );
     }
 
@@ -549,8 +549,7 @@ app.get("/api/oauth-callback", async (req, res) => {
 
 app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
-    logger.info("order-create-webhook==", _req.body);
-
+    
     const orderDetails = _req.body;
 
     // Helper functions
@@ -608,10 +607,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
         ordersData.push({ quote_id: quoteId, order_id: orderId, price, courierName: courier, order_status: orderStatus, order_type: orderType });
 
         // Update Shopify order
-        logger.info(
-          "orderDetails-orderDetails-orderDetails",
-          orderDetails
-        )
+       
         update_shopify_order_id_on_portal(
           orderId,
           parseInt(orderDetails.id),
@@ -1140,7 +1136,7 @@ if (items[0]?.is_flat_rate_enabled) {
   // IF FLAT RATE ENABLED
   // IF FLAT RATE ENABLED
   const quote = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/create-flate-order`,
+    `${ merchant.is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
     {
       method: "POST",
       credentials: "include",
@@ -1158,11 +1154,11 @@ if (items[0]?.is_flat_rate_enabled) {
   );
     data = await quote.json();
 
-    logger.info("data",data)
+    logger.info("WITH flat rate",data)
   
 }else{
   const quote = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/quote?${new URLSearchParams(
+    `${ merchant.is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
     )}`,
     {
@@ -1339,107 +1335,107 @@ function getUniqueQuoteData(data) {
   return Array.from(quoteDataMap.values());
 }
 
-async function getMerchantData(access_token) {
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "request-type": "shopify_development",
-    version: "3.1.1",
-    Authorization: "Bearer " + access_token,
-  };
-  const merchant = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/get_merchant`,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: headers,
-    }
-  );
+// async function getMerchantData(access_token) {
+//   const headers = {
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     "request-type": "shopify_development",
+//     version: "3.1.1",
+//     Authorization: "Bearer " + access_token,
+//   };
+//   const merchant = await fetch(
+//     `https://portal-staging.fastcourier.com.au/api/wp/get_merchant`,
+//     {
+//       method: "GET",
+//       credentials: "include",
+//       headers: headers,
+//     }
+//   );
 
-  let merchant_details = await merchant.json();
-  return merchant_details;
-}
-async function getMerchantDefaultLocation(access_token, merchant_id) {
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "request-type": "shopify_development",
-    version: "3.1.1",
-    Authorization: "Bearer " + access_token,
-  };
+//   let merchant_details = await merchant.json();
+//   return merchant_details;
+// }
+// async function getMerchantDefaultLocation(access_token, merchant_id) {
+//   const headers = {
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     "request-type": "shopify_development",
+//     version: "3.1.1",
+//     Authorization: "Bearer " + access_token,
+//   };
 
-  const pickupLocations = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: headers,
-    }
-  );
+//   const pickupLocations = await fetch(
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
+//     {
+//       method: "GET",
+//       credentials: "include",
+//       headers: headers,
+//     }
+//   );
 
-  const locations = await pickupLocations.json();
+//   const locations = await pickupLocations.json();
 
-  const defaultPickupLocation = locations?.data?.find(
-    (element) => element.is_default == 1
-  );
+//   const defaultPickupLocation = locations?.data?.find(
+//     (element) => element.is_default == 1
+//   );
 
-  return defaultPickupLocation;
-}
-async function getMerchantLocationDataFromTagId(
-  access_token,
-  merchant_id,
-  tagId
-) {
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "request-type": "shopify_development",
-    version: "3.1.1",
-    Authorization: "Bearer " + access_token,
-  };
-  const merchant_location = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/merchant_locations/` +
-      merchant_id +
-      "/" +
-      tagId,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: headers,
-    }
-  );
+//   return defaultPickupLocation;
+// }
+// async function getMerchantLocationDataFromTagId(
+//   access_token,
+//   merchant_id,
+//   tagId
+// ) {
+//   const headers = {
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     "request-type": "shopify_development",
+//     version: "3.1.1",
+//     Authorization: "Bearer " + access_token,
+//   };
+//   const merchant_location = await fetch(
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_locations/` +
+//       merchant_id +
+//       "/" +
+//       tagId,
+//     {
+//       method: "GET",
+//       credentials: "include",
+//       headers: headers,
+//     }
+//   );
 
-  let merchant_location_details = await merchant_location.json();
-  return merchant_location_details;
-}
-async function getMerchantLocationDataFromLocationId(
-  access_token,
-  merchant_id,
-  locationId
-) {
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "request-type": "shopify_development",
-    version: "3.1.1",
-    Authorization: "Bearer " + access_token,
-  };
-  const merchant_location = await fetch(
-    `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/location/` +
-      // merchant_id +
-      // "/" +
-      locationId,
-    {
-      method: "GET",
-      credentials: "include",
-      headers: headers,
-    }
-  );
+//   let merchant_location_details = await merchant_location.json();
+//   return merchant_location_details;
+// }
+// async function getMerchantLocationDataFromLocationId(
+//   access_token,
+//   merchant_id,
+//   locationId
+// ) {
+//   const headers = {
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     "request-type": "shopify_development",
+//     version: "3.1.1",
+//     Authorization: "Bearer " + access_token,
+//   };
+//   const merchant_location = await fetch(
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/location/` +
+//       // merchant_id +
+//       // "/" +
+//       locationId,
+//     {
+//       method: "GET",
+//       credentials: "include",
+//       headers: headers,
+//     }
+//   );
 
-  let merchant_location_details = await merchant_location.json();
-  console.log(merchant_location_details, "merchant_location_details");
-  return merchant_location_details;
-}
+//   let merchant_location_details = await merchant_location.json();
+//   console.log(merchant_location_details, "merchant_location_details");
+//   return merchant_location_details;
+// }
 
 async function update_shopify_order_id_on_portal(
   fastcourier_hash_id,
@@ -1449,7 +1445,7 @@ async function update_shopify_order_id_on_portal(
   destination_first_name,
   destination_last_name
 ) {
-  await fetch("https://portal-staging.fastcourier.com.au/api/update-order-id", {
+  await fetch("https://portal.fastcourier.com.au/api/update-order-id", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -2254,7 +2250,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates";
+      "https://shop.fastcourier.com.au/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2280,14 +2276,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/shipping-rates";
+        "https://shop.fastcourier.com.au/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://volleyball-binding-blonde-meaningful.trycloudflare.com/api/webhook/order-create";
+        "https://shop.fastcourier.com.au/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -2520,22 +2516,22 @@ app.post("/api/book-orders", bodyParser.json(), async (_req, res) => {
 app.get("/api/products", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
-
+    const cursor = _req.query.cursor;
     const client = new shopify.api.clients.Graphql({ session });
     const queryString = `{
-      products(first: 30) {
+      products(first: 20 ${cursor ? `, after: "${cursor}"` : ''}) {
         edges {
           node {
             id
-            title    
+            title
             metafields(first: 15) {
-            edges {
-              node {
-                key
-                value
+              edges {
+                node {
+                  key
+                  value
+                }
               }
             }
-          }        
             variants(first: 10) {
               edges {
                 node {
@@ -2553,12 +2549,19 @@ app.get("/api/products", async (_req, res) => {
                     }
                   }
                 }
+                cursor # Cursor for each variant
               }
             }
           }
+          cursor # Cursor for each product
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
         }
       }
     }`;
+    
 
     const data = await client.query({
       data: queryString,

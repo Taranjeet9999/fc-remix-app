@@ -19,47 +19,7 @@ export default function HomePage(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [userSetupConfigured, setUserSetupConfigured] = useState(false);
 
-  function refreshToken() {
-    return
-    return new Promise((resolve, reject) => {
-      axios
-        .post(
-          `${
-            localStorage.getItem("isProduction") === "1"
-              ? process.env.PROD_API_ENDPOINT
-              : process.env.API_ENDPOINT
-          }/api/refresh-token`,
-          {
-            refresh_token: localStorage.getItem("refresh_token"),
-            client_id: localStorage.getItem("client_id"),
-            client_secret: localStorage.getItem("client_secret"),
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then(async (response) => {
-          localStorage.setItem("accessToken", response.data.access_token);
-          localStorage.setItem("refresh_token", response.data.refresh_token);
-          localStorage.setItem("expires_at", response.data.expires_at);
-
-          await setDataIntoData("merchant_token", response.data.access_token);
-          await setDataIntoData(
-            "merchant_refresh_token",
-            response.data.refresh_token
-          );
-          await setDataIntoData(
-            "merchant_token_expires_at",
-            response.data.expires_at
-          );
-
-          resolve(response.data);
-        })
-        .catch((error) => reject(error));
-    });
-  }
+  
   
   useEffect(() => {
      
@@ -103,7 +63,8 @@ export default function HomePage(props) {
       if (data.data) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("merchantDomainId");
-        navigate("/login");
+        navigate("/login" + localStorage.getItem("appSearchParams"));
+
         setIsLoading(false);
       } else {
         setIsLoading(false);
