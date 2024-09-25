@@ -9,6 +9,7 @@ import Papa from "papaparse";
 import { toast } from "react-toastify";
 import { Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CustomTooltip from "../customToolTip/CustomToolTip";
 
 export function AddLocation(props) {
   const [isLoading, setIsLoading] = useState(false);
@@ -642,7 +643,7 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
         onConfirm={() => setOpenErrorModal(false)}
       /> */}
       <div className="modal-header d-flex justify-content-center">
-        <div className="header-text">New Location</div>
+        <div className="header-text">Pick Up Location</div>
       </div>
       <div className="modal-body p-3">
         <div className="input-row">
@@ -664,7 +665,22 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-          <div className="input-container1">
+
+
+       
+         
+       
+
+          
+        
+
+
+
+
+
+        </div>
+        <div className="input-row">
+        <div className="input-container1">
             <div className="input-lebel1">
               <span> First Name&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
@@ -682,8 +698,6 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-        </div>
-        <div className="input-row">
           <div className="input-container1">
             <div className="input-lebel1">
               <span> Last Name&nbsp;</span>
@@ -702,7 +716,19 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-          <div className="input-container1">
+
+
+
+
+          
+
+        
+
+
+
+        </div>
+        <div className="input-row">
+        <div className="input-container1">
             <div className="input-lebel1">
               <span> Email&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
@@ -723,8 +749,6 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-        </div>
-        <div className="input-row">
           <div className="input-container1">
             <div className="input-lebel1">
               <span> Phone Number&nbsp;</span>
@@ -747,7 +771,20 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-          <div className="input-container1">
+
+
+
+          
+        
+
+
+
+
+
+
+        </div>
+        <div className="input-row">
+        <div className="input-container1">
             <div className="input-lebel1">
               <span> Address 1&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
@@ -765,8 +802,6 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-        </div>
-        <div className="input-row">
           <div className="input-container1">
             <div className="input-lebel1">
               <span> Address 2&nbsp;</span>
@@ -781,31 +816,19 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               />
             </div>
           </div>
-          <div className="input-container1">
-            <div className="input-lebel1">
-              <span> Building Type&nbsp;</span>
-              <span style={{ color: "red" }}> *</span>
-            </div>
-            <Select
-              options={buildingTypes}
-              onChange={(e) => setBuildingType(e.value)}
-              defaultValue={getDefaultBuildingType()}
-            />
-          </div>
+
+
+
+          
+
+        
+
+
+
         </div>
         <div className="input-row">
-          <div className="input-container1">
-            <div className="input-lebel1">
-              <span> Time Window&nbsp;</span>
-              <span style={{ color: "red" }}> *</span>
-            </div>
-            <Select
-              options={timeWindowList}
-              onChange={(e) => setTimeWindow(e.value)}
-              defaultValue={getDefaultTimeWindow()}
-            />
-          </div>
-          <div className="input-container1">
+
+        <div className="input-container1">
             <div className="input-lebel1">
               <span> Suburb, Postcode, State</span>
               <span style={{ color: "red" }}> *</span>
@@ -835,11 +858,46 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               isLoading={suburbsLoading}
             />
           </div>
+
+        <div className="input-container1">
+            <div className="input-lebel1">
+              <span> Building Type&nbsp;</span>
+              <span style={{ color: "red" }}> *</span>
+            </div>
+            <Select
+              options={buildingTypes}
+              onChange={(e) => setBuildingType(e.value)}
+              defaultValue={getDefaultBuildingType()}
+            />
+          </div>
+
+
+
+
+        
+
+
+
+
+
+
+
         </div>
         <div className="input-row">
+        <div className="input-container1">
+            <div className="input-lebel1">
+              <span> Time Window&nbsp;</span>
+              <span style={{ color: "red" }}> *</span>
+            </div>
+            <Select
+              options={timeWindowList}
+              onChange={(e) => setTimeWindow(e.value)}
+              defaultValue={getDefaultTimeWindow()}
+            />
+          </div>
           <div className="input-container1">
             <div className="input-lebel1">
-              <span> Default&nbsp;</span>
+              <span> Is this your primary Pick up location&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
             </div>
 
@@ -851,60 +909,19 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
             />
           </div>
 
-          <div className="input-container1">
-            <div className="input-lebel1">
-              <span> Tag&nbsp;</span>
-            </div>
-            <CreatableSelect
-              isClearable
-              isMulti
-              options={tagOptions}
-              value={selectedTags}
-              placeholder="Select or Create Tags"
-              // onCreateOption={(value) => {
 
-              //   console.log(value,'onCreateOption')
-              //   handleTagCreate(value)}}
-              onChange={(value) => {
-                setSelectedTags(value);
 
-                // handleTagChange(value)
-                if (value.length > 0) {
-                  //  Add the unique tags which are not in Tag options
-                  let updated_tagOptions = [...tagOptions];
-                  value.map((tag) => {
-                    const tagExist = updated_tagOptions.find(
-                      (element) => element.value === tag.value
-                    );
-                    if (!tagExist) {
-                      const keyToDelete = "__isNew__";
-                      if (tag.hasOwnProperty(keyToDelete)) {
-                        delete tag[keyToDelete];
-                      }
-                      updated_tagOptions.push(tag);
-                    }
-                  });
-                  setTagOptions(updated_tagOptions);
-                }
-              }}
-            />
-          </div>
+
+       
+
+        
+
+
+
         </div>
         <div className="input-row">
-          <div className="input-container1">
-            <div className="input-lebel1">
-              <span> Free Shipping Area Postcodes&nbsp;</span>
-            </div>
-            <CreatableSelect
-              closeMenuOnSelect={false}
-              isMulti
-              options={freeShippingPoscodeOptions}
-              value={selectedFreeShippingCodes}
-              // onCreateOption={(value) => handleShippingCodesCreate(value)}
-              onChange={(value) => setSelectedFreeShippingCodes(value)}
-            />
-          </div>
-          <div className="input-container1">
+
+        <div className="input-container1">
             <div className="input-lebel1">
               <span> Tail Lift&nbsp;</span>
               <span style={{ color: "red" }}> *</span>
@@ -915,6 +932,40 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               defaultValue={getDefaultTailLift()}
             />
           </div>
+          <div className="input-container1">
+            <div className="input-lebel1">
+              <span> Free Shipping Area Postcodes&nbsp;</span>
+              <span>
+        <CustomTooltip
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"Enter a postcode or postcode range to enable free shipping for these postcodes from this location"}
+                    >
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+            className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+            }}
+            color="black" 
+          />
+                    </CustomTooltip>
+         
+        </span>
+            </div>
+            <CreatableSelect
+              closeMenuOnSelect={false}
+              isMulti
+              options={freeShippingPoscodeOptions}
+              value={selectedFreeShippingCodes}
+              // onCreateOption={(value) => handleShippingCodesCreate(value)}
+              onChange={(value) => setSelectedFreeShippingCodes(value)}
+            />
+          </div>
+        
         </div>
         <div className="choose-file-row">
           <div className="input-field highlight-input">
@@ -931,7 +982,7 @@ is_flat_enable  : flatRateData.flatRateEnabled ? 1 : 0,
               handleDownload();
             }}
           >
-            <a href="#"> Sample CSV </a>
+            <a href="#"> Free Shipping Sample CSV </a>
           </div>
         </div>
         {/* FLAT RATE FUNCTIONALITY */}

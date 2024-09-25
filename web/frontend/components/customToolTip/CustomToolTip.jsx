@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import './CustomTooltip.css'; // Include your CSS file for styling
 
-const CustomTooltip = ({ text, children ,disabled}) => {
+const CustomTooltip = ({
+  text,
+  children,
+  disabled,
+  tooltipClassName = "",
+  toolTipStyle = {},
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const showTooltip = () => {
@@ -13,9 +19,20 @@ const CustomTooltip = ({ text, children ,disabled}) => {
   };
 
   return (
-    <div className="custom-tooltip" onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
+    <div
+      className="custom-tooltip"
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+    >
       {children}
-      {isVisible &&text && !disabled &&<div className="tooltip-text">{text}</div>}
+      {isVisible && text && !disabled && (
+        <div
+          className={`tooltip-text ${tooltipClassName}`}
+          style={{ ...toolTipStyle }}
+        >
+          {text}
+        </div>
+      )}
     </div>
   );
 };

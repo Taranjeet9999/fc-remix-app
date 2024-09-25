@@ -1,0 +1,288 @@
+[2024-09-25T14:41:55.085] [INFO] default - request {
+  rate: {
+    origin: {
+      country: 'AU',
+      postal_code: null,
+      province: null,
+      city: null,
+      name: null,
+      address1: null,
+      address2: null,
+      address3: null,
+      latitude: null,
+      longitude: null,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: 'fc-prod-test'
+    },
+    destination: {
+      country: 'AU',
+      postal_code: '2000',
+      province: 'NSW',
+      city: 'Sydney',
+      name: 'dfsdg sdfsd',
+      address1: '5000 BC',
+      address2: 'Shop 1',
+      address3: null,
+      latitude: -33.86879589999999,
+      longitude: 151.2041452,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: null
+    },
+    items: [ [Object] ],
+    currency: 'AUD',
+    locale: 'en-AU'
+  }
+}
+[2024-09-25T14:41:57.172] [INFO] default - request {
+  rate: {
+    origin: {
+      country: 'AU',
+      postal_code: null,
+      province: null,
+      city: null,
+      name: null,
+      address1: null,
+      address2: null,
+      address3: null,
+      latitude: null,
+      longitude: null,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: 'fc-prod-test'
+    },
+    destination: {
+      country: 'AU',
+      postal_code: '2000',
+      province: 'NSW',
+      city: 'Haymarket',
+      name: 'dfsdg sdfsd',
+      address1: '5000 Pier Street',
+      address2: null,
+      address3: null,
+      latitude: -33.8773597,
+      longitude: 151.2023089,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: null
+    },
+    items: [ [Object] ],
+    currency: 'AUD',
+    locale: 'en-AU'
+  }
+}
+[2024-09-25T14:42:00.648] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Couriers Please',
+    eta: '1 - 4 Business Days',
+    id: 'XQNPRVXGLQ',
+    quote_id: 7443228,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/couriers-please.png',
+    name: '5Kg Parcel',
+    pickupCutOffTime: '15:59',
+    priceExcludingGst: 12.11,
+    priceIncludingGst: 13.32,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'QOXVJAZDZO'
+  }
+}
+[2024-09-25T14:42:00.649] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Couriers Please]',
+      service_code: '(XQNPRVXGLQ-QOXVJAZDZO)~[PAID]~[13.32]',
+      total_price: '1332',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-09-25T14:42:01.812] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Couriers Please',
+    eta: '1 - 4 Business Days',
+    id: 'JOWNAPKPNQ',
+    quote_id: 7443234,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/couriers-please.png',
+    name: '5Kg Parcel',
+    pickupCutOffTime: '15:59',
+    priceExcludingGst: 12.11,
+    priceIncludingGst: 13.32,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'ZOYQDWBAQO'
+  }
+}
+[2024-09-25T14:42:01.813] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Couriers Please]',
+      service_code: '(JOWNAPKPNQ-ZOYQDWBAQO)~[PAID]~[13.32]',
+      total_price: '1332',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-09-25T14:42:16.161] [INFO] default - request {
+  rate: {
+    origin: {
+      country: 'AU',
+      postal_code: null,
+      province: null,
+      city: null,
+      name: null,
+      address1: null,
+      address2: null,
+      address3: null,
+      latitude: null,
+      longitude: null,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: 'fc-prod-test'
+    },
+    destination: {
+      country: 'AU',
+      postal_code: '2000',
+      province: 'NSW',
+      city: 'Haymarket',
+      name: 'dfsdg sdfsd',
+      address1: '2000 Acres',
+      address2: null,
+      address3: null,
+      latitude: -33.88309479999999,
+      longitude: 151.2031185,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: null
+    },
+    items: [ [Object] ],
+    currency: 'AUD',
+    locale: 'en-AU'
+  }
+}
+[2024-09-25T14:42:20.971] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Couriers Please',
+    eta: '1 - 4 Business Days',
+    id: 'VQXPMVAVLQ',
+    quote_id: 7443240,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/couriers-please.png',
+    name: '5Kg Parcel',
+    pickupCutOffTime: '15:59',
+    priceExcludingGst: 12.11,
+    priceIncludingGst: 13.32,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'QOZVAXWGYO'
+  }
+}
+[2024-09-25T14:42:20.972] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Couriers Please]',
+      service_code: '(VQXPMVAVLQ-QOZVAXWGYO)~[PAID]~[13.32]',
+      total_price: '1332',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-09-25T14:42:36.708] [INFO] default - request {
+  rate: {
+    origin: {
+      country: 'AU',
+      postal_code: null,
+      province: null,
+      city: null,
+      name: null,
+      address1: null,
+      address2: null,
+      address3: null,
+      latitude: null,
+      longitude: null,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: 'fc-prod-test'
+    },
+    destination: {
+      country: 'AU',
+      postal_code: '3000',
+      province: 'VIC',
+      city: 'Melbourne',
+      name: 'dfsdg sdfsd',
+      address1: '3000',
+      address2: null,
+      address3: null,
+      latitude: -37.8152065,
+      longitude: 144.963937,
+      phone: null,
+      fax: null,
+      email: null,
+      address_type: null,
+      company_name: null
+    },
+    items: [ [Object] ],
+    currency: 'AUD',
+    locale: 'en-AU'
+  }
+}
+[2024-09-25T14:42:41.442] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Couriers Please',
+    eta: '2 Business Days',
+    id: 'KQLDGJVPVQ',
+    quote_id: 7443246,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/couriers-please.png',
+    name: '5Kg Parcel',
+    pickupCutOffTime: '15:59',
+    priceExcludingGst: 13.37,
+    priceIncludingGst: 14.71,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'WONXLAGRPO'
+  }
+}
+[2024-09-25T14:42:41.443] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Couriers Please]',
+      service_code: '(KQLDGJVPVQ-WONXLAGRPO)~[PAID]~[14.71]',
+      total_price: '1471.0000000000002',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}

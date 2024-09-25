@@ -26,6 +26,8 @@ import React from "react";
 import { ToastContainer  } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 import OAuthCallBack from "./pages/OAuthCallBack";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CustomTooltip from "./components/customToolTip/CustomToolTip";
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
   // See documentation for <Routes /> for more info
@@ -70,7 +72,35 @@ export default function App() {
           <Routes pages={pages} /> */}
             <div className="app">
               <div className="top-bar">
-                <div className="toggle-text">Sandbox</div>
+
+        <CustomTooltip
+        tooltipClassName="sandbox-tooltip"
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"Test Mode allows you to simulate actions without real charges. Use it to ensure everything works correctly before going live"}
+                    >
+              <span className="d-flex align-items-center">
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+    className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+              paddingRight:"10px"
+            }}
+            color="black" 
+          />
+                    <div className="toggle-text">Sandbox</div>
+        </span>
+                    </CustomTooltip>
+
+
+
+
+
+                
                 <label className="switch">
                   <input
                     type="checkbox"

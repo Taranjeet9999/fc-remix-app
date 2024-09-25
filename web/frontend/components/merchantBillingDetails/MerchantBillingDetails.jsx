@@ -7,7 +7,9 @@ import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import { formatSyncTime } from "../newOrders/NewOrders";
 import { useNavigate } from "react-router-dom";
-;
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CustomTooltip from "../customToolTip/CustomToolTip";
+
 
 export function MerchantBillingDetails(props) {
   const navigate = useNavigate();
@@ -1034,8 +1036,30 @@ export function MerchantBillingDetails(props) {
         message={errorMessage}
         onConfirm={() => setOpenErrorModal(false)}
       />
-      <div className="merchant-heading1">Merchant Billing Details</div>
-{/* 
+      <div className="merchant-heading1 d-flex">
+        Merchant Billing Details{" "}
+        <span>
+        <CustomTooltip
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"Please enter your official business contact details and address. This is for accounting & registration purposes only"}
+                    >
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+            className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+            }}
+            color="black" 
+          />
+                    </CustomTooltip>
+         
+        </span>
+      </div>
+      {/* 
       <button
         onClick={() => {
     
@@ -1064,102 +1088,8 @@ export function MerchantBillingDetails(props) {
             />
           </div>
         </div>
-        <div className="input-container1">
-          <div className="input-lebel1">
-            <span> Last Name&nbsp;</span>
-            <span style={{ color: "red" }}> *</span>
-            {errors.billingLastNameError && (
-              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
-            )}
-          </div>
-          <div className="input-field highlight-input">
-            <input
-              className="input-field-text1"
-              type="text"
-              value={billingLastName}
-              placeholder="Last Name"
-              onChange={(e) => setBillingLastName(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="input-row">
-        <div className="input-container1">
-          <div className="input-lebel1">
-            <span> Company Name&nbsp;</span>
-            <span style={{ color: "red" }}> *</span>
-            {errors.billingCompanyNameError && (
-              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
-            )}
-          </div>
-          <div className="input-field highlight-input">
-            <input
-              className="input-field-text1"
-              type="text"
-              value={billingCompanyName}
-              placeholder="Company Name"
-              onChange={(e) => setBillingCompanyName(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="input-container1">
-          <div className="input-lebel1">
-            <span> Contact Phone Number&nbsp;</span>
-            <span style={{ color: "red" }}> *</span>
-            {errors.billingPhoneError && (
-              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
-            )}
-          </div>
-          <div className="input-field highlight-input">
-            <input
-              className="input-field-text1"
-              type="number"
-              value={billingPhone}
-              placeholder="Contact Phone Number"
-              onChange={(e) => setBillingPhone(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="input-row">
-        <div className="input-container1">
-          <div className="input-lebel1">
-            <span> Email&nbsp;</span>
-            <span style={{ color: "red" }}> *</span>
-            {errors.billingEmailError && (
-              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
-            )}
-          </div>
-          <div className="input-field highlight-input">
-            <input
-              className="input-field-text1"
-              type="text"
-              value={billingEmail}
-              placeholder="Email"
-              onChange={(e) => setBillingEmail(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="input-container1">
-          <div className="input-lebel1">
-            <span> ABN&nbsp;</span>
-            <span style={{ color: "red" }}> *</span>
-            {errors.billingAbnError && (
-              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
-            )}
-          </div>
-          <div className="input-field highlight-input">
-            <input
-              className="input-field-text1"
-              type="text"
-              value={billingAbn}
-              placeholder="ABN"
-              onChange={(e) => setBillingAbn(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-      <div className="input-row">
+       
+
         <div className="input-container1">
           <div className="input-lebel1">
             <span> Address 1&nbsp;</span>
@@ -1178,6 +1108,36 @@ export function MerchantBillingDetails(props) {
             />
           </div>
         </div>
+       
+
+
+
+      </div>
+      <div className="input-row">
+    
+
+        <div className="input-container1">
+          <div className="input-lebel1">
+            <span> Last Name&nbsp;</span>
+            <span style={{ color: "red" }}> *</span>
+            {errors.billingLastNameError && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+          </div>
+          <div className="input-field highlight-input">
+            <input
+              className="input-field-text1"
+              type="text"
+              value={billingLastName}
+              placeholder="Last Name"
+              onChange={(e) => setBillingLastName(e.target.value)}
+            />
+          </div>
+        </div>
+
+
+
+        
         <div className="input-container1">
           <div className="input-lebel1">
             <span> Address 2</span>
@@ -1192,11 +1152,45 @@ export function MerchantBillingDetails(props) {
             />
           </div>
         </div>
+
+
+
+
+
+
+
+
       </div>
       <div className="input-row">
+      
+
+
+
         <div className="input-container1">
           <div className="input-lebel1">
-            <span> Suburb&nbsp;</span>
+            <span> Company Name&nbsp;</span>
+            <span style={{ color: "red" }}> *</span>
+            {errors.billingCompanyNameError && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+          </div>
+          <div className="input-field highlight-input">
+            <input
+              className="input-field-text1"
+              type="text"
+              value={billingCompanyName}
+              placeholder="Company Name"
+              onChange={(e) => setBillingCompanyName(e.target.value)}
+            />
+          </div>
+        </div>
+
+
+
+
+        <div className="input-container1">
+          <div className="input-lebel1">
+            <span> Suburb, Postcode & State&nbsp;</span>
             <span style={{ color: "red" }}> *</span>
             {errors.billingSuburbError && (
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
@@ -1205,8 +1199,7 @@ export function MerchantBillingDetails(props) {
           {/* {defaultSuburb != null && ( */}
           {showSuburbModal && (
             <Select
-            className="custom-react-select-colouring"
-             
+              className="custom-react-select-colouring"
               options={suburbs}
               onInputChange={(e) => {
                 handleInputChange({ target: { value: e } });
@@ -1225,6 +1218,101 @@ export function MerchantBillingDetails(props) {
           )}
           {/* )} */}
         </div>
+        
+
+
+
+
+
+
+
+      </div>
+      <div className="input-row">
+       
+
+
+        <div className="input-container1">
+          <div className="input-lebel1">
+            <span> ABN&nbsp;</span>
+            <span style={{ color: "red" }}> *</span>
+            {errors.billingAbnError && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+          </div>
+          <div className="input-field highlight-input">
+            <input
+              className="input-field-text1"
+              type="text"
+              value={billingAbn}
+              placeholder="ABN"
+              onChange={(e) => setBillingAbn(e.target.value)}
+            />
+          </div>
+        </div>
+
+
+
+
+        
+      
+      </div>
+      <div className="input-row">
+        
+
+
+        <div className="input-container1">
+          <div className="input-lebel1">
+            <span> Contact Phone Number&nbsp;</span>
+            <span style={{ color: "red" }}> *</span>
+            {errors.billingPhoneError && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+          </div>
+          <div className="input-field highlight-input">
+            <input
+              className="input-field-text1"
+              type="number"
+              value={billingPhone}
+              placeholder="Contact Phone Number"
+              onChange={(e) => setBillingPhone(e.target.value)}
+            />
+          </div>
+        </div>
+
+
+
+
+
+
+      </div>
+      <div className="input-row">
+        
+      <div className="input-container1">
+          <div className="input-lebel1">
+            <span> Email&nbsp;</span>
+            <span style={{ color: "red" }}> *</span>
+            {errors.billingEmailError && (
+              <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
+            )}
+          </div>
+          <div className="input-field highlight-input">
+            <input
+              className="input-field-text1"
+              type="text"
+              value={billingEmail}
+              placeholder="Email"
+              onChange={(e) => setBillingEmail(e.target.value)}
+            />
+          </div>
+        </div>
+
+      
+
+
+
+
+
+
       </div>
       <div className="shipping-config">
         <div className="shipping-left">
@@ -1254,13 +1342,14 @@ export function MerchantBillingDetails(props) {
               onChange={(e) => setBookingPreference(e.target.value)}
             />
             <label htmlFor="freeForBasketValue">
-              &nbsp;Free for Orders with Prices{" "}
+              &nbsp;Free for Orders with Prices over{" "}
             </label>
             {bookingPreference == "free_for_basket_value_total" && (
               <span className="conditional-price">
-                {"> "}
+                &nbsp;
+                &nbsp;
                 <input
-                  type="type"
+                  type="number"
                   name="conditionalPrice"
                   className="input-field-text1"
                   value={conditionalValue}
@@ -1287,8 +1376,35 @@ export function MerchantBillingDetails(props) {
         </div>
         <div className="shipping-right">
           <div className="shipping-label">
-            <span> Fallback Shipping Amount&nbsp;</span>
+            <span> Fallback Shipping Amount&nbsp;
+
+
+          
+
+
+
+            </span>
             <span style={{ color: "red" }}> *</span>
+            <span>
+        <CustomTooltip
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"The fall back shipping amount ensures that eCommerce transactions can still go through even if there is a failure to generate real time shipping prices. The fallback shipping amount will be rendered in the checkout as the shipping cost and allow for a shipment to be booked manually at a later time"}
+                    >
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+            className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+            }}
+            color="black" 
+          />
+                    </CustomTooltip>
+         
+        </span>
             {errors.fallbackAmountError && (
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
@@ -1350,6 +1466,26 @@ export function MerchantBillingDetails(props) {
           <div className="input-lebel1">
             <span> Category of Goods Sold&nbsp;</span>
             <span style={{ color: "red" }}> *</span>
+            <span>
+        <CustomTooltip
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"Please define the category of goods being shipped, this is required for insurance purposes."}
+                    >
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+            className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+            }}
+            color="black" 
+          />
+                    </CustomTooltip>
+         
+        </span>
             {errors.categoryOfGoodsError && (
               <span style={{ color: "red" }}> &nbsp; {"(Required)"}</span>
             )}
@@ -1387,7 +1523,7 @@ export function MerchantBillingDetails(props) {
             &nbsp;Complimentary Coverage - No Additional Charge
           </label>
         </div>
-        <div className="input-radio d-flex">
+        <div className="input-radio d-flex align-items-center">
           <input
             type="radio"
             name="insuranceType"
@@ -1397,13 +1533,13 @@ export function MerchantBillingDetails(props) {
             checked={insuranceType == "2"}
           />
           <label htmlFor="requiredUpto">
-            &nbsp;Transit Insurance Coverage up to $
+            &nbsp;Transit Insurance Coverage up to over $
           </label>
           {insuranceType == 2 && (
             <span className="conditional-price">
               {"> "}
               <input
-                type="type"
+                type="number"
                 name="insuranceAmount"
                 className="input-field-text1"
                 value={insuranceAmount}
@@ -1461,19 +1597,39 @@ export function MerchantBillingDetails(props) {
                 </div>
             </div> */}
       <div className="input-checkbox">
-        <div className="d-flex">
+        <div className="d-flex align-items-center">
+          <input
+            type="checkbox"
+            name="isDropOffTailLift"
+            id="isDropOffTailLift"
+            value={isDropOffTailLift}
+            onChange={(e) => setIsDropOffTailLift(e.target.checked)}
+            checked={isDropOffTailLift}
+          />
+          <label htmlFor="isDropOffTailLift">
+            &nbsp;Default tail lift on delivery
+          </label>
 
-        <input
-          type="checkbox"
-          name="isDropOffTailLift"
-          id="isDropOffTailLift"
-          value={isDropOffTailLift}
-          onChange={(e) => setIsDropOffTailLift(e.target.checked)}
-          checked={isDropOffTailLift}
-        />
-        <label htmlFor="isDropOffTailLift">
-          &nbsp;Default tail lift on delivery
-        </label>
+          <span>
+        <CustomTooltip
+                     toolTipStyle={{
+                      fontSize:"14px",
+                      width:"310px"
+                     }}  
+                      text={"This generates shipping rate with the Tail-Lift or Lift Assistance service for all deliveries where items being shipped are over 30 kgs. Please only select this option if you are sure about requiring tail lifts on all deliveries. Selecting a tail lift for all deliveries will substantially increase shipping costs."}
+                    >
+                      <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-circle"
+            className="ml-2 pointer"
+            style={{
+              width: "14px",
+              height: "14px",
+            }}
+            color="black" 
+          />
+                    </CustomTooltip>
+         
+        </span>
         </div>
         {isDropOffTailLift == true && (
           <span className="conditional-price">
@@ -1494,12 +1650,11 @@ export function MerchantBillingDetails(props) {
           </span>
         )}
       </div>
-  {isDropOffTailLift == true &&     <div className="d-flex align-items-center ">
-        <strong>
-        (Minimum weight for tail lift is 30 Kgs)
-
-        </strong>
-      </div>}
+      {/* {isDropOffTailLift == true && (
+        <div className="d-flex align-items-center ">
+          <strong>(Minimum weight for tail lift is 30 Kgs)</strong>
+        </div>
+      )} */}
 
       <div className="submit">
         <button className="submit-btn" onClick={() => activateMerchant()}>

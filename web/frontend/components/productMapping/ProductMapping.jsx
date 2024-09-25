@@ -67,7 +67,7 @@ export function ProductMapping(props) {
   ]);
 
   const [showNextPageButton , setShowNextPageButton ] = useState(false)
-  
+  const [showSearchText, setShowSearchText] = useState(false)
   const [csvData, setCsvData] = useState(null);
   const [dataArray, setDataArray] = useState([]);
   const [products, setProducts] = useState(null);
@@ -81,10 +81,18 @@ export function ProductMapping(props) {
     // Base URL for the API
     const baseUrl = "/api/products";
 
-    params = {
-      ...params, 
-      searchString: productSearchString,
-    };
+    if (!params?.searchString) {
+      setShowSearchText(false)
+      setProductSearchString("")
+    }else{
+      setShowSearchText(true)
+
+    }
+
+    // params = {
+    //   ...params, 
+    //   searchString: params.searchString?  params.searchString   : productSearchString,
+    // };
     // Build query string from params object
     const queryString = new URLSearchParams(params).toString(); 
     // Construct the full URL
@@ -948,30 +956,42 @@ export function ProductMapping(props) {
               />
             </div>
           </div>
-          {false && (
-            <div className="input-container mr-2">
-              <div className="input-lebel">
-                <span> Product Type&nbsp;</span>
-              </div>
-              <div className="input-field">
-                <select
-                  className="input-field-text"
-                  type="text"
-                  value={selectedProductType}
-                  onChange={(e) => setSelectedProductType(e.target.value)}
-                >
-                  <option value="all">All</option>
-                  {/* <option value="simple">Simple</option>
-                <option value="virtual">Virtual</option>
-                <option value="variable">Variable</option> */}
-                </select>
-              </div>
-            </div>
-          )}
+
+          <button
+            className="submit-btn   mx-2 px-3"
+            style={{
+              width:"fit-content"
+            }}
+            onClick={() => {
+             getAllProducts({
+              searchString:productSearchString
+             })
+            }}
+          >
+            Search
+          </button>
+         
           <div className="filter-buttons">
             {/* <button className="fc-yellow-btn pointer"> Filter </button> */}
-            <button onClick={() => resetFilters()}> Reset </button>
+            <button onClick={() =>{ resetFilters()
+
+              getAllProducts({
+                searchString: ""
+              })
+
+
+
+            }}> Reset </button>
           </div>
+        </div>
+<div className="d-flex align-items-center justify-content-between">
+        <div>
+        {
+          showSearchText &&
+          <div>
+            Search results for : "<strong>{productSearchString}</strong>"
+          </div>
+        }
         </div>
 
         <div className="product-actions">
@@ -1024,6 +1044,7 @@ export function ProductMapping(props) {
             Import Dimensions
           </button>
         </div>
+        </div>
       </div>
       <Modal showModal={showImportDimensionsModal} width="40%">
         <div className="import-dimesions">
@@ -1074,9 +1095,9 @@ export function ProductMapping(props) {
       </Modal>
       <Modal className={"full-screen-modal"} showModal={showShippingBoxesModal}>
         {isLoading && <Loader />}
-        <div className="shipping-boxes">
+        <div className="shipping-boxes h-100vh">
           <div className="modal-header">
-            <div className="shipping-heading">Shipping Boxes</div>
+            <div className="shipping-heading">Shared shipping boxes</div>
             <div
               className="submit-btn"
               onClick={() => {
@@ -1086,9 +1107,9 @@ export function ProductMapping(props) {
             >
               Add Shipping Box
             </div>
-            <Modal showModal={showAddShippingBoxModal} width="40%">
+            <Modal showModal={showAddShippingBoxModal} width="95%">
               {isLoading && <Loader />}
-              <div className="add-shipping-box">
+              <div className="add-shipping-box h-100vh d-flex flex-column">
                 <div className="modal-header">
                   <div className="shipping-heading">Add Shipping Box</div>
                 </div>
@@ -1146,28 +1167,7 @@ export function ProductMapping(props) {
                     <span> Dimensions&nbsp;</span>
                   </div>
                   <div className="input-row">
-                    <div className="input-container1">
-                      <div className="input-lebel1">
-                        <span> Height&nbsp;</span>
-                        <span style={{ color: "red" }}> *</span>
-                        {errorMessage != "" && shippingPackageHeight == "" && (
-                          <span style={{ color: "red" }}>
-                            &nbsp; {"(Required)"}
-                          </span>
-                        )}
-                      </div>
-                      <div className="input-field highlight-input">
-                        <input
-                          className="input-field-text1"
-                          type="number"
-                          placeholder="Height"
-                          value={shippingPackageHeight}
-                          onChange={(e) =>
-                            setShippingPackageHeight(e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
+                  
                     <div className="input-container1">
                       <div className="input-lebel1">
                         <span> Length&nbsp;</span>
@@ -1208,6 +1208,28 @@ export function ProductMapping(props) {
                           value={shippingPackageWidth}
                           onChange={(e) =>
                             setShippingPackageWidth(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="input-container1">
+                      <div className="input-lebel1">
+                        <span> Height&nbsp;</span>
+                        <span style={{ color: "red" }}> *</span>
+                        {errorMessage != "" && shippingPackageHeight == "" && (
+                          <span style={{ color: "red" }}>
+                            &nbsp; {"(Required)"}
+                          </span>
+                        )}
+                      </div>
+                      <div className="input-field highlight-input">
+                        <input
+                          className="input-field-text1"
+                          type="number"
+                          placeholder="Height"
+                          value={shippingPackageHeight}
+                          onChange={(e) =>
+                            setShippingPackageHeight(e.target.value)
                           }
                         />
                       </div>
@@ -1336,18 +1358,19 @@ export function ProductMapping(props) {
                             setShowAddShippingBoxModal(true);
                           }}
                         />
-                        <ConfirmModal
-                          showModal={showConfirmModal}
-                          onConfirm={() => deleteShippingBox()}
-                          onCancel={() => setShowConfirmModal(false)}
-                          message="you want to delete shipping box."
-                        />
+                       
                       </td>
                     </tr>
                   );
                 })}
             </table>
           </div>
+          <ConfirmModal
+                          showModal={showConfirmModal}
+                          onConfirm={() => deleteShippingBox()}
+                          onCancel={() => setShowConfirmModal(false)}
+                          message="you want to delete shipping box."
+                        />
           <div className="modal-footer">
             <div
               className="cancel-btn"
@@ -1622,12 +1645,13 @@ export function ProductMapping(props) {
                   </div>
                   <div className="input-container1">
                     <div className="input-lebel1">
-                      <span> Individuals&nbsp;</span>
-                      <span style={{ color: "red" }}> *</span>
+                      <span style={{fontSize:"14px"}}>  Is this product only shipped individually and not combined with other products in a single package?&nbsp;</span>
+                      {/* <span style={{ color: "red" }}> *</span> */}
                     </div>
                     <div className="input-field">
                       <input
                         type="radio"
+                      
                         name={itemIndex + "isIndividual"}
                         id={itemIndex + "yes"}
                         value="Yes"
@@ -1638,7 +1662,9 @@ export function ProductMapping(props) {
                         }}
                         checked={item.isIndividual == "Yes"}
                       />
-                      <label htmlFor={itemIndex + "yes"}>&nbsp;Yes</label>
+                      <label htmlFor={itemIndex + "yes"}  style={{
+                        marginRight:"12px"
+                       }}>&nbsp;Yes</label>
                       <input
                         type="radio"
                         name={itemIndex + "isIndividual"}
@@ -1734,11 +1760,11 @@ export function ProductMapping(props) {
           </tr>
           {products?.length > 0 &&
             products
-              .filter((prod) =>
-                prod.title
-                  .toLowerCase()
-                  .includes(productSearchString.toLowerCase())
-              )
+              // .filter((prod) =>
+              //   prod.title
+              //     .toLowerCase()
+              //     .includes(productSearchString.toLowerCase())
+              // )
               .map((element, i) => {
                 return element?.variants.length > 0 &&
                   element?.variants[0]?.title == "Default Title" ? (
@@ -2044,7 +2070,8 @@ export function ProductMapping(props) {
          
             getAllProducts(
               {
-                cursor: products[products.length-1].cursor
+                cursor: products[products.length-1].cursor ?? "",
+searchString:productSearchString
               }
             )
           }}>

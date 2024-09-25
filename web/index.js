@@ -802,6 +802,9 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
 //   }
 // });
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
+
+  logger.info("request",_req.body); 
+
   try {
     const session = await getSession(
       `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
@@ -1161,7 +1164,7 @@ if (items[0]?.is_flat_rate_enabled) {
   );
     data = await quote.json();
 
-     
+    logger.info("with flat rate",data); 
   
 }else{
  
@@ -1184,6 +1187,7 @@ if (items[0]?.is_flat_rate_enabled) {
     }
   );
     data = await quote.json();
+    logger.info("without flat rate",data); 
      
 }
      
@@ -1280,6 +1284,7 @@ if (items[0]?.is_flat_rate_enabled) {
       ],
     };
 
+    logger.info("response",response); 
      
     res.status(200).json(response);
   } catch (error) {
@@ -2527,9 +2532,10 @@ app.get("/api/products", async (_req, res) => {
   try {
     const session = res.locals.shopify.session;
     const cursor = _req.query.cursor;
+    const searchString = _req.query.searchString;
     const client = new shopify.api.clients.Graphql({ session });
     const queryString = `{
-      products(first: 20 ${cursor ? `, after: "${cursor}"` : ''}) {
+      products(first: 20 ${cursor ? `, after: "${cursor}"` : ''} ${searchString ? `, query: "${searchString}"` : ''}) {
         edges {
           node {
             id
