@@ -620,9 +620,17 @@ export function MerchantBillingDetails(props) {
             package_name: "Fast Courier",
           }),
         });
-        const data = await response.json();
-        setIsLoading(false);
-        resolve(data);
+        // const data = await response.json();
+        // setIsLoading(false);
+        // resolve(data);
+        if (response.status === 200) {
+          const data = await response.json();
+          setIsLoading(false);
+          resolve(data);
+      } else {
+          setIsLoading(false);
+          reject(new Error(`Request failed with status code ${response.status}`));
+      }
       } catch (err) {
         setIsLoading(false);
         console.log(err);
@@ -692,7 +700,7 @@ export function MerchantBillingDetails(props) {
 
     try {
       setIsLoading(true);
-      const response = await fetch(
+      const response = await fetchWithTimeout(
         "/api/carrier-service/update",
         {
           method: "POST",
@@ -704,7 +712,7 @@ export function MerchantBillingDetails(props) {
             id: _id,
           }),
         },
-        // 1000000
+        30000
       );
 
       if (!response.ok) {
