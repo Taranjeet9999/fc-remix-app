@@ -2265,6 +2265,8 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     res.status(200).send(carrier_service);
   } catch (error) {
     console.log("carrier-create=", error);
+    res.status(500).send(error);
+
   }
 });
 

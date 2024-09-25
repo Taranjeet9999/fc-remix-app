@@ -704,7 +704,7 @@ export function MerchantBillingDetails(props) {
             id: _id,
           }),
         },
-        10000
+        30000
       );
 
       if (!response.ok) {

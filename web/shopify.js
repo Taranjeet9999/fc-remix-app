@@ -24,7 +24,7 @@ const shopify = shopifyApp({
     // apiSecretKey: "462d2444640fd4e35b1250a085c7392e",
     scopes: 'read_checkouts,read_orders,read_products,read_shipping,unauthenticated_read_checkouts,unauthenticated_write_checkouts,write_checkouts,write_orders,write_products,write_shipping',
     //  hostName: "https://webshots-charity-delta-sunny.trycloudflare.com",
-    // hostName: "https://shop.fastcourier.com.au/",
+    //  hostName: "https://shop.fastcourier.com.au/",
     //  hostName: "https://shop.fastcourier.com.au/",
 
     restResources,
