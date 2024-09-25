@@ -1161,11 +1161,10 @@ if (items[0]?.is_flat_rate_enabled) {
   );
     data = await quote.json();
 
-    logger.info("WITH flat rate",data)
+     
   
 }else{
-
-  logger.info("merchant.is_production?.includes(1)",session[0] )
+ 
   const quote = await fetch(
     `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
@@ -1185,9 +1184,7 @@ if (items[0]?.is_flat_rate_enabled) {
     }
   );
     data = await quote.json();
-    logger.info("quote-api",JSON.stringify(quote))
-
-    logger.info("Without fkat rate",data)
+     
 }
      
 
@@ -1283,8 +1280,7 @@ if (items[0]?.is_flat_rate_enabled) {
       ],
     };
 
-    
-    logger.info("shipping-rates-output", response);
+     
     res.status(200).json(response);
   } catch (error) {
     console.error("shipping-rates==", error);
