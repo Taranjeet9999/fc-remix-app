@@ -2355,6 +2355,8 @@ app.post(
     } catch (error) {
       console.log("carrier-update=", error);
       logger.info("carrier-update-==", error);
+      res.status(500).send(error);
+
     }
   }
 );

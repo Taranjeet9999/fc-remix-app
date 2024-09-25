@@ -692,7 +692,7 @@ export function MerchantBillingDetails(props) {
 
     try {
       setIsLoading(true);
-      const response = await fetchWithTimeout(
+      const response = await fetch(
         "/api/carrier-service/update",
         {
           method: "POST",
@@ -704,7 +704,7 @@ export function MerchantBillingDetails(props) {
             id: _id,
           }),
         },
-        30000
+        // 1000000
       );
 
       if (!response.ok) {
