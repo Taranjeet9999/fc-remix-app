@@ -3,7 +3,7 @@
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://involvement-provider-sublime-bodies.trycloudflare.com"
+application_url = "https://shop.fastcourier.com.au"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://involvement-provider-sublime-bodies.trycloudflare.com/auth/callback",
-  "https://involvement-provider-sublime-bodies.trycloudflare.com/auth/shopify/callback",
-  "https://involvement-provider-sublime-bodies.trycloudflare.com/api/auth/callback"
+  "https://shop.fastcourier.com.au/auth/callback",
+  "https://shop.fastcourier.com.au/auth/shopify/callback",
+  "https://shop.fastcourier.com.au/api/auth/callback"
 ]
 
 [webhooks]

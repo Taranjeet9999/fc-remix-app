@@ -53,8 +53,7 @@ export default function App() {
   });
 
 
-  
-console.log( (window.location.search))
+   
   return (
     <PolarisProvider>
       <BrowserRouter>

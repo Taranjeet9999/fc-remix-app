@@ -342,35 +342,58 @@ export function MerchantBillingDetails(props) {
   };
 
   const getCarriers = async () => {
-    const response = await fetch("/api/carrier-services", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    setCarrierServices(data.data);
-    //filter the fast courier carreir service and get Id and update the carrier service
-    const filteredCarrierService = data.data.filter(
-      (item) => item.name === "Fast Courier"
-    );
-
-    if (filteredCarrierService.length > 0) {
-      const maxIdObject = filteredCarrierService.reduce(
-        (max, item) => (item.id > max.id ? item : max),
-        filteredCarrierService[0]
+    try {
+      const response = await fetch("/api/carrier-services", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setCarrierServices(data.data);
+      //filter the fast courier carreir service and get Id and update the carrier service
+      const filteredCarrierService = data.data.filter(
+        (item) => item.name === "Fast Courier"
       );
-      if (
-        maxIdObject.callback_url ===
-        "https://shop.fastcourier.com.au/api/shipping-rates"
-      ) {
+
+      const Webhook_Mapped = filteredCarrierService.some(
+        (elem) =>
+          elem.callback_url ===
+          "https://shop.fastcourier.com.au/api/shipping-rates"
+      );
+      if (Webhook_Mapped) {
         return;
       }
 
-      updateCarrierService(maxIdObject.id);
-    } else {
-      // create a coueir service and then update it
+      for (let carrier of filteredCarrierService) {
+        let output = await updateCarrierService(carrier.id);
+        console.log("output",output)
+       
+        if (output) {
+          return
+          throw new Error("ddc")
+        }
+        
+      }
       createAndUpdateCarrierService();
+
+
+      // if (filteredCarrierService.length > 0) {
+      //   const maxIdObject = filteredCarrierService.reduce(
+      //     (max, item) => (item.id > max.id ? item : max),
+      //     filteredCarrierService[0]
+      //   );
+      //   if (maxIdObject.callback_url === "") {
+      //     return;
+      //   }
+
+      //   updateCarrierService(maxIdObject.id);
+      // } else {
+      //   // create a coueir service and then update it
+      //   createAndUpdateCarrierService();
+      // }
+    } catch (error) {
+      alert(error)
     }
   };
 
@@ -645,89 +668,114 @@ export function MerchantBillingDetails(props) {
     });
   }
 
+  const updateCarrierService = (_id) => {
+    return new Promise(async (resolve, reject) => {
+      const controller = new AbortController();
+      const signal = controller.signal;
+  
+      const fetchWithTimeout = (url, options, timeout = 10000) => {
+        return Promise.race([
+          fetch(url, { ...options, signal }),
+          new Promise((_, reject) => 
+            setTimeout(() => {
+              controller.abort();
+              reject(new Error("Request timed out"));
+            }, timeout)
+          ),
+        ]);
+      };
+  
+      try {
+        setIsLoading(true);
+        const response = await fetchWithTimeout(
+          "/api/carrier-service/update",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              package_name: "Fast Courier",
+              id: _id,
+            }),
+          },
+          10000
+        );
+  
+        if (!response.ok) {
+          resolve(false)
+          console.log("step 1")
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        if (response.status===200) { 
+          const data = await response.json();
+          resolve(true);
+          console.log("step 2") // Resolve with data if successful
+        }else{
+          resolve(false)
+          console.log("step 3")
+        }
+  
+      } catch (err) {
+        resolve(false); // Reject the promise on error
+        console.log("step 4")
+      } finally {
+        setIsLoading(false);
+      }
+    });
+  };
+  
+
   // const updateCarrierService = async (_id) => {
+  //   const controller = new AbortController();
+  //   const signal = controller.signal;
+
+  //   const fetchWithTimeout = (url, options, timeout = 10000) => {
+  //     return Promise.race([
+  //       fetch(url, { ...options, signal }),
+  //       new Promise((_, reject) =>
+  //         setTimeout(() => {
+  //           controller.abort();
+  //           reject(new Error("Request timed out"));
+
+  //           createAndUpdateCarrierService();
+  //           setIsLoading(false);
+  //         }, timeout)
+  //       ),
+  //     ]);
+  //   };
 
   //   try {
   //     setIsLoading(true);
-  //     const response = await fetch("/api/carrier-service/update", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
+  //     const response = await fetchWithTimeout(
+  //       "/api/carrier-service/update",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           package_name: "Fast Courier",
+  //           id: _id,
+  //         }),
   //       },
-  //       body: JSON.stringify({
-  //         package_name: "Fast Courier",
-  //         id: _id,
-  //       }),
-  //     });
+  //       30000
+  //     );
 
   //     if (!response.ok) {
-  //       console.log(response, "response");
-  //       console.log(response, "response");
-  //       console.log(response, "response");
-  //       console.log(response, "response");
-  //       console.log(response, "response");
-  //       console.log(response, "response");
-
-  //       throw new Error(`API call failed with status: ${response.status}`);
+  //       // await createAndUpdateCarrierService();
+  //       throw new Error(`Error: ${response.statusText}`);
   //     }
 
   //     const data = await response.json();
-  //     setIsLoading(false);
+  //     // Handle data if needed
   //   } catch (err) {
-  //     setIsLoading(false);
   //     console.log(err);
+  //   } finally {
+  //     setIsLoading(false);
   //   }
   // };
-
-  const updateCarrierService = async (_id) => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const fetchWithTimeout = (url, options, timeout = 10000) => {
-      return Promise.race([
-        fetch(url, { ...options, signal }),
-        new Promise((_, reject) =>
-          setTimeout(() => {
-            controller.abort();
-            reject(new Error("Request timed out"));
-
-            createAndUpdateCarrierService();
-            setIsLoading(false);
-          }, timeout)
-        ),
-      ]);
-    };
-
-    try {
-      setIsLoading(true);
-      const response = await fetchWithTimeout(
-        "/api/carrier-service/update",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            package_name: "Fast Courier",
-            id: _id,
-          }),
-        },
-        30000
-      );
-
-      if (!response.ok) {
-        // await createAndUpdateCarrierService();
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      // Handle data if needed
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const deleteCarrierService = async (_id) => {
     try {

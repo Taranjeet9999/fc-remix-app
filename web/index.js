@@ -1143,7 +1143,7 @@ if (items[0]?.is_flat_rate_enabled) {
   // IF FLAT RATE ENABLED
   // IF FLAT RATE ENABLED
   const quote = await fetch(
-    `${ merchant.is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
+    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
     {
       method: "POST",
       credentials: "include",
@@ -1164,8 +1164,10 @@ if (items[0]?.is_flat_rate_enabled) {
     logger.info("WITH flat rate",data)
   
 }else{
+
+  logger.info("merchant.is_production?.includes(1)",session[0] )
   const quote = await fetch(
-    `${ merchant.is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
+    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
     )}`,
     {
@@ -1183,6 +1185,7 @@ if (items[0]?.is_flat_rate_enabled) {
     }
   );
     data = await quote.json();
+    logger.info("quote-api",JSON.stringify(quote))
 
     logger.info("Without fkat rate",data)
 }
