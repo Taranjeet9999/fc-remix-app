@@ -534,15 +534,15 @@ const storeDomain = urlParams.get('shop');
               //   `${window.location.origin}/api/oauth-callback?${queryParams}`
               // );
               console.log(`${
-               localStorage.getItem("isProduction").includes("1")
+               true
                  ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
                  : "https://portal.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
              }&app=shopify&redirect_uri=${url}`)
            const newWindow = window.open(
              `${
-               localStorage.getItem("isProduction").includes("1")
+               true
                  ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
-                 : "https://portal.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
+                 : "h--ttps://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
              }&app=shopify&redirect_uri=${url}`,
              "popupWindow",
              "width=7000,height=7000"
