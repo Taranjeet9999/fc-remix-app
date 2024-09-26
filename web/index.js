@@ -100,22 +100,29 @@ function isMerchantColumnExist(_columnName) {
   });
 }
 
-const url = "mongodb://localhost:27017";
-const database = "local";
-const client = new MongoClient(url);
-
-async function getConnection() {
-  let result = await client.connect();
-  return result.db(database);
-}
+const url = "mongodb://fc-staging:SweVFp75Rw@54.253.233.28:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1&authMechanism=DEFAULT";
+const MongoDatabase = "fc-staging";
+const collectionName = 'shopify_frontend_logs';
+const mongoBDClient = new MongoClient(url);
+let mongoDB, collection;
+ 
+mongoBDClient.connect()
+    .then(() => {
+        console.log('Connected successfully to MongoDB');
+        
+        // Select the database and collection
+        mongoDB = mongoBDClient.db(MongoDatabase);
+        collection = mongoDB.collection(collectionName);
+    })
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
+    });
+ 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
-// const PORT = "8081";
-
-console.log("PORT==", PORT);
-
+ 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
@@ -220,6 +227,14 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
     const ordersBodyArray = _req.body;
     logger.info("update-order-status-body==", JSON.stringify(ordersBodyArray));
 
+    collection.insertOne({
+      endPoint:"/api/update-order-status",
+      data_in_string:JSON.stringify(ordersBodyArray),
+      data_in_Object:ordersBodyArray,
+      
+      message:"API HIT start"
+    })
+
     const updateOrderStatus = async (order) => {
       const storeDomain = order["store-domain"]
         ?.replace("offline_", "")
@@ -289,6 +304,14 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
     res.status(200).send(results);
   } catch (error) {
     logger.error("update-order-status-error==", error);
+
+    collection.insertOne({
+      endPoint:"/api/update-order-status",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error,
+      
+      message:"update-order-status-error"
+    })
     res
       .status(500)
       .send({ error: "An error occurred while updating order status" });
@@ -557,8 +580,8 @@ app.get("/api/oauth-callback", async (req, res) => {
 app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
     
-    const orderDetails = _req.body;
-
+    const orderDetails = _req.body; 
+    logger.info("order-create-webhook-HIT",orderDetails)
     // Helper functions
     const getCarrier = (item) => {
       const title = item?.title || null;
@@ -614,7 +637,15 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
         ordersData.push({ quote_id: quoteId, order_id: orderId, price, courierName: courier, order_status: orderStatus, order_type: orderType });
 
         // Update Shopify order
-       
+       logger.info(
+        "webhook-details",
+        orderId,
+        parseInt(orderDetails.id),
+        orderDetails?.contact_email,
+        orderDetails?.shipping_address?.phone,
+        orderDetails?.shipping_address?.first_name,
+        orderDetails?.shipping_address?.last_name
+       )
         update_shopify_order_id_on_portal(
           orderId,
           parseInt(orderDetails.id),
@@ -656,166 +687,38 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
 });
 
 
-
-
-
-// WEBHOOK FOR TWI SEPEARTE FLOW
-// app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
-  // const getCodes = (data) => {
-  //   const items = data.filter((obj) => obj.source === "Fast Courier");
-  //   return items;
-  // };
-  
-  // function extractQuoteIds(array) {
-  //   let quoteIds = array[0]
-  //     .split(",")
-  //     .map((item) => item?.match(/\(([^-]+)-/)[1])
-  //     .join(",");
-  //   return quoteIds;
-  // }
-  
-  // function extractOrderIds(array) {
-  //   let orderIds = array[0]
-  //     .split(",")
-  //     .map((item) => item?.match(/-([^\)]+)\)/)[1])
-  //     .join(",");
-  //   return orderIds;
-  // }
-  
-  // let getCarrier = (item) => {
-  //   // const item = data.find((obj) => obj.source === "Fast Courier");
-  //   const title = item ? item.title : null;
-  //   const startIndex = title.indexOf("[");
-  //   const endIndex = title.indexOf("]");
-  //   // Extract the substring between '[' and ']'
-  //   const carrierName = title.substring(startIndex + 1, endIndex);
-  //   return carrierName;
-  // };
-//   try {
-//     const session = await getSession(
-//       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
-//     );
-//     logger.info(
-//       "order-create-webhook==",
-//       _req.body,
-//     )
-//     let orderDetails = _req.body;
-//     const codes = getCodes(orderDetails.shipping_lines);
-
-//     if (codes.length > 0) {
-//       // const valuesArray = codes.split("~"); // FORMAT = = = = = (WKQLDRPXEQ-WKMVEZBDPO)~[PAID]~[31.98]
-
-//       // Trim the quotes from each value and assign them to variables
-//       // const carrierName = getCarrier(orderDetails.shipping_lines);
  
-//       let ordersData = [];
-//       for (let index = 0; index < codes.length; index++) {
-//         const [quote_id, order_id] = codes[index].code?.match(/\(([^-]+)-([^)]+)\)/).slice(1);
-//         const price = codes[index].code?.match(/-?\d+(\.\d+)?/)[0];
-//         const carrierName = getCarrier(codes[index]);
-//         const orderType = codes[index].code?.match(/\[([A-Z]+)\]/)[1];
-
-//         ordersData.push({
-//           quote_id: quote_id,
-//           order_id: order_id,
-//           price: price,
-//           courierName: carrierName ,
-//           order_status:
-//             orderType === "FALLBACK" ? "Fallback" : "Ready to Book",
-//           order_type:
-//             orderType === "FALLBACK"
-//               ? "Fallback"
-//               : orderType === "FREESHIPPING"
-//               ? "Freeshipping"
-//               : "Paid",
-//         });
-
-         
-//         try {
-//           await update_shopify_order_id_on_portal(
-//             order_id,
-//             parseInt(orderDetails.id),
-//             _req.body?.phone,
-//             _req.body?.shipping_address?.first_name,
-//             _req.body?.shipping_address?.last_name,
-//           );
-//         } catch (error) {
-//           logger.info(`Failed to update Shopify order ID on portal: ${error}`);
-//           // You can decide how to handle errors in updating each order individually.
-//         }
-//       }
-//       const order = new shopify.api.rest.Order({
-//         session: session[0],
-//       });
-//       order.id = parseInt(orderDetails.id);
-//       order.metafields = [
-//         {
-//           key: "quote_id",
-//           value: "quoteIds",
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//         {
-//           key: "order_hash_id",
-//           value: "orderIds",
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//         {
-//           key: "carrier_name",
-//           value: "carrierName",
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//         {
-//           key: "fc_order_status",
-//           value:
-//             "valuesArray[1]" === "FALLBACK"
-//               ? "Fallback"
-//               : "valuesArray[1]" === "FREESHIPPING"
-//               ? "Freeshipping"
-//               : "Paid",
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//         {
-//           key: "courier_charges",
-//           value: "valuesArray[2]",
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//         {
-//           key: "order_data",
-//           value: JSON.stringify(ordersData),
-//           type: "single_line_text_field",
-//           namespace: "Order",
-//         },
-//       ];
-
-//       await order.save({
-//         update: true,
-//       });
-//       res.status(200).send(order);
-//     }
-//   } catch (error) {
-//     logger.info("order-create-webhook-error==", error);
-//   }
-// });
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
-
-  logger.info("request",_req.body); 
-
+  
+  collection.insertOne({
+    endPoint:"/api/shipping-rates",
+    data:"",
+    message:"shopify-webhook-hit-successfully"
+  })
   try {
     const session = await getSession(
       `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
     );
 
     if (session.length === 0 || !session[0].merchant_token) {
+      collection.insertOne({
+        endPoint:"/api/shipping-rates",
+        data_in_string:JSON.stringify(session),
+        data_in_Object:session,
+        message:"Merchant not found"
+      })
       logger.info("Merchant not found", "session =>", session);
       res.status(200).json({ error: "Merchant not found" });
       return;
     }
     if (!session[0].merchant_locations) {
+      collection.insertOne({
+        endPoint:"/api/shipping-rates",
+        data_in_string:JSON.stringify(session[0]),
+        data_in_Object:session[0],
+        
+        message:"merchant_locations not found"
+      })
       logger.info("merchant_locations not found");
       res.status(200).json({ error: "Merchant not found" });
       return;
@@ -830,9 +733,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     }
     const destination = _req.body.rate.destination;
     const merchant_locations = JSON.parse(session[0].merchant_locations);
-    const merchant_default_location = merchant_locations.find(
-      (element) => element.is_default == 1
-    );
+    
     
     let courierData = await Promise.all(
       _req.body.rate.items.map(async (element) => {
@@ -881,64 +782,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           
         }
 
-
-
-
-
-
-
-
-        // if (cal_locationData.type === "tag") {
-        //   const filteredLocations = merchant_locations.filter((location) => {
-        //     if (location.tag && location.tag !== "[]") {
-        //       const tags = location.tag.split(",").map(Number);
-        //       return tags.includes(Number(cal_locationData.value.id));
-        //     }
-        //     return false;
-        //   });
-
-        //   if (filteredLocations.length === 0) {
-        //     locationData = { ...merchant_default_location };
-        //   } else {
-        //     locationData = filteredLocations[0];
-
-        //     if (destination.latitude && destination.longitude) {
-        //       let minDistance = haversineDistance(
-        //         parseFloat(destination.latitude),
-        //         parseFloat(destination.longitude),
-        //         parseFloat(locationData.latitude),
-        //         parseFloat(locationData.longitude)
-        //       );
-
-        //       for (let i = 1; i < filteredLocations.length; i++) {
-        //         const location = filteredLocations[i];
-        //         const distance = haversineDistance(
-        //           parseFloat(destination.latitude),
-        //           parseFloat(destination.longitude),
-        //           parseFloat(location.latitude),
-        //           parseFloat(location.longitude)
-        //         );
-
-        //         if (distance < minDistance) {
-        //           minDistance = distance;
-        //           locationData = { ...location };
-        //         }
-        //       }
-        //     } else {
-        //       locationData = { ...merchant_default_location };
-        //     }
-        //   }
-        // } else {
-        //   locationData = merchant_locations.find(
-        //     (element) => element.id == cal_locationData.value.id
-        //   );
-        //   if (!locationData) {
-        //     locationData = { ...merchant_default_location };
-        //   }
-        // }
-       
  
-
 
 
 
@@ -1164,6 +1008,16 @@ if (items[0]?.is_flat_rate_enabled) {
   );
     data = await quote.json();
 
+    collection.insertOne({
+      endPoint:"/api/shipping-rates",
+       
+   
+        data_in_string:JSON.stringify(data),
+        data_in_Object:data,
+       
+      message:"with flat rate"
+    })
+
     logger.info("with flat rate",data); 
   
 }else{
@@ -1187,6 +1041,13 @@ if (items[0]?.is_flat_rate_enabled) {
     }
   );
     data = await quote.json();
+    collection.insertOne({
+      endPoint:"/api/shipping-rates",
+     
+      data_in_string:JSON.stringify(data),
+        data_in_Object:data,
+      message:"without flat rate"
+    })
     logger.info("without flat rate",data); 
      
 }
@@ -1283,13 +1144,26 @@ if (items[0]?.is_flat_rate_enabled) {
         },
       ],
     };
-
+    collection.insertOne({
+      endPoint:"/api/shipping-rates",
+  
+      data_in_string:JSON.stringify(response),
+        data_in_Object:response,
+      message:"response"
+    })
     logger.info("response",response); 
      
     res.status(200).json(response);
   } catch (error) {
     console.error("shipping-rates==", error);
     logger.info("shipping-rates-==", error);
+    collection.insertOne({
+      endPoint:"/api/shipping-rates",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error,
+      
+      message:"shipping-rates-error"
+    })
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -1456,7 +1330,7 @@ async function update_shopify_order_id_on_portal(
   destination_first_name,
   destination_last_name
 ) {
-  await fetch("https://portal.fastcourier.com.au/api/update-order-id", {
+ const response=  await fetch("https://portal.fastcourier.com.au/api/update-order-id", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -1475,6 +1349,17 @@ async function update_shopify_order_id_on_portal(
 
     }),
   });
+
+  const data = await response.json()
+  collection.insertOne({
+    endPoint:"/api/webhook/order-create",
+    data_in_string:JSON.stringify(data),
+    data_in_Object:data,
+    
+    message:"update order details On Portal"
+  })
+
+  logger.info("response-response",data)
 }
 
 // Set up Shopify authentication and webhook handling
@@ -1522,16 +1407,7 @@ app.get("/oauth/callback", async (req, res) => {
   // res.json(user);
 });
 
-app.get("/api/get-merchant", async (_req, res) => {
-  try {
-    const db = await getConnection();
-    let collection = db.collection("merchant_details");
-    const response = await collection.find({}).toArray();
-    res.status(200).send(response);
-  } catch (error) {
-    console.log("get-merchant=", error);
-  }
-});
+ 
 app.get("/api/get-merchant-token", async (_req, res) => {
   try {
     let current_session = res.locals.shopify.session;
@@ -1586,42 +1462,9 @@ app.get("/api/remove-merchant-token", async (_req, res) => {
   }
 });
 
-// app.post("/api/save-merchant", async (_req, res) => {
-//   try {
-//     const db = await getConnection();
-//     const body = _req.body;
-//     let collection = db.collection("merchant_details");
-//     const response = await collection.insertOne(body);
-//     res.status(200).send(response);
-//   } catch (error) {
-//     console.log("save-merchant=", error);
-//   }
-// });
+ 
 
-app.post("/api/save-merchant", async (_req, res) => {
-  try {
-    // return;
-    // const db = await getConnection();
-    // const body = _req.body;
-    // const id = body.id; // Assuming the ID is present in the request body
-    // const session = await getSession()
-    // let collection = db.collection("merchant_details");
-    // // Check if a record with the given ID exists
-    // const existingRecord = await collection.findOne({ id: id });
-    // if (existingRecord) {
-    //   // If record exists, update it
-    //   const response = await collection.updateOne({ id: id }, { $set: body });
-    //   res.status(200).send(response);
-    // } else {
-    //   // If record does not exist, create a new one
-    //   const response = await collection.insertOne(body);
-    //   res.status(200).send(response);
-    // }
-  } catch (error) {
-    console.log("save-merchant=", error);
-    res.status(500).send("Internal Server Error"); // Sending a generic error response
-  }
-});
+ 
 app.post("/api/set-merchant-token", bodyParser.json(), async (_req, res) => {
   try {
     const body = _req.body;
@@ -2261,7 +2104,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://shop.fastcourier.com.au/api/shipping-rates";
+      "https://adverse-nascar-fabric-confirm.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2289,14 +2132,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://shop.fastcourier.com.au/api/shipping-rates";
+        "https://adverse-nascar-fabric-confirm.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://shop.fastcourier.com.au/api/webhook/order-create";
+        "https://adverse-nascar-fabric-confirm.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
@@ -2332,29 +2175,8 @@ app.post(
         });
       }
 
-      // Change URL Origins from all Webhooks
-      // const all_webhooks = await shopify.api.rest.Webhook.all({
-      //   session: res.locals.shopify.session,
-      // });
-      // // If any of the webhook adress origin is not as per the current URL origin then update it
-      // all_webhooks.data.forEach(async (_webhook) => {
-      //   let real_webook_origin= new URL(webhook_URL).origin;
-      //   let webhook_link = new URL(_webhook.address ?? "");
-      //   let webhook_origin =  new URL(webhook_link ?? "").origin;
-      //   if (webhook_origin !== real_webook_origin) {
-      //     webhook_link.origin =real_webook_origin
-      //     const webhook = new shopify.api.rest.Webhook({
-      //       session: res.locals.shopify.session,
-      //     });
-      //     webhook.id = Number(_webhook.id);
-      //     webhook.address = webhook_URL;
-      //     await webhook.save({
-      //       update: true,
-      //     });
-      //   }
-      // });
-
-      // Dummy Test STOP
+     
+ 
       res.status(200).send(carrier_service);
     } catch (error) {
       console.log("carrier-update=", error);

@@ -12,6 +12,7 @@ import Papa from "papaparse";
 import { csv } from "csvtojson";
 import { headers, locationMetafields } from "../../globals";
 import { Dropdown } from "react-bootstrap";
+import * as XLSX from "xlsx";
 
 export function ProductMapping(props) {
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
@@ -884,9 +885,54 @@ export function ProductMapping(props) {
     }
     return true; // All products fit in some box
   }
+
+// GENERATE EXCEL IMPLEMENTATION
+
+const data = [
+  { Name: "John", Age: 25, Country: "USA" },
+  { Name: "Anna", Age: 30, Country: "UK" },
+  { Name: "Mike", Age: 28, Country: "Canada" },
+];
+
+// Function to download the Excel file
+const downloadExcel = () => {
+  // Step 1: Create a new Workbook
+  const workbook = XLSX.utils.book_new();
+
+  // Step 2: Convert the data to a worksheet
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  // Step 3: Append the worksheet to the workbook
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  // Step 4: Trigger the download of the Excel file
+  XLSX.writeFile(workbook, "DataSheet.xlsx");
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="product-mapping">
       {isLoading && <Loader />}
+
+      <button
+      onClick={()=>{
+        downloadExcel( )
+      }}
+      >
+        dcd
+      </button>
       <div className="product-header">
         <div className="product-map-filters align-items-end">
           {/* <div className="input-container">
