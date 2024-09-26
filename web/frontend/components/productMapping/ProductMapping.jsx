@@ -926,23 +926,10 @@ const downloadExcel = () => {
     <div className="product-mapping">
       {isLoading && <Loader />}
 
-      <button
-      onClick={()=>{
-        downloadExcel( )
-      }}
-      >
-        dcd
-      </button>
+     
       <div className="product-header">
         <div className="product-map-filters align-items-end">
-          {/* <div className="input-container">
-                        <div className="input-lebel">
-                            <span> Keywords&nbsp;</span>
-                        </div>
-                        <div className="input-field">
-                            <input className="input-field-text" type="text" />
-                        </div>
-                    </div> */}
+          
           {false && (
             <>
               <div className="input-container">

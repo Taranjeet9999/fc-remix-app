@@ -48,7 +48,7 @@ export default defineConfig({
   define: {
     "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
     // "process.env.API_ENDPOINT": JSON.stringify("https://fctest-api.fastcourier.com.au"),
-    "process.env.API_ENDPOINT": JSON.stringify("https://portal-staging.fastcourier.com.au"),
+    "process.env.API_ENDPOINT": JSON.stringify("https://portal.fastcourier.com.au"),
     "process.env.PROD_API_ENDPOINT": JSON.stringify("https://portal.fastcourier.com.au"),
     "process.env.REQUEST_TYPE": JSON.stringify("shopify_development"),
   },

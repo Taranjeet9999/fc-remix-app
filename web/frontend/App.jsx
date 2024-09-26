@@ -72,45 +72,13 @@ export default function App() {
           <Routes pages={pages} /> */}
             <div className="app">
               <div className="top-bar">
-
-        <CustomTooltip
-        tooltipClassName="sandbox-tooltip"
-                     toolTipStyle={{
-                      fontSize:"14px",
-                      width:"310px"
-                     }}  
-                      text={"Test Mode allows you to simulate actions without real charges. Use it to ensure everything works correctly before going live"}
-                    >
-              <span className="d-flex align-items-center">
-                      <FontAwesomeIcon
-            icon="fa-solid fa-exclamation-circle"
-    className="ml-2 pointer"
-            style={{
-              width: "14px",
-              height: "14px",
-              paddingRight:"10px"
-            }}
-            color="black" 
-          />
-                    <div className="toggle-text">Sandbox</div>
-        </span>
-                    </CustomTooltip>
+ 
 
 
 
 
 
                 
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={isStaging}
-                    onClick={() => {
-                      setShowSandBoxModal(true);
-                    }}
-                  />
-                  <span className="slider round"></span>
-                </label>
               </div>
               <div className="app-mode">
                 {/* {isLoggedIn && <div className="mode-left"></div>} */}
@@ -122,7 +90,7 @@ export default function App() {
                     background: isLoggedIn ? "white" : "transparent",
                   }}
                 >
-                  {isStaging && <div className="mode-text">Test Mode</div>}
+                 
                 </div>
               </div>
               {/* <BrowserRouter> */}

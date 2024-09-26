@@ -1064,7 +1064,7 @@ export function MerchantBillingDetails(props) {
         onClick={() => {
     
           
-          window.open(`https://portal-staging.fastcourier.com.au/quick-login?access_token=${localStorage.getItem("accessToken")}&redirect_page=payment` ,'popupWindow', 'width=7000,height=7000')
+          window.open(`https://portal.fastcourier.com.au/quick-login?access_token=${localStorage.getItem("accessToken")}&redirect_page=payment` ,'popupWindow', 'width=7000,height=7000')
         }}
       >
         TEST

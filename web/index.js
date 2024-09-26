@@ -354,7 +354,7 @@ const urlParams = new URLSearchParams(new URL(decodedURI).search);
 // Get the value of the 'isProduction' parameter
 const _isProduction = urlParams.get('isProduction');
        return res.redirect(
-        `${_isProduction?.toString()?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+        `${_isProduction?.toString()?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
       );
     }
 
@@ -830,6 +830,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       })
     );
 
+     
     let total_cart_value = courierData.reduce(
       (acc, item) => acc + item.price,
       0
@@ -886,30 +887,43 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
             });
           });
 
-          // SHipping Box Functionality START
-          let individual_items = itemsArray.filter(
-            (item) => item.isIndividual === "Yes"
-          );
-          let non_individual_items = itemsArray.filter(
-            (item) => item.isIndividual === "No"
-          ); 
-          const _bins = shipping_boxes.map((box, idx) => {
-            return {
-              // name: box.package_name,
-              name: `Le petite box-${idx}`,
-              width: Number(box.width),
-              height: Number(box.height),
-              length: Number(box.length),
-            };
-          });
-          let individual_items_packed = packItems(_bins, non_individual_items);
-          individual_items_packed = processBoxes(
-            JSON.parse(JSON.stringify(individual_items_packed))
-          );
-          let itemsArray_to_send_to_courier = [
-            ...individual_items_packed,
-            ...individual_items,
-          ];
+          // IF SHIPPING BOX EXISTS
+          let itemsArray_to_send_to_courier;
+         
+
+          if(shipping_boxes && shipping_boxes?.length > 0 && Array.isArray(shipping_boxes)){
+           
+            let individual_items = itemsArray.filter(
+              (item) => item.isIndividual === "Yes"
+            );
+
+            let non_individual_items = itemsArray.filter(
+              (item) => item.isIndividual === "No"
+            ); 
+            const _bins = shipping_boxes.map((box, idx) => {
+              return {
+                // name: box.package_name,
+                name: `Le petite box-${idx}`,
+                width: Number(box.width),
+                height: Number(box.height),
+                length: Number(box.length),
+              };
+            });
+            let individual_items_packed = packItems(_bins, non_individual_items);
+            
+              itemsArray_to_send_to_courier = [
+              ...individual_items_packed,
+              ...individual_items,
+            ];
+          }else{
+            // IF THERE ARE NO SHIPPING BOXES
+itemsArray_to_send_to_courier=[
+  ...itemsArray
+]
+          }
+
+          
+         
           // SHipping Box Functionality STOP
 
           let totalWeightOfItems = 0;
@@ -930,8 +944,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
           );
 
           const payload = {
-            subOrderType: "flat_rate",
-
+            subOrderType: "flat_rate", 
             flatPrice: items[0]?.flat_price,
             request_type: "wp",
             pickupFirstName: items[0].pickupLocation?.first_name?? "",
@@ -990,7 +1003,7 @@ if (items[0]?.is_flat_rate_enabled) {
   // IF FLAT RATE ENABLED
   // IF FLAT RATE ENABLED
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
+    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/create-flate-order`,
     {
       method: "POST",
       credentials: "include",
@@ -1023,7 +1036,7 @@ if (items[0]?.is_flat_rate_enabled) {
 }else{
  
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
+    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
     )}`,
     {
@@ -1066,9 +1079,9 @@ if (items[0]?.is_flat_rate_enabled) {
                   ? 0
                   : xitem?.is_flat_rate_enabled
                   ? xitem?.flat_price
-                  : data?.message === "No quote found"
-                  ? `${merchant?.fallback_amount}`
-                  : `${data?.data?.priceIncludingGst}`,
+                  : data?.status
+                  ? `${data?.data?.priceIncludingGst}`
+                  :  `${merchant?.fallback_amount}`,
               },
             };
           });
@@ -1076,28 +1089,28 @@ if (items[0]?.is_flat_rate_enabled) {
           return {
             amount: items[0]?.is_flat_rate_enabled
               ? items[0]?.flat_price
-              : data?.message === "No quote found"
-              ? `${merchant?.fallback_amount}`
-              : `${data?.data?.priceIncludingGst}`,
+              : data?.status
+              ? `${data?.data?.priceIncludingGst}`
+              :  `${merchant?.fallback_amount}`,
             description:
-              data?.message === "No quote found"
-                ? "Incl.Tax"
-                : "Includes tracking and insurance",
+              data?.status
+                ? "Includes tracking and insurance" 
+                :"Incl.Tax",
             eta: data?.data?.eta ?? "5-10 Business days",
             serviceCode: items[0]?.is_flat_rate_enabled
               ? `(FLATRATE-${data?.order_id})`
-              : data?.message === "No quote found"
-              ? "(FALLBACK-FALLBACK)"
-              : `(${data?.data?.id}-${data?.data?.orderHashId})`,
+              : data?.status
+              ? `(${data?.data?.id}-${data?.data?.orderHashId})` 
+              :  "(FALLBACK-FALLBACK)",
             courierName: items[0]?.is_flat_rate_enabled
               ? "Flat-Rate"
               : data?.data?.courierName ?? "Shipping",
             totalPrice:
             items[0]?.is_flat_rate_enabled
             ? items[0]?.flat_price
-            :data?.message === "No quote found"
-                ? `${merchant?.fallback_amount}`
-                : `${data?.data?.priceIncludingGst}`,
+            :data?.status
+            ? `${data?.data?.priceIncludingGst}` 
+            :  `${merchant?.fallback_amount}`,
             quoteData: {
               ...data,
               ...payload,
@@ -1229,7 +1242,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant = await fetch(
-//     `https://portal-staging.fastcourier.com.au/api/wp/get_merchant`,
+//     `https://portal.fastcourier.com.au/api/wp/get_merchant`,
 //     {
 //       method: "GET",
 //       credentials: "include",
@@ -1250,7 +1263,7 @@ function getUniqueQuoteData(data) {
 //   };
 
 //   const pickupLocations = await fetch(
-//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
+//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
 //     {
 //       method: "GET",
 //       credentials: "include",
@@ -1279,7 +1292,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant_location = await fetch(
-//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_locations/` +
+//     `https://portal.fastcourier.com.au/api/wp/merchant_locations/` +
 //       merchant_id +
 //       "/" +
 //       tagId,
@@ -1306,7 +1319,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant_location = await fetch(
-//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/location/` +
+//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/location/` +
 //       // merchant_id +
 //       // "/" +
 //       locationId,
@@ -2781,10 +2794,9 @@ function groupByLocation(products) {
   return locationItems;
 }
 function packItems(_bins, _items, level = 0) {
-  // logger.info("Packing items",BinPacking3D.BinPacking);
-  // logger.info("Packing items 2",BinPacking3D.BP3D);
-   
-  let packer = new Packer();
+ 
+  try {
+    let packer = new Packer();
   let bin_itemsto_send = [];
 
   let bins = _bins.map(
@@ -2827,7 +2839,24 @@ function packItems(_bins, _items, level = 0) {
     bin_itemsto_send = bin_itemsto_send.concat(newItems);
   }
 
-  return bin_itemsto_send;
+
+
+  return processBoxes(
+    JSON.parse(JSON.stringify(bin_itemsto_send))
+  );
+
+   
+  } catch (error) {
+    collection.insertOne({
+      endPoint:"packItems  Function",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error,
+      
+      message:"packItems  Function-error"
+    })
+    return _items
+  }
+  
 }
 function processBoxes(boxes) {
   return boxes.map((box) => ({
