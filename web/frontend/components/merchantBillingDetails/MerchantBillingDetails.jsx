@@ -361,7 +361,7 @@ export function MerchantBillingDetails(props) {
       const Webhook_Mapped = filteredCarrierService.some(
         (elem) =>
           elem.callback_url ===
-          "https://adverse-nascar-fabric-confirm.trycloudflare.com/api/shipping-rates"
+          "https://shop.fastcourier.com.au/api/shipping-rates"
       );
       if (Webhook_Mapped) {
         return;
