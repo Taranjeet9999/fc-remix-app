@@ -89,12 +89,7 @@ export function ProductMapping(props) {
       setShowSearchText(true)
 
     }
-
-    // params = {
-    //   ...params, 
-    //   searchString: params.searchString?  params.searchString   : productSearchString,
-    // };
-    // Build query string from params object
+ 
     const queryString = new URLSearchParams(params).toString(); 
     // Construct the full URL
     const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
@@ -152,6 +147,7 @@ export function ProductMapping(props) {
           };
         }),
       };
+
       formattedResponse.push(formattedProduct);
     });
 
@@ -208,7 +204,9 @@ export function ProductMapping(props) {
     getPackageTypes();
     getPickupLocations();
     getShippingBoxes();
-    getAllProducts();
+    getAllProducts({
+      searchString:productSearchString
+     });
     
   }, []);
 
@@ -317,7 +315,7 @@ export function ProductMapping(props) {
             setDataArray(result.data);
             const importData = result.data;
             let importDataArray = transformImportDimentionArray(importData);
-            console.log("importData", importDataArray);
+             
             const allProductDimentions = importDataArray?.flatMap(
               (product) => product.productDimentions
             );
@@ -362,7 +360,9 @@ export function ProductMapping(props) {
             );
 
             if (productIds?.length > 0) {
-              getAllProducts();
+              getAllProducts({
+                searchString:productSearchString
+               });
               setIsLoading(false);
               setShowImportDimensionsModal(false);
             } else {
@@ -517,7 +517,9 @@ export function ProductMapping(props) {
 
       if (response) {
       }
-      getAllProducts();
+      getAllProducts({
+        searchString:productSearchString
+       });
       setIsLoading(false);
       setShowAssignLocationModal(false);
       setSelectedProducts([]);
@@ -579,7 +581,9 @@ export function ProductMapping(props) {
             variant_ids: selectedVariants,
           }),
         });
-        getAllProducts();
+        getAllProducts({
+          searchString:productSearchString
+         });
         setIsLoading(false);
         setshowDimensionsModal(false);
         setSelectedProducts([]);
@@ -724,7 +728,9 @@ export function ProductMapping(props) {
           isFreeShipping: checked,
         }),
       });
-      getAllProducts();
+      getAllProducts({
+        searchString:productSearchString
+       });
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -745,7 +751,9 @@ export function ProductMapping(props) {
           isVirtual: checked,
         }),
       });
-      getAllProducts();
+      getAllProducts({
+        searchString:productSearchString
+       });
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
@@ -888,32 +896,97 @@ export function ProductMapping(props) {
 
 // GENERATE EXCEL IMPLEMENTATION
 
-const data = [
-  { Name: "John", Age: 25, Country: "USA" },
-  { Name: "Anna", Age: 30, Country: "UK" },
-  { Name: "Mike", Age: 28, Country: "Canada" },
-];
-
-// Function to download the Excel file
-const downloadExcel = () => {
-  // Step 1: Create a new Workbook
-  const workbook = XLSX.utils.book_new();
-
-  // Step 2: Convert the data to a worksheet
-  const worksheet = XLSX.utils.json_to_sheet(data);
-
-  // Step 3: Append the worksheet to the workbook
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-  // Step 4: Trigger the download of the Excel file
-  XLSX.writeFile(workbook, "DataSheet.xlsx");
-};
 
 
+ 
+
+async function getProducts() {
+  let ALL_PRODUCTS_DATA = [];
+
+  async function getProductsAsync(params={}) {
+    const baseUrl = "/api/products";
+
+    const queryString = new URLSearchParams(params).toString();
+    // Construct the full URL
+    const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (data) {
+      const formattedProducts = formatProductData(data.body.data.products);
+      if (formattedProducts?.length===0) {
+        return
+      }
+      ALL_PRODUCTS_DATA.push(...formattedProducts)
+
+      if (formattedProducts[formattedProducts.length-1]?.cursor) {
+        await getProductsAsync(
+         { cursor: formattedProducts[formattedProducts.length-1].cursor}
+        )
+      }
+       
+    }
+  }
+await getProductsAsync()
+  return ALL_PRODUCTS_DATA;
+}
+
+const [processing, setProcessing] = useState(false)
+async function fetch_products_and_generate_excel() {
+  setProcessing(true)
+  const data = [];
+
+  let products_list = await getProducts();
+
+  for (let _product of products_list) {
+    let userData = JSON.parse(localStorage.getItem("userData"));
+    let store = userData.shop.replace(".myshopify.com", "");
+    if (_product?.variants[0]?.title == "Default Title") {
+      data.push({
+        "Product ID": _product.id,
+        "Product URL": `https://admin.shopify.com/store/${store}/products/${_product.id}`,
+        Name: _product.title,
+        Price: "$" + _product?.variants[0]?.price,
+        "Product Type": "Product",
+        "Package Type": "",
+        Length: "",
+        Width: "",
+        Height: "",
+        Weight: "",
+      });
+    } else {
+      for (let _variant of _product?.variants) {
+        data.push({
+          "Product ID": _variant.id,
+          "Product URL": `https://admin.shopify.com/store/${store}/products/${_variant.id}`,
+          Name: _product.title + " - " + _variant.title,
+          Price: _variant.price,
+          "Product Type": "Variant",
+          "Package Type": "",
+          Length: "",
+          Width: "",
+          Height: "",
+          Weight: "",
+        });
+      }
+    }
+  }
 
 
-
-
+    
+    const workbook = XLSX.utils.book_new();
+ 
+    const worksheet = XLSX.utils.json_to_sheet(data);
+   
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+ 
+    XLSX.writeFile(workbook, "Product Mapping.xlsx");
+    setProcessing(false)
+}
 
 
 
@@ -1007,10 +1080,12 @@ const downloadExcel = () => {
           <div className="filter-buttons">
             {/* <button className="fc-yellow-btn pointer"> Filter </button> */}
             <button onClick={() =>{ resetFilters()
-
-              getAllProducts({
-                searchString: ""
-              })
+if (productSearchString) {
+  
+  getAllProducts({
+    searchString: ""
+  })
+}
 
 
 
@@ -1087,7 +1162,7 @@ const downloadExcel = () => {
             </div>
           </div>
           <div className="modal-body">
-            <div className="choose-file-row">
+            <div className="d-flex flex-column align-items-center justify-content-start">
               <div className="input-field">
                 <input
                   type="file"
@@ -1097,14 +1172,13 @@ const downloadExcel = () => {
                 />
               </div>
               <div
-                className="sample-download"
+                className="sample-download mt-3"
                 onClick={() => {
-                  handleDownloadCSV();
+                  fetch_products_and_generate_excel();
                 }}
               >
-                <a href="#" download={true}>
-                  {" "}
-                  Sample CSV{" "}
+                <a href="#"  >
+              {processing?   "CSV will be downloaded shortly.."  :  "Generate CSV"}
                 </a>
               </div>
             </div>
@@ -1792,12 +1866,7 @@ const downloadExcel = () => {
             <th>Location</th>
           </tr>
           {products?.length > 0 &&
-            products
-              // .filter((prod) =>
-              //   prod.title
-              //     .toLowerCase()
-              //     .includes(productSearchString.toLowerCase())
-              // )
+            products 
               .map((element, i) => {
                 return element?.variants.length > 0 &&
                   element?.variants[0]?.title == "Default Title" ? (

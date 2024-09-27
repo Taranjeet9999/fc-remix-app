@@ -528,7 +528,7 @@ const storeDomain = urlParams.get('shop');
               }); 
               const queryParams = new URLSearchParams(params).toString(); 
               const url = encodeURIComponent(
-                `${window.location.origin}/api/oauth-callback${window.localStorage.getItem("appSearchParams")}&isProduction=${localStorage.getItem("isProduction")}`
+                `${window.location.origin}/api/oauth-callback${window.localStorage.getItem("appSearchParams")}&isProduction=${1??localStorage.getItem("isProduction")}`
               );
               // const url = encodeURIComponent(
               //   `${window.location.origin}/api/oauth-callback?${queryParams}`
