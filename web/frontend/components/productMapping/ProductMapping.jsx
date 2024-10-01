@@ -1,7 +1,7 @@
 import "./style.scss";
 import { Modal } from "../modal";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AddLocation } from "../addLocation";
 import { ErrorModal } from "../errorModal";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
@@ -13,8 +13,10 @@ import { csv } from "csvtojson";
 import { headers, locationMetafields } from "../../globals";
 import { Dropdown } from "react-bootstrap";
 import * as XLSX from "xlsx";
+import { toast } from "react-toastify";
 
 export function ProductMapping(props) {
+  const excelFileRef= useRef(null)
   const [showShippingBoxesModal, setShowShippingBoxesModal] = useState(false);
   const [showAddShippingBoxModal, setShowAddShippingBoxModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -258,7 +260,30 @@ export function ProductMapping(props) {
  
 
   const handleCsvInputChange = (e) => {
-    setCsvData(e.target.files[0]);
+    // setCsvData(e.target.files[0]); 
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        const binaryStr = event.target.result;
+
+        // Read the Excel file into a workbook object
+        const workbook = XLSX.read(binaryStr, { type: "binary" });
+
+        // Convert the first sheet to JSON
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const sheetData = XLSX.utils.sheet_to_json(sheet);
+
+        // Set the parsed data in state
+        setCsvData(sheetData);
+      };
+
+      // Read the file as a binary string
+      reader.readAsBinaryString(file);
+    }
   };
 
   const [importDimensionError, setImportDimensionError] = useState("");
@@ -304,80 +329,167 @@ export function ProductMapping(props) {
     return outputArray;
   }
 
-  const importDimensions = async () => {
-    setIsLoading(true);
-    try {
-      Papa.parse(csvData, {
-        header: true,
-        skipEmptyLines: false,
-        complete: async (result) => {
-          try {
-            setDataArray(result.data);
-            const importData = result.data;
-            let importDataArray = transformImportDimentionArray(importData);
+  // const importDimensions = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     Papa.parse(csvData, {
+  //       header: true,
+  //       skipEmptyLines: false,
+  //       complete: async (result) => {
+  //         try {
+  //           setDataArray(result.data);
+  //           const importData = result.data;
+  //           let importDataArray = transformImportDimentionArray(importData);
              
-            const allProductDimentions = importDataArray?.flatMap(
-              (product) => product.productDimentions
-            );
-            const isAllItemsFitable = canFitAllProducts(
-              shippingBoxes,
-              allProductDimentions?.filter(
-                (_product) => _product?.isIndividual?.toLowerCase() === "no"
-              )
-            );
-            if (!isAllItemsFitable) {
-              setImportDimensionError("Some products are not fit in any box");
-              setIsLoading(false);
-              return;
-            }
+  //           const allProductDimentions = importDataArray?.flatMap(
+  //             (product) => product.productDimentions
+  //           );
+  //           const isAllItemsFitable = canFitAllProducts(
+  //             shippingBoxes,
+  //             allProductDimentions?.filter(
+  //               (_product) => _product?.isIndividual?.toLowerCase() === "no"
+  //             )
+  //           );
+  //           if (!isAllItemsFitable) {
+  //             setImportDimensionError("Some products are not fit in any box");
+  //             setIsLoading(false);
+  //             return;
+  //           }
 
-            const productIds = await Promise.all(
-              importDataArray.map(async (element) => {
-                const product = products?.find(
-                  (product) => product?.variants?.[0]?.sku === element?.SKU
-                );
+  //           const productIds = await Promise.all(
+  //             importDataArray.map(async (element) => {
+  //               const product = products?.find(
+  //                 (product) => product?.variants?.[0]?.sku === element?.SKU
+  //               );
 
-                console.log("product", product);
+  //               console.log("product", product);
 
-                if (product?.id) {
-                  await fetch("/api/product/add-dimensions", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      productDimentions: element.productDimentions,
-                      product_ids: [product.id],
-                      variant_ids: [],
-                    }),
-                  });
+  //               if (product?.id) {
+  //                 await fetch("/api/product/add-dimensions", {
+  //                   method: "POST",
+  //                   headers: {
+  //                     "Content-Type": "application/json",
+  //                   },
+  //                   body: JSON.stringify({
+  //                     productDimentions: element.productDimentions,
+  //                     product_ids: [product.id],
+  //                     variant_ids: [],
+  //                   }),
+  //                 });
 
-                  return product.id;
-                }
+  //                 return product.id;
+  //               }
 
-                // return null;
-              })
-            );
+  //               // return null;
+  //             })
+  //           );
 
-            if (productIds?.length > 0) {
-              getAllProducts({
-                searchString:productSearchString
-               });
-              setIsLoading(false);
-              setShowImportDimensionsModal(false);
-            } else {
-              setImportDimensionError("No Products found");
-              setIsLoading(false);
-            }
-          } catch (error) {
-            console.log("import dmensions error", error);
+  //           if (productIds?.length > 0) {
+  //             getAllProducts({
+  //               searchString:productSearchString
+  //              });
+  //             setIsLoading(false);
+  //             setShowImportDimensionsModal(false);
+  //           } else {
+  //             setImportDimensionError("No Products found");
+  //             setIsLoading(false);
+  //           }
+  //         } catch (error) {
+  //           console.log("import dmensions error", error);
+  //         }
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log("import dmensions error", error);
+  //   }
+  // };
+
+
+
+  const importDimensions = async () => {
+     setIsLoading(true);
+    try {
+      if (csvData) {
+        // Make Group of all items if they Get Repeates
+        let data = [...csvData];
+        data = data.reduce((acc, obj) => {
+          if (!acc[obj["Product ID"]]) {
+            acc[obj["Product ID"]] = [];
           }
-        },
-      });
+          acc[obj["Product ID"]].push(obj);
+          return acc;
+        }, {});
+
+        let updated_data_to_send_to_backend = [];
+        
+        for (const keyID in data) {
+          //Loop Through Object
+
+          // Loop through Values as they ARE ARRAY
+          let productDimentions = [];
+
+          for (const row of data[keyID]) {
+            productDimentions.push({
+              packageType: row["Package Type"] ? row["Package Type"] : "box",
+              height: row["Height"] ? row["Height"] : "",
+              width: row["Width"] ? row["Width"] : "",
+              length: row["Length"] ? row["Length"] : "",
+              weight: row["Weight"] ? row["Weight"] : "",
+              isIndividual: row["Individual"] ? row["Individual"] : "Yes",
+            });
+          }
+
+          updated_data_to_send_to_backend.push({
+            productDimentions,
+            id: keyID,
+            type: data[keyID][0]?.["Product Type"],
+            title: data[keyID][0]?.["Name"],
+          });
+        }
+     
+
+ 
+        const response = await fetch("/api/product/add-excel-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            excelArrayData: updated_data_to_send_to_backend
+          }),
+        });
+
+
+       await getAllProducts({
+          searchString:productSearchString
+         });
+
+         if (excelFileRef.current) {
+          excelFileRef.current.value = '';
+        }
+
+         
+         setShowImportDimensionsModal(false)
+         toast.success(`Product mapped Successfully`, {
+          position: "top-right",
+          
+        })
+
+
+      }
     } catch (error) {
       console.log("import dmensions error", error);
+      toast.error('Something went wrong !', {
+        position: "top-right",
+       
+        });
     }
   };
+
+
+
+
+
 
   const getPickupLocations = () => {
     setIsLoading(true);
@@ -480,6 +592,7 @@ export function ProductMapping(props) {
       : [...selectedProducts, e.target.value];
     setSelectedProducts(productIds);
   };
+  console.log("productIds",selectedProducts)
 
   const selectVariant = (e) => {
     const variantIds = selectedVariants.includes(e.target.value)
@@ -937,7 +1050,8 @@ await getProductsAsync()
 
 const [processing, setProcessing] = useState(false)
 async function fetch_products_and_generate_excel() {
-  setProcessing(true)
+
+  setProcessing(true);
   const data = [];
 
   let products_list = await getProducts();
@@ -946,46 +1060,69 @@ async function fetch_products_and_generate_excel() {
     let userData = JSON.parse(localStorage.getItem("userData"));
     let store = userData.shop.replace(".myshopify.com", "");
     if (_product?.variants[0]?.title == "Default Title") {
-      data.push({
-        "Product ID": _product.id,
-        "Product URL": `https://admin.shopify.com/store/${store}/products/${_product.id}`,
-        Name: _product.title,
-        Price: "$" + _product?.variants[0]?.price,
-        "Product Type": "Product",
-        "Package Type": "",
-        Length: "",
-        Width: "",
-        Height: "",
-        Weight: "",
-      });
+      let location_data = _product?.metafields?.find(
+        (it) => it?.key === "product_dimentions"
+      );
+      if (location_data) {
+        location_data = JSON.parse(location_data?.value ?? "");
+      }
+
+      let iter = 0;
+      do {
+        data.push({
+          "Product ID": _product?.variants[0].id,
+          "Product URL": `https://admin.shopify.com/store/${store}/products/${_product.id}`,// If you get Error replace it with _product?.variants[0].id
+          Name: _product.title,
+          Price: "$" + _product?.variants[0]?.price,
+          "Product Type": "Product",
+          "Package Type": "",
+          Length: location_data?.[iter]?.length ?? "",
+          Width: location_data?.[iter]?.width ?? "",
+          Height: location_data?.[iter]?.height ?? "",
+          Weight: location_data?.[iter]?.weight ?? "",
+          Individual: location_data?.[iter]?.isIndividual ?? "",
+        });
+
+        iter++;
+      } while (iter < location_data?.length);
     } else {
       for (let _variant of _product?.variants) {
-        data.push({
-          "Product ID": _variant.id,
-          "Product URL": `https://admin.shopify.com/store/${store}/products/${_variant.id}`,
-          Name: _product.title + " - " + _variant.title,
-          Price: _variant.price,
-          "Product Type": "Variant",
-          "Package Type": "",
-          Length: "",
-          Width: "",
-          Height: "",
-          Weight: "",
-        });
+        let location_data = _variant?.metafields?.find(
+          (it) => it?.key === "product_dimentions"
+        );
+        if (location_data) {
+          location_data = JSON.parse(location_data?.value ?? "");
+        }
+
+        let iter = 0;
+        do {
+          data.push({
+            "Product ID": _variant.id,
+            "Product URL": `https://admin.shopify.com/store/${store}/products/${_variant.id}`,
+            Name: _product.title + " - " + _variant.title,
+            Price: _variant.price,
+            "Product Type": "Variant",
+            "Package Type": "",
+            Length: location_data?.[iter]?.length ?? "",
+            Width: location_data?.[iter]?.width ?? "",
+            Height: location_data?.[iter]?.height ?? "",
+            Weight: location_data?.[iter]?.weight ?? "",
+            Individual: location_data?.[iter]?.isIndividual ?? "",
+          });
+          iter++;
+        } while (iter < location_data?.length);
       }
     }
   }
 
+  const workbook = XLSX.utils.book_new();
 
-    
-    const workbook = XLSX.utils.book_new();
- 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-   
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
- 
-    XLSX.writeFile(workbook, "Product Mapping.xlsx");
-    setProcessing(false)
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  XLSX.writeFile(workbook, "Product Mapping.xlsx");
+  setProcessing(false);
 }
 
 
@@ -1110,7 +1247,7 @@ if (productSearchString) {
             <div className="d-flex align-items-center">
               <div>Shipping Boxes</div>
 
-              {!shippingBoxes?.length && (
+              {!shippingBoxes?.length && false && (
                 <FontAwesomeIcon
                   icon="fa-solid fa-exclamation-circle"
                   size="sm"
@@ -1147,7 +1284,13 @@ if (productSearchString) {
           </button>
           <button
             className="submit-btn"
-            onClick={() => setShowImportDimensionsModal(true)}
+            onClick={() =>{ setShowImportDimensionsModal(true)
+
+              if (excelFileRef.current) {
+                excelFileRef.current.value = '';
+              }
+
+            }}
           >
             Import Dimensions
           </button>
@@ -1167,7 +1310,8 @@ if (productSearchString) {
                 <input
                   type="file"
                   className="choose-file"
-                  accept=".csv"
+                   accept=".csv, .xls, .xlsx"
+                   ref={excelFileRef}
                   onChange={(e) => handleCsvInputChange(e)}
                 />
               </div>
@@ -1879,10 +2023,10 @@ if (productSearchString) {
                       {element?.variants[0]?.requires_shipping && (
                         <input
                           type="checkbox"
-                          value={element.id}
+                          value={element?.variants[0]?.id}
                           onChange={(e) => selectProduct(e)}
                           checked={selectedProducts.includes(
-                            element.id.toString()
+                            element?.variants[0]?.id?.toString()
                           )}
                         />
                       )}
@@ -1918,7 +2062,7 @@ if (productSearchString) {
                       {element?.variants[0]?.requires_shipping &&
                         getProductDimentionArray(
                           getProductMetaField(
-                            element.metafields,
+                            element?.variants[0]?.metafields,
                             "product_dimentions"
                           )
                         )?.map((item, i) => {
@@ -1929,7 +2073,7 @@ if (productSearchString) {
                       {element?.variants[0]?.requires_shipping &&
                         getProductDimentionArray(
                           getProductMetaField(
-                            element.metafields,
+                            element?.variants[0]?.metafields,
                             "product_dimentions"
                           )
                         )?.map((item, i) => {
@@ -1944,7 +2088,7 @@ if (productSearchString) {
                       {element?.variants[0]?.requires_shipping &&
                         getProductDimentionArray(
                           getProductMetaField(
-                            element.metafields,
+                            element?.variants[0]?.metafields,
                             "product_dimentions"
                           )
                         )?.map((item, i) => {
@@ -1955,7 +2099,7 @@ if (productSearchString) {
                       {element?.variants[0]?.requires_shipping &&
                         getProductDimentionArray(
                           getProductMetaField(
-                            element.metafields,
+                            element?.variants[0]?.metafields,
                             "product_dimentions"
                           )
                         )?.map((item, i) => {
@@ -1976,7 +2120,7 @@ if (productSearchString) {
                             }
                             checked={
                               getProductMetaField(
-                                element.metafields,
+                                element?.variants[0]?.metafields,
                                 "is_free_shipping"
                               ) == "1"
                                 ? true
@@ -1990,7 +2134,7 @@ if (productSearchString) {
                     <td width="10%">
                       {element?.variants[0]?.requires_shipping &&
                         getLocationtagName(
-                          getProductMetaField(element.metafields, "location")
+                          getProductMetaField(element?.variants[0]?.metafields, "location")
                         )}
                     </td>
                   </tr>

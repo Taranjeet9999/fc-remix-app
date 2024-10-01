@@ -1,0 +1,526 @@
+[2024-10-01T14:48:21.008] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '2-5 Business Days',
+    id: 'EQEAAKARBQ',
+    quote_id: 7518399,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 55.6,
+    priceIncludingGst: 61.16,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'YMKLXJAAPO'
+  }
+}
+[2024-10-01T14:48:21.015] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(EQEAAKARBQ-YMKLXJAAPO)~[PAID]~[61.16]',
+      total_price: '6115.999999999999',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:48:22.434] [INFO] default - without flat rate { message: 'No quote found', errors: [] }
+[2024-10-01T14:48:22.435] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:48:24.764] [INFO] default - without flat rate { message: 'No quote found', errors: [] }
+[2024-10-01T14:48:24.765] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:49:13.409] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'TNT',
+    eta: '7 Business Days',
+    id: 'JOPPPVPLXO',
+    quote_id: 7518413,
+    insuranceCategory: '76',
+    logo: 'https://portal.fastcourier.com.au/images/logos/tnt.png',
+    name: 'Road Express',
+    pickupCutOffTime: '15:00',
+    priceExcludingGst: 218.39,
+    priceIncludingGst: 240.23,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'XMJYANXXQO'
+  }
+}
+[2024-10-01T14:49:13.411] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(JOPPPVPLXO-XMJYANXXQO)~[PAID]~[240.23]',
+      total_price: '24022.999999999996',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:49:41.436] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'TNT',
+    eta: '7 Business Days',
+    id: 'EQZBBVBRBQ',
+    quote_id: 7518442,
+    insuranceCategory: '76',
+    logo: 'https://portal.fastcourier.com.au/images/logos/tnt.png',
+    name: 'Road Express',
+    pickupCutOffTime: '15:00',
+    priceExcludingGst: 218.39,
+    priceIncludingGst: 240.23,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'QMXVJEZZYM'
+  }
+}
+[2024-10-01T14:49:41.439] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(EQZBBVBRBQ-QMXVJEZZYM)~[PAID]~[240.23]',
+      total_price: '24022.999999999996',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:49:41.485] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'TNT',
+    eta: '7 Business Days',
+    id: 'XONPPXPYBO',
+    quote_id: 7518445,
+    insuranceCategory: '76',
+    logo: 'https://portal.fastcourier.com.au/images/logos/tnt.png',
+    name: 'Road Express',
+    pickupCutOffTime: '15:00',
+    priceExcludingGst: 218.39,
+    priceIncludingGst: 240.23,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'NOAWDGLLVO'
+  }
+}
+[2024-10-01T14:49:41.486] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(XONPPXPYBO-NOAWDGLLVO)~[PAID]~[240.23]',
+      total_price: '24022.999999999996',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:50:13.492] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '3-6 Business Days',
+    id: 'VOXPPAPJZO',
+    quote_id: 7518457,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 66.14,
+    priceIncludingGst: 72.75,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'QMZVAEWWXM'
+  }
+}
+[2024-10-01T14:50:13.494] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(VOXPPAPJZO-QMZVAEWWXM)~[PAID]~[72.75]',
+      total_price: '7275',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:51:42.604] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '4-8 Business Days',
+    id: 'WOJAAMAEXQ',
+    quote_id: 7518473,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 189.26,
+    priceIncludingGst: 208.19,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'KMVGLNZZNO'
+  }
+}
+[2024-10-01T14:51:42.605] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(WOJAAMAEXQ-KMVGLNZZNO)~[PAID]~[208.19]',
+      total_price: '20819',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:51:55.456] [INFO] default - without flat rate { message: 'No quote found', errors: [] }
+[2024-10-01T14:51:55.457] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:52:21.129] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '4-8 Business Days',
+    id: 'KQLDDVDEXQ',
+    quote_id: 7518480,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 189.26,
+    priceIncludingGst: 208.19,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'LOPDJWRRKO'
+  }
+}
+[2024-10-01T14:52:21.131] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(KQLDDVDEXQ-LOPDJWRRKO)~[PAID]~[208.19]',
+      total_price: '20819',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:52:40.754] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '4-8 Business Days',
+    id: 'POKMMPMENO',
+    quote_id: 7518486,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 189.26,
+    priceIncludingGst: 208.19,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'NOERVXLLVM'
+  }
+}
+[2024-10-01T14:52:40.755] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(POKMMPMENO-NOERVXLLVM)~[PAID]~[208.19]',
+      total_price: '20819',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:53:05.463] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '2-5 Business Days',
+    id: 'AOVXXEXBMO',
+    quote_id: 7518495,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 55.6,
+    priceIncludingGst: 61.16,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'NOBXAQLXLO'
+  }
+}
+[2024-10-01T14:53:05.465] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(AOVXXEXBMO-NOBXAQLXLO)~[PAID]~[61.16]',
+      total_price: '6115.999999999999',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:53:46.779] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'TNT',
+    eta: '9 Business Days',
+    id: 'JOWNNKNBGQ',
+    quote_id: 7518500,
+    insuranceCategory: '76',
+    logo: 'https://portal.fastcourier.com.au/images/logos/tnt.png',
+    name: 'Road Express',
+    pickupCutOffTime: '15:00',
+    priceExcludingGst: 326.1,
+    priceIncludingGst: 358.71,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'PMLWZKPPQO'
+  }
+}
+[2024-10-01T14:53:46.780] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [TNT]',
+      service_code: '(JOWNNKNBGQ-PMLWZKPPQO)~[PAID]~[358.71]',
+      total_price: '35871',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:54:00.043] [INFO] default - without flat rate {
+  message: 'max(): Array must contain at least one element',
+  errors: []
+}
+[2024-10-01T14:54:00.045] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:54:31.223] [INFO] default - without flat rate {
+  message: 'max(): Array must contain at least one element',
+  errors: []
+}
+[2024-10-01T14:54:31.224] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:54:57.250] [INFO] default - without flat rate {
+  message: 'max(): Array must contain at least one element',
+  errors: []
+}
+[2024-10-01T14:54:57.251] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:55:21.260] [INFO] default - without flat rate {
+  message: 'max(): Array must contain at least one element',
+  errors: []
+}
+[2024-10-01T14:55:21.261] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T14:55:33.122] [INFO] default - without flat rate {
+  message: 'max(): Array must contain at least one element',
+  errors: []
+}
+[2024-10-01T14:55:33.123] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T15:04:51.336] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Northline Express',
+    eta: '4 Business Days',
+    id: 'EQZBBVBEYQ',
+    quote_id: 7518542,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/northline.png',
+    name: 'Northline Express',
+    pickupCutOffTime: '13:00',
+    priceExcludingGst: 555.98,
+    priceIncludingGst: 611.58,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'POWREGYRAM'
+  }
+}
+[2024-10-01T15:04:51.337] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Northline Express]',
+      service_code: '(EQZBBVBEYQ-POWREGYRAM)~[PAID]~[611.58]',
+      total_price: '61158',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T15:11:23.404] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Hunter Express',
+    eta: '1-4 Business Days',
+    id: 'XOBEEXEDNQ',
+    quote_id: 7518615,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/hunter_express.png',
+    name: 'Hunter Road Express',
+    pickupCutOffTime: '14:00',
+    priceExcludingGst: 596.26,
+    priceIncludingGst: 655.89,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 4.5,
+    selectedDays: [],
+    orderHashId: 'NMERVXLRVO'
+  }
+}
+[2024-10-01T15:11:23.405] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Hunter Express]',
+      service_code: '(XOBEEXEDNQ-NMERVXLRVO)~[PAID]~[655.89]',
+      total_price: '65589',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T15:13:58.931] [INFO] default - without flat rate { message: 'No quote found', errors: [] }
+[2024-10-01T15:13:58.931] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Shipping]',
+      service_code: '(FALLBACK-FALLBACK)~[PAID]~[50]',
+      total_price: '5000',
+      description: 'Incl.Tax',
+      currency: 'AUD'
+    }
+  ]
+}
+[2024-10-01T15:14:09.963] [INFO] default - without flat rate {
+  status: 1,
+  data: {
+    courierName: 'Northline Express',
+    eta: '2 Business Days',
+    id: 'EOZBBVRZJO',
+    quote_id: 7518693,
+    insuranceCategory: 'NA',
+    logo: 'https://portal.fastcourier.com.au/images/logos/northline.png',
+    name: 'Northline Express',
+    pickupCutOffTime: '13:00',
+    priceExcludingGst: 479.35,
+    priceIncludingGst: 527.29,
+    subLabel: null,
+    insurance_link: 'http://localhost/documents/QM3248-1118-CourierSure-Goods-in-Transit-Marine-Policy-web.pdf',
+    rating: 5,
+    selectedDays: [],
+    orderHashId: 'POWREGYKNM'
+  }
+}
+[2024-10-01T15:14:09.965] [INFO] default - response {
+  rates: [
+    {
+      service_name: 'Fast Courier [Northline Express]',
+      service_code: '(EOZBBVRZJO-POWREGYKNM)~[PAID]~[527.29]',
+      total_price: '52729',
+      description: 'Includes tracking and insurance',
+      currency: 'AUD'
+    }
+  ]
+}

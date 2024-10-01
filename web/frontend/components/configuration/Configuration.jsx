@@ -205,8 +205,10 @@ export function Configuration(props) {
         // Check if the metafield key is 'product_dimentions'
         if (
           metafield.key === "product_dimentions" &&
-          metafield.value &&
-          shippingBoxes.length > 0
+          metafield.value 
+          
+          // &&
+          // shippingBoxes.length > 0
         ) {
           window.localStorage.setItem("isProductMappingFilled", true);
           return true;
@@ -237,7 +239,7 @@ export function Configuration(props) {
       
     }, 10000);
     Promise.all([
-      getShippingBoxes(),
+      // getShippingBoxes(),
       getPickupLocations(),
       getAllProducts(),
       getPaymentMethods()
@@ -282,7 +284,7 @@ export function Configuration(props) {
     isPaymentMethodsFilled(),
     isPickupLocationsFilled(),
     isProductMappingFilled(),
-    shippingBoxes,
+    // shippingBoxes,
     products,
     pickupLocations,
     merchantDetails,

@@ -79,6 +79,8 @@ function getSession(shop) {
         resolve(rows);
       }
     });
+
+     
   });
 }
 
@@ -637,15 +639,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
         ordersData.push({ quote_id: quoteId, order_id: orderId, price, courierName: courier, order_status: orderStatus, order_type: orderType });
 
         // Update Shopify order
-       logger.info(
-        "webhook-details",
-        orderId,
-        parseInt(orderDetails.id),
-        orderDetails?.contact_email,
-        orderDetails?.shipping_address?.phone,
-        orderDetails?.shipping_address?.first_name,
-        orderDetails?.shipping_address?.last_name
-       )
+      
         update_shopify_order_id_on_portal(
           orderId,
           parseInt(orderDetails.id),
@@ -696,10 +690,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
     message:"shopify-webhook-hit-successfully"
   })
   try {
-    const session = await getSession(
-      `${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase()
-    );
 
+   
+    const session = await getSession(
+      `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase()
+    );
+   
     if (session.length === 0 || !session[0].merchant_token) {
       collection.insertOne({
         endPoint:"/api/shipping-rates",
@@ -726,7 +722,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
 
     const merchant = JSON.parse(session[0].merchant);
     const shipping_boxes = ParseShippingBoxes(session[0].shipping_boxes);
-    if (!shipping_boxes || shipping_boxes?.length === 0) {
+    if (!shipping_boxes && false || shipping_boxes?.length === 0 && false) {
       logger.info("shipping_boxes not found");
       res.status(500).json({ error: "Shipping boxes not found" });
       return;
@@ -739,11 +735,16 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       _req.body.rate.items.map(async (element) => {
         const productMetafields = await shopify.api.rest.Metafield.all({
           session: session[0],
-          metafield: {
-            owner_id: element.product_id,
-            owner_resource: "product",
-          },
+          // metafield: {
+          //   // owner_id: element.product_id,
+          //   // owner_resource: "product",
+          //   owner_id: element.variant_id,
+          //   owner_resource: "product variant",
+          // },
+          variant_id:element.variant_id,
+          // product_id:element.product_id,
         });
+ 
 
         const metaData = getKeyValueArray(productMetafields.data);
 
@@ -995,6 +996,7 @@ itemsArray_to_send_to_courier=[
             orderType: "8",
           };
 
+          
           let data; 
 if (items[0]?.is_flat_rate_enabled) {
 
@@ -1049,7 +1051,7 @@ if (items[0]?.is_flat_rate_enabled) {
         version: "3.1.1",
         Authorization: `Bearer ${merchant.access_token}`,
         "store-domain":
-          `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
+          `offline_${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
       },
     }
   );
@@ -1835,13 +1837,15 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
         const metafieldPromises = metafields_Item.map(async (item, index) => {
           return limiter.schedule(async () => {
             const metafield = new shopify.api.rest.Metafield({ session });
-            metafield.product_id = parseInt(productId);
+            metafield.variant_id = parseInt(productId);
             metafield.key = item.key;
 
             metafield.value = JSON.stringify(metaFields_list[index]);
             // metafield.type = "single_line_text_field";
-            metafield.type = "json";
-            metafield.namespace = "Product";
+            // metafield.type = "json";
+            // metafield.namespace = "Product";
+            metafield.type = "single_line_text_field"; 
+            metafield.namespace = "Product Variant";
             // Assign value from metaFields_list
             await metafield.save({ update: true });
             return metafield;
@@ -1863,8 +1867,7 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
             metafield.key = item.key;
             metafield.value = JSON.stringify(metaFields_list[index]);
 
-            metafield.type = "single_line_text_field";
-            // metafield.type = "json";
+            metafield.type = "single_line_text_field"; 
             metafield.namespace = "Product Variant";
             await metafield.save({ update: true });
             return metafield;
@@ -1880,6 +1883,88 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
     console.log("add-dimensions==", error);
   }
 });
+app.post("/api/product/add-excel-data", async (_req, res) => {
+  try {
+    const { excelArrayData } = _req.body;
+    const session = res.locals.shopify.session;
+
+    const excelDataPromises = excelArrayData.map(async (item, index) => {
+      try {
+        if (item["type"]?.trim() === "Product") {
+          return limiter.schedule(async () => {
+            try {
+              const metafield = new shopify.api.rest.Metafield({ session });
+              metafield.variant_id = parseInt(item.id);
+              metafield.key = "product_dimentions";
+              metafield.value = JSON.stringify(item?.productDimentions);
+              // metafield.type = "json";
+              // metafield.namespace = "Product";
+              metafield.type = "single_line_text_field";
+              metafield.namespace = "Product Variant";
+
+              // Save metafield and handle error
+              await metafield.save({ update: true });
+              return metafield;
+            } catch (error) {
+              console.error(
+                `Error saving metafield for product ${item.id}:`,
+                error
+              );
+              logger.info(
+                `Error saving metafield for product ${item.id}:`,
+                error
+              );
+              // logger.info(JSONI.stringify(item));
+              // Re-throw error to ensure it's handled properly
+            }
+          });
+        } else {
+          return limiter.schedule(async () => {
+            try {
+              const metafield = new shopify.api.rest.Metafield({ session });
+              metafield.variant_id = parseInt(item.id);
+              metafield.key = "product_dimentions";
+              metafield.value = JSON.stringify(item?.productDimentions);
+              metafield.type = "single_line_text_field";
+              metafield.namespace = "Product Variant";
+
+              // Save metafield and handle error
+              await metafield.save({ update: true });
+              return metafield;
+            } catch (error) {
+              console.error(
+                `Error saving metafield for variant ${item.id}:`,
+                error
+              );
+              logger.info(
+                `Error saving metafield for variant ${item.id}:`,
+                error
+              );
+              // logger.info(JSONI.stringify(item));
+
+              // Re-throw error to ensure it's handled properly
+            }
+          });
+        }
+      } catch (error) {
+        console.error(
+          `Error in scheduling task for item at index ${index}:`,
+          error
+        );
+        throw error; // Ensure the error gets propagated to the main flow
+      }
+    });
+
+    // Wait for all promises to resolve
+    const result = await Promise.allSettled(excelDataPromises);
+    res.status(200).send(result);
+  } catch (error) {
+    console.error("add-dimensions==", error);
+    logger.info("Excel Data filling Error", error);
+    res.status(500).send("An error occurred while processing the excel data");
+  }
+});
+
 
 // app.post("/api/product/add-location", async (_req, res) => {
 //   try {
@@ -1971,8 +2056,7 @@ app.post("/api/product/add-location", async (_req, res) => {
     let productMetafieldsList = [];
     let VariantsMetafieldsList = [];
 
-    console.log("location_name==", typeof location_name);
-
+    
     //Process product_ids
     if (product_ids.length > 0) {
       productMetafieldsList = await Promise.all(
@@ -1981,10 +2065,14 @@ app.post("/api/product/add-location", async (_req, res) => {
             const metafield = new shopify.api.rest.Metafield({
               session: session,
             });
-            metafield.product_id = parseInt(element);
-            metafield.namespace = "Product";
-            metafield.key = "location";
-            // metafield.type = "json";
+            // metafield.product_id = parseInt(element);
+            // metafield.namespace = "Product";
+            // metafield.key = "location"; 
+            // metafield.type = "single_line_text_field";
+            // metafield.value = JSON.stringify(location_name);
+            metafield.variant_id = parseInt(element);
+            metafield.namespace = "Product Variant";
+            metafield.key = "location"; 
             metafield.type = "single_line_text_field";
             metafield.value = JSON.stringify(location_name);
             await metafield.save({
@@ -2005,8 +2093,7 @@ app.post("/api/product/add-location", async (_req, res) => {
             });
             metafield.variant_id = parseInt(element);
             metafield.namespace = "Product Variant";
-            metafield.key = "location";
-            // metafield.type = "json";
+            metafield.key = "location"; 
             metafield.type = "single_line_text_field";
             metafield.value = JSON.stringify(location_name);
             await metafield.save({

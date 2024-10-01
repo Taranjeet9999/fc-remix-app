@@ -542,7 +542,7 @@ const storeDomain = urlParams.get('shop');
              `${
                true
                  ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
-                 : "h--ttps://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
+                 : "https://portal.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
              }&app=shopify&redirect_uri=${url}`,
              "popupWindow",
              "width=7000,height=7000"
