@@ -1431,7 +1431,7 @@ export function MerchantBillingDetails(props) {
           </div>
         </div>
       </div>
-      <div className="courier-preference">
+{false &&      <div className="courier-preference">
         <div className="merchant-heading1">Courier Preferences</div>
         <div className="shipping-label">
           <span> Active Couriers&nbsp;</span>
@@ -1460,7 +1460,7 @@ export function MerchantBillingDetails(props) {
               );
             })}
         </div>
-      </div>
+      </div>}
       <div className="input-row">
         <div className="input-container1">
           <div className="input-lebel1">

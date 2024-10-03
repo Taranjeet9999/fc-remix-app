@@ -583,7 +583,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
     
     const orderDetails = _req.body; 
-    logger.info("order-create-webhook-HIT",orderDetails)
+    
     // Helper functions
     const getCarrier = (item) => {
       const title = item?.title || null;
@@ -624,15 +624,22 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
       const prices = JSON.parse(valuesArray[2]);
 
       // Map over each quote and order id
+      logger.info("quoteIds",quoteIds)
+      logger.info("valuesArray",valuesArray)
       quoteIds.split(",").forEach((quoteId, index) => {
         const orderId = orderIds.split(",")[index];
         const price = prices[index];
         const courier = carrierName.split(",")[index];
-        const orderStatus = quoteIds.split(",")[index]==="FLATRATE"?"Flat-Rate": valuesArray[1] === "FALLBACK" ? "Fallback" : "Ready to Book";
-        const orderType =
-          valuesArray[1] === "FALLBACK"
+        const orderStatus =
+          quoteIds.split(",")[index] === "FLATRATE"
+            ? "Flat-Rate"
+            : quoteIds.split(",")[index] === "FALLBACK"
             ? "Fallback"
-            : valuesArray[1] === "FREESHIPPING"
+            : "Ready to Book";
+        const orderType =
+          quoteIds.split(",")[index] === "FALLBACK"
+            ? "Fallback"
+            : quoteIds.split(",")[index] === "FREESHIPPING"
             ? "Freeshipping"
             : "Paid";
 
@@ -1370,7 +1377,6 @@ async function update_shopify_order_id_on_portal(
     endPoint:"/api/webhook/order-create",
     data_in_string:JSON.stringify(data),
     data_in_Object:data,
-    
     message:"update order details On Portal"
   })
 

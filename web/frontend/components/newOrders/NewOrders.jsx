@@ -695,7 +695,7 @@ export function NewOrders(props) {
               <div className="input-lebel">
                 <span> Collection Date&nbsp;</span>
               </div>
-              <div className="input-field1">
+              <div className="input-field1 border-grey">
                 <input
                   className="input-field-text"
                   type="date"
@@ -732,7 +732,7 @@ export function NewOrders(props) {
               <div className="input-lebel">
                 <span> Collection Date&nbsp;</span>
               </div>
-              <div className="input-field1">
+              <div className="input-field1 border-grey">
                 <input
                   className="input-field-text"
                   type="date"
@@ -781,7 +781,7 @@ export function NewOrders(props) {
           <div className="input-lebel">
             <span> Start Date&nbsp;</span>
           </div>
-          <div className="input-field1">
+          <div className="input-field1 border-grey">
             <input
               className="input-field-text"
               type="date"
@@ -796,7 +796,7 @@ export function NewOrders(props) {
           <div className="input-lebel">
             <span> End Date&nbsp;</span>
           </div>
-          <div className="input-field1">
+          <div className="input-field1 border-grey">
             <input
               className="input-field-text"
               type="date"
@@ -811,7 +811,7 @@ export function NewOrders(props) {
           <div className="input-lebel">
             <span> Order Id&nbsp;</span>
           </div>
-          <div className="input-field1">
+          <div className="input-field1 border-grey">
             <input
               className="input-field-text"
               type="text"
@@ -827,7 +827,7 @@ export function NewOrders(props) {
           <div className="input-lebel">
             <span> Order Shipping Type&nbsp;</span>
           </div>
-          <div className="input-field1">
+          <div className="input-field1 border-grey">
             <select className="input-field-text" type="text">
               <option value="all">All</option>
             </select>
@@ -1150,8 +1150,17 @@ export function NewOrders(props) {
                         </td>
                         <td width="15% text-center">
                           {/* Carrier Details */}
-                          {`$${element?.orderData?.price}`}<br />
-                          {`(${element?.orderData?.courierName})`}
+                          {
+                            element?.orderData?.price? <>
+                              {`$${element?.orderData?.price}`}<br />
+                              {`(${element?.orderData?.courierName})`}
+                            
+                            
+                            </>:
+
+                            "N/A"
+                          }
+                        
                         </td>
                         <td width="10%">
                           {/* {element.financial_status} */}

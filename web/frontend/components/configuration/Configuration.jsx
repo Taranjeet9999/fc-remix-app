@@ -170,8 +170,11 @@ export function Configuration(props) {
       merchantDetails.billing_email &&
       merchantDetails.billing_phone &&
       merchantDetails.billing_address_1 &&
-      merchantDetails.billing_suburb &&
-      JSON.parse(merchantDetails.courier_preferences)?.length > 0
+      merchantDetails.billing_suburb 
+      
+      // &&
+      // JSON.parse(merchantDetails.courier_preferences)?.length > 0
+      
     ) {
       localStorage.setItem("isMerchantDetailsFilled", true);
       return true;
