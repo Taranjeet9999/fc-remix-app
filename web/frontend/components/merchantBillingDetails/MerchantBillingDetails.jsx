@@ -116,10 +116,10 @@ export function MerchantBillingDetails(props) {
       count_of_errros++;
       _errors.fallbackAmountError = "Please enter fallback amount.";
     }
-    // if (selectedCourierPref?.length == 0 || selectedCourierPref === null) {
-    //   count_of_errros++;
-    //   _errors.courierPreferencesError = "Please select courier preferences.";
-    // }
+    if (selectedCourierPref?.length == 0 || selectedCourierPref === null) {
+      count_of_errros++;
+      _errors.courierPreferencesError = "Please select courier preferences.";
+    }
 
     if (!billingAbn) {
       count_of_errros++;
@@ -1431,7 +1431,7 @@ export function MerchantBillingDetails(props) {
           </div>
         </div>
       </div>
-{false &&      <div className="courier-preference">
+      <div className="courier-preference">
         <div className="merchant-heading1">Courier Preferences</div>
         <div className="shipping-label">
           <span> Active Couriers&nbsp;</span>
@@ -1460,7 +1460,7 @@ export function MerchantBillingDetails(props) {
               );
             })}
         </div>
-      </div>}
+      </div> 
       <div className="input-row">
         <div className="input-container1">
           <div className="input-lebel1">
