@@ -116,10 +116,10 @@ export function MerchantBillingDetails(props) {
       count_of_errros++;
       _errors.fallbackAmountError = "Please enter fallback amount.";
     }
-    if (selectedCourierPref?.length == 0 || selectedCourierPref === null) {
-      count_of_errros++;
-      _errors.courierPreferencesError = "Please select courier preferences.";
-    }
+    // if (selectedCourierPref?.length == 0 || selectedCourierPref === null) {
+    //   count_of_errros++;
+    //   _errors.courierPreferencesError = "Please select courier preferences.";
+    // }
 
     if (!billingAbn) {
       count_of_errros++;
