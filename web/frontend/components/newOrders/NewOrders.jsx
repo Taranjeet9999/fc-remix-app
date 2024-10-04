@@ -835,7 +835,7 @@ export function NewOrders(props) {
         </div>
         <div className="d-flex align-items-end  ">
           <button
-            className="fc-yellow-btn pointer"
+            className="fc-yellow-btn pointer w-100"
             onClick={() => {
               const filteredOrders = allNewOrders?.filter((element) => {
                 // Convert order date to seconds
@@ -879,7 +879,7 @@ export function NewOrders(props) {
         </div>
         <div className="filter-buttons">
           <button
-            className="pointer"
+            className="pointer w-100 mr-0"
             onClick={() => {
               setFilterData({
                 startDate: "",

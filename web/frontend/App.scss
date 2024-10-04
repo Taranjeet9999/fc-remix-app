@@ -316,7 +316,7 @@ input[type="checkbox"]:checked::after {
     // width: 95%;
     border-radius: 0px;
     top: 0;
-    left: 5%;
+    left: 0%;
     right: 0;
     bottom: 0;
 
@@ -438,4 +438,14 @@ padding: 4px;
   border-radius: 8px;
 }
 
+.w-100{
+  width: 100%;
+}
+
+.mr-0{
+  margin-right: 0px !important;
+}
  
+.bg-white{
+  background: white;
+}

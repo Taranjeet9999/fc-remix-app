@@ -1358,7 +1358,7 @@ if (productSearchString) {
             >
               Add Shipping Box
             </div>
-            <Modal showModal={showAddShippingBoxModal} width="95%">
+            <Modal showModal={showAddShippingBoxModal} width="100%">
               {isLoading && <Loader />}
               <div className="add-shipping-box h-100vh d-flex flex-column">
                 <div className="modal-header">

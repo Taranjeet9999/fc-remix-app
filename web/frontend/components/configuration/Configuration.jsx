@@ -295,11 +295,11 @@ export function Configuration(props) {
 
   return (
     <div className="configuration">
-      <div className="banner-progress-bar">
+    {getProgress()<100&&  <div className="banner-progress-bar">
         <div className="custom-progress" style={{ width: `${getProgress()}%` }}>
           {isLoading  ?   "Fetching data.."   :    `${getProgress()}%`}
         </div>
-      </div>
+      </div>}
       <div className="top-nav-bar" style={{ marginTop: "20px" }}>
         <div
           className={

@@ -118,7 +118,7 @@ export default function HomePage(props) {
   return (
     <div className="homepage">
       {isLoading && <Loader />}
-      <div className="homepage-left">
+  {false&&    <div className="homepage-left">
         <div className="logo-image">
           <span className="hide_on_hover">
             <img
@@ -256,8 +256,68 @@ export default function HomePage(props) {
             <span className="show_on_hover">Logout</span>
           </div>
         </div>
-      </div>
+      </div>}
+      <div className="w-100 bg-white">
+        <div className="d-flex align-items-center p-2">
+        <div
+            className={
+              activeNavItem == "configuration"
+                ? "nav-bar-item-active"
+                : "nav-bar-item"
+            }
+            onClick={() => setActiveNavItem("configuration")}
+          >
+            <span>
+              {" "}
+              <FontAwesomeIcon
+                icon="fa-solid fa-gear"
+                size="sm"
+                style={{ width: "18px", marginRight: "4px" }}
+              />{" "}
+              <span className="show_on_hover"> Configuration</span>{" "}
+            </span>{" "}
+            <span> {activeNavItem == "configuration" && " "} </span>
+          </div>
+          {window.localStorage.getItem("isUserSetupConfigured") === "true" && (
+            <>
+              <div
+                className={
+                  activeNavItem == "newOrders"
+                    ? "nav-bar-item-active"
+                    : "nav-bar-item"
+                }
+                onClick={() => setActiveNavItem("newOrders")}
+              >
+                <span>
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-list"
+                    size="sm"
+                    style={{ width: "18px", marginRight: "4px" }}
+                  />{" "}
+                  <span className="show_on_hover">Orders</span>
+                </span>
+                <span>{activeNavItem == "newOrders" && ""}</span>
+              </div>
+              
+            </>
+          )}
+ <div className="nav-bar-item d-flex" onClick={() => logout()}>
+            <span>
+              <FontAwesomeIcon
+                icon="fa-solid fa-right-from-bracket"
+                size="sm"
+                style={{ width: "18px", marginRight: "4px" }}
+              />
+            </span>
+
+            <span className="show_on_hover">Logout</span>
+          </div>
+
+
+        </div>
+
       <div className="homepage-right">{getComponent()}</div>
+      </div>
     </div>
   );
 }

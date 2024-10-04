@@ -12,7 +12,7 @@
 .input-row {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .input-container1 {
@@ -28,7 +28,7 @@
     width: 100%;
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .input-field-text1 {

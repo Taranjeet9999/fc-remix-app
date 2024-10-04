@@ -71,7 +71,7 @@ export default function App() {
           />
           <Routes pages={pages} /> */}
             <div className="app">
-              <div className="top-bar">
+             {false&& <div className="top-bar">
  
 
 
@@ -79,10 +79,10 @@ export default function App() {
 
 
                 
-              </div>
-              <div className="app-mode">
+              </div>}
+              {false &&  <div className="app-mode">
                 {/* {isLoggedIn && <div className="mode-left"></div>} */}
-                <div
+               <div
                   className="mode-right"
                   style={{
                     // width: isLoggedIn ? "80%" : "100%",
@@ -92,7 +92,7 @@ export default function App() {
                 >
                  
                 </div>
-              </div>
+              </div>}
               {/* <BrowserRouter> */}
               <Routes>
                 <Route index element={<Navigate to={`/login${window.location.search}`} />} />
