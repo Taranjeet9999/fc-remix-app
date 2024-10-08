@@ -1322,7 +1322,7 @@ if (productSearchString) {
                 }}
               >
                 <a href="#"  >
-              {processing?   "CSV will be downloaded shortly.."  :  "Generate CSV"}
+              {processing?   "File will be downloaded shortly.."  :  "Generate Excel File"}
                 </a>
               </div>
             </div>
