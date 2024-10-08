@@ -1060,7 +1060,7 @@ async function fetch_products_and_generate_excel() {
     let userData = JSON.parse(localStorage.getItem("userData"));
     let store = userData.shop.replace(".myshopify.com", "");
     if (_product?.variants[0]?.title == "Default Title") {
-      let location_data = _product?.metafields?.find(
+      let location_data = _product?.variants[0]?.metafields?.find(
         (it) => it?.key === "product_dimentions"
       );
       if (location_data) {
@@ -1075,7 +1075,7 @@ async function fetch_products_and_generate_excel() {
           Name: _product.title,
           Price: "$" + _product?.variants[0]?.price,
           "Product Type": "Product",
-          "Package Type": "",
+          "Package Type":     location_data?.[iter]?.packageType ?? "",
           Length: location_data?.[iter]?.length ?? "",
           Width: location_data?.[iter]?.width ?? "",
           Height: location_data?.[iter]?.height ?? "",
@@ -1102,7 +1102,7 @@ async function fetch_products_and_generate_excel() {
             Name: _product.title + " - " + _variant.title,
             Price: _variant.price,
             "Product Type": "Variant",
-            "Package Type": "",
+            "Package Type": location_data?.[iter]?.packageType ?? "",
             Length: location_data?.[iter]?.length ?? "",
             Width: location_data?.[iter]?.width ?? "",
             Height: location_data?.[iter]?.height ?? "",
