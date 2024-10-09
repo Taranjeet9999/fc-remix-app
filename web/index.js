@@ -83,6 +83,47 @@ function getSession(shop) {
      
   });
 }
+function getSessionForShippingratesAPI(shop, company_name) {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT * FROM shopify_sessions";
+    
+    db.all(query, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        // Logging all rows for debugging purposes
+        
+        const filtered_session_by_shop = rows.find((item)=>item['shop']===shop)
+        if (filtered_session_by_shop) {
+          resolve([filtered_session_by_shop]);
+          return
+        }else{
+          const filtered_session_by_company_name =  rows.find((row)=>{
+            const merchant = JSON.parse(row['merchant'])
+            if (merchant['billing_company_name']?.trim()?.toLowerCase() === company_name?.trim()?.toLowerCase()) {
+              return true;
+            } else {
+              return false;
+            }
+            
+          })
+          if (filtered_session_by_company_name) {
+            resolve([filtered_session_by_company_name]);
+            return
+          }else{
+            resolve([])
+          }
+        }
+
+
+
+         
+      
+      }
+    });
+  });
+}
+
 
 function isMerchantColumnExist(_columnName) {
   return new Promise((resolve, reject) => {
@@ -227,8 +268,7 @@ const getOrderId = (orderIdString) => {
 app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
   try {
     const ordersBodyArray = _req.body;
-    logger.info("update-order-status-body==", JSON.stringify(ordersBodyArray));
-
+    
     collection.insertOne({
       endPoint:"/api/update-order-status",
       data_in_string:JSON.stringify(ordersBodyArray),
@@ -581,6 +621,13 @@ app.get("/api/oauth-callback", async (req, res) => {
 
 app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
   try {
+
+    collection.insertOne({
+      endPoint:"/api/webhook/order-creates",
+      data_in_string:JSON.stringify(_req.body),
+          data_in_Object:_req.body,
+      message:"webhook/order-create-hit-successfully"
+    })
     
     const orderDetails = _req.body; 
     
@@ -690,7 +737,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
 
  
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
-  
+   
   collection.insertOne({
     endPoint:"/api/shipping-rates",
     data_in_string:JSON.stringify(_req.body),
@@ -700,10 +747,11 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   try {
 
    
-    const session = await getSession(
-      `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase()
+    const session = await getSessionForShippingratesAPI(
+      `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
+      _req.body.rate.origin.company_name
     );
-   
+ 
     if (session.length === 0 || !session[0].merchant_token) {
       collection.insertOne({
         endPoint:"/api/shipping-rates",
@@ -1024,7 +1072,7 @@ if (items[0]?.is_flat_rate_enabled) {
         version: "3.1.1",
         Authorization: `Bearer ${merchant.access_token}`,
         "store-domain":
-          `offline_${_req.body.rate.origin.company_name}.myshopify.com`.toLowerCase(),
+        session[0]?.id.toLowerCase(),
       },
       body: JSON.stringify(payload)
     },
@@ -1059,8 +1107,7 @@ if (items[0]?.is_flat_rate_enabled) {
         version: "3.1.1",
         Authorization: `Bearer ${merchant.access_token}`,
         "store-domain":
-          `offline_${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
-      },
+        session[0]?.id.toLowerCase(), },
     }
   );
     data = await quote.json();
@@ -1179,7 +1226,7 @@ if (items[0]?.is_flat_rate_enabled) {
     res.status(200).json(response);
   } catch (error) {
     console.error("shipping-rates==", error);
-    logger.info("shipping-rates-==", error);
+    logger.info("shipping-rates-=error=", error);
     collection.insertOne({
       endPoint:"/api/shipping-rates",
       data_in_string:JSON.stringify(error),
