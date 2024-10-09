@@ -2116,7 +2116,7 @@ if (productSearchString) {
                           <input
                             type="checkbox"
                             onChange={(e) =>
-                              handleFreeShippingChange(e, element.id)
+                              handleFreeShippingChange(e, element?.variants[0]?.id)
                             }
                             checked={
                               getProductMetaField(

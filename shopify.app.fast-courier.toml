@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fba0237f7f8084edf2aa919f82b4a68d"
+client_id = "48c11f190fe107153899a7f870f79215"
 name = "Fast Courier"
 handle = "fast-courier"
-application_url = "https://shop.fastcourier.com.au/"
+application_url = "https://maiden-internship-is-earthquake.trycloudflare.com/"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://shop.fastcourier.com.au/auth/callback",
-  "https://shop.fastcourier.com.au/auth/shopify/callback",
-  "https://shop.fastcourier.com.au/api/auth/callback"
+  "https://maiden-internship-is-earthquake.trycloudflare.com/auth/callback",
+  "https://maiden-internship-is-earthquake.trycloudflare.com/auth/shopify/callback",
+  "https://maiden-internship-is-earthquake.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

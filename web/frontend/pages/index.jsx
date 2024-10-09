@@ -133,7 +133,7 @@ export default function HomePage(props) {
             />
           </span>
           <img
-            src="https://portal.fastcourier.com.au/assets/media/logos/fast-courier-dark.png"
+            src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png"
             className="show_on_hover position-absolute"
             style={{
               width: "80%",

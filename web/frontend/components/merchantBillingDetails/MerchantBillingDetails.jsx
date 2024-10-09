@@ -361,7 +361,7 @@ export function MerchantBillingDetails(props) {
       const Webhook_Mapped = filteredCarrierService.some(
         (elem) =>
           elem.callback_url ===
-          "https://shop.fastcourier.com.au/api/shipping-rates"
+          "https://maiden-internship-is-earthquake.trycloudflare.com/api/shipping-rates"
       );
       if (Webhook_Mapped) {
         return;
@@ -1065,7 +1065,7 @@ export function MerchantBillingDetails(props) {
         onClick={() => {
     
           
-          window.open(`https://portal.fastcourier.com.au/quick-login?access_token=${localStorage.getItem("accessToken")}&redirect_page=payment` ,'popupWindow', 'width=7000,height=7000')
+          window.open(`https://portal-staging.fastcourier.com.au/quick-login?access_token=${localStorage.getItem("accessToken")}&redirect_page=payment` ,'popupWindow', 'width=7000,height=7000')
         }}
       >
         TEST

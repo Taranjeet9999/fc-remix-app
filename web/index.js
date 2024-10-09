@@ -356,7 +356,7 @@ const urlParams = new URLSearchParams(new URL(decodedURI).search);
 // Get the value of the 'isProduction' parameter
 const _isProduction = urlParams.get('isProduction');
        return res.redirect(
-        `${_isProduction?.toString()?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+        `${_isProduction?.toString()?.includes("1")? "https://portal-staging.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
       );
     }
 
@@ -1012,7 +1012,7 @@ if (items[0]?.is_flat_rate_enabled) {
   // IF FLAT RATE ENABLED
   // IF FLAT RATE ENABLED
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/create-flate-order`,
+    `${ session[0].is_production?.includes("1")?  "https://portal-staging.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
     {
       method: "POST",
       credentials: "include",
@@ -1045,7 +1045,7 @@ if (items[0]?.is_flat_rate_enabled) {
 }else{
  
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
+    `${ session[0].is_production?.includes("1")?  "https://portal-staging.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
     )}`,
     {
@@ -1134,7 +1134,7 @@ if (items[0]?.is_flat_rate_enabled) {
       (sum, quote) => sum + parseFloat(quote?.amount ?? 0),
       0
     );
- 
+   
 
     const response = {
       rates: [
@@ -1251,7 +1251,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/get_merchant`,
+//     `https://portal-staging.fastcourier.com.au/api/wp/get_merchant`,
 //     {
 //       method: "GET",
 //       credentials: "include",
@@ -1272,7 +1272,7 @@ function getUniqueQuoteData(data) {
 //   };
 
 //   const pickupLocations = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
 //     {
 //       method: "GET",
 //       credentials: "include",
@@ -1301,7 +1301,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant_location = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_locations/` +
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_locations/` +
 //       merchant_id +
 //       "/" +
 //       tagId,
@@ -1328,7 +1328,7 @@ function getUniqueQuoteData(data) {
 //     Authorization: "Bearer " + access_token,
 //   };
 //   const merchant_location = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/location/` +
+//     `https://portal-staging.fastcourier.com.au/api/wp/merchant_domain/location/` +
 //       // merchant_id +
 //       // "/" +
 //       locationId,
@@ -1352,7 +1352,7 @@ async function update_shopify_order_id_on_portal(
   destination_first_name,
   destination_last_name
 ) {
- const response=  await fetch("https://portal.fastcourier.com.au/api/update-order-id", {
+ const response=  await fetch("https://portal-staging.fastcourier.com.au/api/update-order-id", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -1847,9 +1847,7 @@ app.post("/api/product/add-dimensions", async (_req, res) => {
             metafield.key = item.key;
 
             metafield.value = JSON.stringify(metaFields_list[index]);
-            // metafield.type = "single_line_text_field";
-            // metafield.type = "json";
-            // metafield.namespace = "Product";
+       
             metafield.type = "single_line_text_field"; 
             metafield.namespace = "Product Variant";
             // Assign value from metaFields_list
@@ -2132,8 +2130,12 @@ app.post("/api/free-shipping", async (_req, res) => {
     const metafield = new shopify.api.rest.Metafield({
       session: session,
     });
-    metafield.product_id = productId;
-    metafield.namespace = "Order";
+    // metafield.product_id = productId;
+    metafield.variant_id = parseInt(productId);
+
+    // metafield.namespace = "Order";
+    metafield.namespace = "Product Variant";
+
     metafield.key = "is_free_shipping";
     metafield.type = "single_line_text_field";
     metafield.value = value;
@@ -2144,6 +2146,8 @@ app.post("/api/free-shipping", async (_req, res) => {
     res.status(200).send(metafield);
   } catch (error) {
     console.log("free-shipping=", error);
+    logger.info("free-shipping=", error);
+    res.status(500).send({error:true})
   }
 });
 app.post("/api/get-order-metafields", async (_req, res) => {
@@ -2210,7 +2214,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://shop.fastcourier.com.au/api/shipping-rates";
+      "https://maiden-internship-is-earthquake.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2238,14 +2242,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://shop.fastcourier.com.au/api/shipping-rates";
+        "https://maiden-internship-is-earthquake.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://shop.fastcourier.com.au/api/webhook/order-create";
+        "https://maiden-internship-is-earthquake.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });

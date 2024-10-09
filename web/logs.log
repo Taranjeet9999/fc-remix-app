@@ -34,3 +34,54 @@
 [2024-10-03T12:41:09.593] [INFO] default - quoteIds FALLBACK
 [2024-10-03T12:41:09.593] [INFO] default - valuesArray [ '(FALLBACK-FALLBACK)', '[PAID]', '[50]' ]
 [2024-10-03T12:41:10.415] [INFO] default - response-response { status: false, message: 'Something went wrong!' }
+[2024-10-08T15:51:23.823] [INFO] default - carrier-update-== HttpResponseError: Received an error response (403 Forbidden) from Shopify:
+[
+  "Action not permitted"
+]
+If you report this error, please include this id: ec9af34b-ec07-4cd8-837b-317f8920e36b-1728382881
+    at NewRestClient.throwFailedRequest (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:193:23)
+    at NewRestClient.<anonymous> (D:\fc-react-node-app\node_modules\@shopify\shopify-api\lib\clients\http_client\http_client.js:220:22)
+    at Generator.next (<anonymous>)
+    at fulfilled (D:\fc-react-node-app\node_modules\tslib\tslib.js:166:62)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  response: {
+    code: 403,
+    statusText: 'Forbidden',
+    body: { errors: [Array] },
+    headers: {
+      'Cf-Cache-Status': [Array],
+      'Cf-Ray': [Array],
+      Connection: [Array],
+      'Content-Encoding': [Array],
+      'Content-Security-Policy': [Array],
+      'Content-Type': [Array],
+      Date: [Array],
+      Http_x_shopify_shop_api_call_limit: [Array],
+      Nel: [Array],
+      'Referrer-Policy': [Array],
+      'Report-To': [Array],
+      Server: [Array],
+      'Server-Timing': [Array],
+      'Strict-Transport-Security': [Array],
+      'Transfer-Encoding': [Array],
+      Vary: [Array],
+      'X-Content-Type-Options': [Array],
+      'X-Dc': [Array],
+      'X-Download-Options': [Array],
+      'X-Frame-Options': [Array],
+      'X-Permitted-Cross-Domain-Policies': [Array],
+      'X-Request-Id': [Array],
+      'X-Shardid': [Array],
+      'X-Shopid': [Array],
+      'X-Shopify-Api-Version': [Array],
+      'X-Shopify-Api-Version-Warning': [Array],
+      'X-Shopify-Shop-Api-Call-Limit': [Array],
+      'X-Sorting-Hat-Podid': [Array],
+      'X-Sorting-Hat-Shopid': [Array],
+      'X-Stats-Apiclientid': [Array],
+      'X-Stats-Apipermissionid': [Array],
+      'X-Stats-Userid': [Array],
+      'X-Xss-Protection': [Array]
+    }
+  }
+}

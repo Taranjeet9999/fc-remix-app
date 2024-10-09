@@ -444,7 +444,7 @@ const storeDomain = urlParams.get('shop');
         onConfirm={() => setOpenErrorModal(false)}
       />
       <div className="logo-image">
-        <img src="https://portal.fastcourier.com.au/assets/media/logos/fast-courier-dark.png" />
+        <img src="https://portal-staging.fastcourier.com.au/assets/media/logos/fast-courier-dark.png" />
       </div>
       <div className="inner-container">
         <div className="heading1">Connect to FastCourier</div>
@@ -535,14 +535,14 @@ const storeDomain = urlParams.get('shop');
               // );
               console.log(`${
                true
-                 ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
-                 : "https://portal.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
+                 ? "https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
+                 : "https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
              }&app=shopify&redirect_uri=${url}`)
            const newWindow = window.open(
              `${
                true
-                 ? "https://portal.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
-                 : "https://portal.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
+                 ? "https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=1&client_secret=GFts6cyRs1gyV2Aon8eTeicAS9HRPqPcN9ZqG7QQ"
+                 : "https://portal-staging.fastcourier.com.au/oauth/redirect?client_id=4&client_secret=wUhSh8PYMlnVbZ9XU72wuVPvaw8SJY6jUIvgmfic"
              }&app=shopify&redirect_uri=${url}`,
              "popupWindow",
              "width=7000,height=7000"
