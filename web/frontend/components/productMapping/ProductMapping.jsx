@@ -2116,7 +2116,7 @@ if (productSearchString) {
                           <input
                             type="checkbox"
                             onChange={(e) =>
-                              handleFreeShippingChange(e, element.id)
+                              handleFreeShippingChange(e, element?.variants[0]?.id)
                             }
                             checked={
                               getProductMetaField(
@@ -2193,7 +2193,7 @@ if (productSearchString) {
                                         <span className="slider round"></span>
                                     </label></td> */}
                       <td width="10%">
-                        <label className="switch">
+                       {false && <label className="switch">
                           <input
                             type="checkbox"
                             onChange={(e) =>
@@ -2209,7 +2209,7 @@ if (productSearchString) {
                             }
                           />
                           <span className="slider round"></span>
-                        </label>
+                        </label>}
                       </td>
                       <td width="10%">
                         {/* {getLocationtagName(
@@ -2287,7 +2287,25 @@ if (productSearchString) {
                                             <input type="checkbox" />
                                             <span className="slider round"></span>
                                         </label></td> */}
-                            <td></td>
+                            <td>
+                            <label className="switch">
+                          <input
+                            type="checkbox"
+                            onChange={(e) =>
+                              handleFreeShippingChange(e, value.id)
+                            }
+                            checked={
+                              getProductMetaField(
+                                value.metafields,
+                                "is_free_shipping"
+                              ) == "1"
+                                ? true
+                                : false
+                            }
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                            </td>
                             <td width="10%">
                               {getLocationtagName(
                                 getProductMetaField(

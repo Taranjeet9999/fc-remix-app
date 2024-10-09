@@ -2132,8 +2132,12 @@ app.post("/api/free-shipping", async (_req, res) => {
     const metafield = new shopify.api.rest.Metafield({
       session: session,
     });
-    metafield.product_id = productId;
-    metafield.namespace = "Order";
+    // metafield.product_id = productId;
+    metafield.variant_id = parseInt(productId);
+
+    // metafield.namespace = "Order";
+    metafield.namespace = "Product Variant";
+
     metafield.key = "is_free_shipping";
     metafield.type = "single_line_text_field";
     metafield.value = value;

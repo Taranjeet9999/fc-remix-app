@@ -3,7 +3,7 @@
 client_id = "fba0237f7f8084edf2aa919f82b4a68d"
 name = "Fast Courier[Dev]"
 handle = "remix-app-139"
-application_url = "https://slovakia-oral-footage-yarn.trycloudflare.com"
+application_url = "https://graphic-melissa-relatives-failed.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_checkouts,read_orders,read_products,read_shipping,unauthenticated
 
 [auth]
 redirect_urls = [
-  "https://slovakia-oral-footage-yarn.trycloudflare.com/auth/callback",
-  "https://slovakia-oral-footage-yarn.trycloudflare.com/auth/shopify/callback",
-  "https://slovakia-oral-footage-yarn.trycloudflare.com/api/auth/callback"
+  "https://graphic-melissa-relatives-failed.trycloudflare.com/auth/callback",
+  "https://graphic-melissa-relatives-failed.trycloudflare.com/auth/shopify/callback",
+  "https://graphic-melissa-relatives-failed.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
