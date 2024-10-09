@@ -693,7 +693,8 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
   
   collection.insertOne({
     endPoint:"/api/shipping-rates",
-    data:"",
+    data_in_string:JSON.stringify(_req.body),
+        data_in_Object:_req.body,
     message:"shopify-webhook-hit-successfully"
   })
   try {
