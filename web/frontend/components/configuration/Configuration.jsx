@@ -202,21 +202,26 @@ export function Configuration(props) {
   }
 
   function isProductMappingFilled() {
-    for (let product of products) {
-      // Check metafields of the product
-      for (let metafield of product.metafields) {
-        // Check if the metafield key is 'product_dimentions'
-        if (
-          metafield.key === "product_dimentions" &&
-          metafield.value 
+    // for (let product of products) {
+    //   // Check metafields of the product
+    //   for (let metafield of product.metafields) {
+    //     // Check if the metafield key is 'product_dimentions'
+    //     if (
+    //       metafield.key === "product_dimentions" &&
+    //       metafield.value 
           
-          // &&
-          // shippingBoxes.length > 0
-        ) {
-          window.localStorage.setItem("isProductMappingFilled", true);
-          return true;
-        }
-      }
+    //       // &&
+    //       // shippingBoxes.length > 0
+    //     ) {
+    //       window.localStorage.setItem("isProductMappingFilled", true);
+    //       return true;
+          
+    //     }
+    //   }
+    // }
+    if(products?.length>0){
+      window.localStorage.setItem("isProductMappingFilled", true);
+      return true;
     }
     window.localStorage.setItem("isProductMappingFilled", false);
 
