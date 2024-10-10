@@ -627,8 +627,7 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
       data_in_string:JSON.stringify(_req.body),
           data_in_Object:_req.body,
       message:"webhook/order-create-hit-successfully"
-    })
-    
+    }) 
     const orderDetails = _req.body; 
     
     // Helper functions
@@ -652,9 +651,10 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     const extractOrderIds = (array) => extractValues(array, /-([^\)]+)\)/);
 
     const session =  await getSessionForShippingratesAPI(
-      `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
+      new URL(orderDetails.order_status_url).hostname.toLowerCase(),
       orderDetails?.line_items?.[0]?.vendor
     )
+     
     // Filter for Fast Courier orders
     const fastCourierOrders = orderDetails.shipping_lines.filter(
       (obj) => obj.source === "Fast Courier"
@@ -732,6 +732,12 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     res.status(200).send(ordersData);
   } catch (error) {
     logger.info("order-create-webhook-error==", error);
+    collection.insertOne({
+      endPoint:"/api/webhook/order-creates",
+      data_in_string:JSON.stringify(error),
+          data_in_Object:error,
+      message:"webhook/order-create ERROR"
+    })
     res.status(500).send({ error: "An error occurred during processing" });
   }
 });
