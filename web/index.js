@@ -651,8 +651,10 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
     const extractQuoteIds = (array) => extractValues(array, /\(([^-]+)-/);
     const extractOrderIds = (array) => extractValues(array, /-([^\)]+)\)/);
 
-    const session = await getSession(new URL(orderDetails.order_status_url).hostname.toLowerCase());
-
+    const session =  await getSessionForShippingratesAPI(
+      `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
+      orderDetails?.line_items?.[0]?.vendor
+    )
     // Filter for Fast Courier orders
     const fastCourierOrders = orderDetails.shipping_lines.filter(
       (obj) => obj.source === "Fast Courier"
