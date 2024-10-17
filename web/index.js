@@ -83,48 +83,50 @@ function getSession(shop) {
      
   });
 }
-function getSessionForShippingratesAPI(shop, company_name) {
-  return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM shopify_sessions";
-    
-    db.all(query, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        // Logging all rows for debugging purposes
-        
-        const filtered_session_by_shop = rows.find((item)=>item['shop']===shop)
-        if (filtered_session_by_shop) {
-          resolve([filtered_session_by_shop]);
-          return;
+async function getSessionForShippingratesAPI(shop, company_name) {
+  try {
+    return await new Promise((resolve, reject) => {
+      const query = "SELECT * FROM shopify_sessions";
+
+      db.all(query, (err, rows) => {
+        if (err) {
+          reject(err);
         } else {
-          const filtered_session_by_company_name = rows.find((row) => {
-            const merchant = JSON.parse(row["merchant"]);
-            if (
-              merchant?.billing_company_name?.trim()?.toLowerCase() ===
-              company_name?.trim()?.toLowerCase()
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          });
-          if (filtered_session_by_company_name) {
-            resolve([filtered_session_by_company_name]);
+          // Logging all rows for debugging purposes
+          const filtered_session_by_shop = rows.find(
+            (item) => item["shop"] === shop
+          );
+
+          if (filtered_session_by_shop) {
+            resolve([filtered_session_by_shop]);
             return;
           } else {
-            resolve([]);
+            const filtered_session_by_company_name = rows.find((row) => {
+              const merchant = JSON.parse(row["merchant"]);
+              return (
+                merchant?.billing_company_name?.trim()?.toLowerCase() ===
+                company_name?.trim()?.toLowerCase()
+              );
+            });
+
+            if (filtered_session_by_company_name) {
+              resolve([filtered_session_by_company_name]);
+            } else {
+              resolve([]);
+            }
           }
         }
-
-
-
-         
-      
-      }
+      });
     });
-  });
+  } catch (error) {
+    console.error("Error in getSessionForShippingratesAPI:", error);
+
+    return new Promise((resolve) => {
+      resolve([]);
+    });
+  }
 }
+
 
 
 function isMerchantColumnExist(_columnName) {
