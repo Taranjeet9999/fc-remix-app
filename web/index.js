@@ -96,22 +96,24 @@ function getSessionForShippingratesAPI(shop, company_name) {
         const filtered_session_by_shop = rows.find((item)=>item['shop']===shop)
         if (filtered_session_by_shop) {
           resolve([filtered_session_by_shop]);
-          return
-        }else{
-          const filtered_session_by_company_name =  rows.find((row)=>{
-            const merchant = JSON.parse(row['merchant'])
-            if (merchant['billing_company_name']?.trim()?.toLowerCase() === company_name?.trim()?.toLowerCase()) {
+          return;
+        } else {
+          const filtered_session_by_company_name = rows.find((row) => {
+            const merchant = JSON.parse(row["merchant"]);
+            if (
+              merchant?.billing_company_name?.trim()?.toLowerCase() ===
+              company_name?.trim()?.toLowerCase()
+            ) {
               return true;
             } else {
               return false;
             }
-            
-          })
+          });
           if (filtered_session_by_company_name) {
             resolve([filtered_session_by_company_name]);
-            return
-          }else{
-            resolve([])
+            return;
+          } else {
+            resolve([]);
           }
         }
 
