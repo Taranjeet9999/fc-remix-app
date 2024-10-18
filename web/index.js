@@ -147,7 +147,8 @@ function isMerchantColumnExist(_columnName) {
   });
 }
 
-const url = "mongodb://fc-staging:SweVFp75Rw@54.253.233.28:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1&authMechanism=DEFAULT";
+// const url = "mongodb://fc-staging:SweVFp75Rw@54.253.233.28:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1&authMechanism=DEFAULT";
+const url = "mongodb://fcmstuser:SweVFp75Rw@13.238.136.132:27017/fc-staging";
 const MongoDatabase = "fc-staging";
 const collectionName = 'shopify_frontend_logs';
 const mongoBDClient = new MongoClient(url);
