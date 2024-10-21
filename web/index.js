@@ -764,6 +764,7 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
       `${_req.body.rate.origin.company_name?.replaceAll(" ","")}.myshopify.com`.toLowerCase(),
       _req.body.rate.origin.company_name
     );
+    const CompanyName =_req.body.rate.origin.company_name
  
     if (session.length === 0 || !session[0].merchant_token) {
       collection.insertOne({
@@ -1019,7 +1020,7 @@ itemsArray_to_send_to_courier=[
             request_type: "wp",
             pickupFirstName: items[0].pickupLocation?.first_name?? "",
             pickupLastName: items[0].pickupLocation?.last_name?? "",
-            pickupCompanyName: "",
+            pickupCompanyName: CompanyName ?? "Company name",
             pickupEmail: items[0].pickupLocation?.email?? "",
             pickupAddress1: items[0].pickupLocation?.address1 ?? "",
             pickupAddress2: items[0].pickupLocation?.address2 ?? "",
