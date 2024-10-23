@@ -932,9 +932,9 @@ export function NewOrders(props) {
         className="mb-3 mt-4"
       >
         <Tab eventKey="newOrders" title="New Orders">
-          {orders?.map((element, i) => {
+          {orders?.filter((element, i) => {
             if (element?.orderData?.order_status === "Ready to Book") {
-              return "newOrders";
+              return true;
             }
           })?.length > 0 ? (
             <>
@@ -1085,13 +1085,13 @@ export function NewOrders(props) {
         <Tab eventKey="processedOrders" title="Processed Orders">
       {
       
-      processedOrderList?.map((element, i) => {
+      processedOrderList?.filter((element, i) => {
         if (
           element?.orderData?.order_status !== "Ready to Book" &&
           element?.orderData?.order_status !== "Fallback" &&
           element?.orderData?.order_status !== "Flat-Rate" &&
           element?.orderData?.order_status !== "Rejected"
-        ) {return "true"}})?.length > 0 ?
+        ) {return true}})?.length > 0 ?
       
       
       
@@ -1365,9 +1365,9 @@ export function NewOrders(props) {
     {
     
     
-    orders?.map((element, i) => {
+    orders?.filter((element, i) => {
       if (element?.orderData?.order_status === "Hold") {
-        return "true"}})?.length >0
+        return true}})?.length >0
 
         ?
     
@@ -1542,9 +1542,9 @@ export function NewOrders(props) {
       {
       
       
-      orders?.map((element, i) => {
+      orders?.filter((element, i) => {
         if (element?.orderData?.order_status === "Rejected") {
-          return "true"}})?.length >0
+          return true}})?.length >0
 
           ?
       
@@ -1731,9 +1731,9 @@ export function NewOrders(props) {
         <Tab eventKey="fallbackOrders" title="Fallback Orders">
     {
     
-    orders?.map((element, i) => {
+    orders?.filter((element, i) => {
       if (element?.orderData?.order_status === "Fallback") {
-        return "true"}})?.length>0 ?
+        return true}})?.length>0 ?
     
     
     
@@ -1851,9 +1851,9 @@ export function NewOrders(props) {
      {
      
      
-     orders?.map((element, i) => {
+     orders?.filter((element, i) => {
       if (element?.orderData?.order_status === "Flat-Rate") {
-        return "true"}})?.length >0
+        return true}})?.length >0
 
         ?
      
