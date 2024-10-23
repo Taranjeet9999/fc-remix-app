@@ -678,7 +678,7 @@ export function NewOrders(props) {
 
   return (
     <div className="new-orders">
-      {isLoading && <Loader />} 
+      {isLoading && <Loader />}
       <ErrorModal
         showModal={showError}
         onConfirm={setShowError}
@@ -901,6 +901,7 @@ export function NewOrders(props) {
           style={{
             width: "160px",
           }}
+          disabled={syncing}
           onClick={() => {
             reSyncOrderApi();
           }}
@@ -931,141 +932,171 @@ export function NewOrders(props) {
         className="mb-3 mt-4"
       >
         <Tab eventKey="newOrders" title="New Orders">
-          <div className="order-action-buttons">
-            <button
-              className="submit-btn"
-              onClick={() =>
-                selectedOrders.length > 0
-                  ? setShowBookOrderModal(true)
-                  : (setShowError(true),
-                    setErrorMsg("Please select at least 1 order"))
-              }
-            >
-              Book Selected Orders
-            </button>
-            <button
-              className="submit-btn"
-              onClick={() =>
-                selectedOrders.length > 0
-                  ? setShowHoldOrderModal(true)
-                  : (setShowError(true),
-                    setErrorMsg("Please select at least 1 order"))
-              }
-            >
-              Hold Selected Orders
-            </button>
-          </div>
-          <div className="pickup-locations-table">
-            <table>
-              <tr className="table-head">
-                <th className="select-all">
-                  <input type="checkbox" onChange={(e) => handleSelectAll(e)} />
-                </th>
-                <th>Order Id</th>
-                <th>Date</th>
-                <th>Fastcourier Refrence No.</th>
-                <th>Customer</th>
-                <th>Ship To</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th>packages</th>
-                <th>Carrier Details</th>
-                <th>Shipping type</th>
-                <th>Actions</th>
-              </tr>
-
-              {orders?.length > 0 &&
-                orders?.map((element, i) => {
-                  if (
-                   
-                    element?.orderData?.order_status === "Ready to Book"
-                     
-                  ) {
-                    return (
-                      <tr
-                        key={i}
-                        className="products-row"
-                        style={{
-                          background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
-                        }}
-                      >
-                        <td>
-                          <input
-                            type="checkbox"
-                            value={element.id}
-                            onChange={(e) => selectOrder(e)}
-                            checked={selectedOrders.includes(
-                              element.id.toString()
-                            )}
-                          />
-                        </td>
-                        <td className="order-id-cell"
-                          width="7%"
-                          onClick={() =>
-                            navigate("/orderDetails", {
-                              state: {
-                                order: element,
-                                // redirectedtab: "newOrders",
-                              },
-                            })
-                          }
-                          style={{ cursor: "pointer" }}
-                        >
-                          {element.order_number}
-                        </td>
-                        <td width="5%">
-                          {getFormattedDate(element.created_at)}
-                        </td>
-                        <td width="15%">
-                          {/* Fast courier refernce Number */}
-                         
-                          {element?.orderData?.order_id}
-
-                        </td>
-                        <td width="10%">
-                          {element?.shipping_address != null
-                            ? element?.shipping_address?.first_name +
-                              " " +
-                              element?.shipping_address?.last_name
-                            : element?.billing_address?.first_name +
-                              " " +
-                              element?.billing_address?.last_name}
-                        </td>
-                        <td width="10%">
-                          {element?.shipping_address != null
-                            ? getAddress(element.shipping_address)
-                            : getAddress(element.billing_address)}
-                        </td>
-
-                        <td width="15%">
-                          {/* Fast courier Order Status */}
-                          {element?.orderData?.order_status}
-
-                        </td>
-                        <td width={"8%"}>${element.current_total_price}</td>
-                        <td width="4%">
-                          {element.line_items[0].fulfillable_quantity}
-                        </td>
-                        <td width="15%">
-                          {/* Carrier Details */}
-                          
-                          {`$${element?.orderData?.price}`}<br />
-                          {`(${element?.orderData?.courierName})`}
-
-
- 
-                        </td>
-                        <td width="10%">{element.financial_status}</td>
-                        <td width="8%">{"NA"}</td>
-                      </tr>
-                    );
+          {orders?.map((element, i) => {
+            if (element?.orderData?.order_status === "Ready to Book") {
+              return "newOrders";
+            }
+          })?.length > 0 ? (
+            <>
+              <div className="order-action-buttons">
+                <button
+                  className="submit-btn"
+                  onClick={() =>
+                    selectedOrders.length > 0
+                      ? setShowBookOrderModal(true)
+                      : (setShowError(true),
+                        setErrorMsg("Please select at least 1 order"))
                   }
-                })}
-            </table>
-          </div>
+                >
+                  Book Selected Orders
+                </button>
+                <button
+                  className="submit-btn"
+                  onClick={() =>
+                    selectedOrders.length > 0
+                      ? setShowHoldOrderModal(true)
+                      : (setShowError(true),
+                        setErrorMsg("Please select at least 1 order"))
+                  }
+                >
+                  Hold Selected Orders
+                </button>
+              </div>
+              <div className="pickup-locations-table">
+                <table>
+                  <tr className="table-head">
+                    <th className="select-all">
+                      <input
+                        type="checkbox"
+                        onChange={(e) => handleSelectAll(e)}
+                      />
+                    </th>
+                    <th>Order Id</th>
+                    <th>Date</th>
+                    <th>Fastcourier Refrence No.</th>
+                    <th>Customer</th>
+                    <th>Ship To</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>packages</th>
+                    <th>Carrier Details</th>
+                    <th>Shipping type</th>
+                    <th>Actions</th>
+                  </tr>
+
+                  {orders?.length > 0 &&
+                    orders?.map((element, i) => {
+                      if (
+                        element?.orderData?.order_status === "Ready to Book"
+                      ) {
+                        return (
+                          <tr
+                            key={i}
+                            className="products-row"
+                            style={{
+                              background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
+                            }}
+                          >
+                            <td>
+                              <input
+                                type="checkbox"
+                                value={element.id}
+                                onChange={(e) => selectOrder(e)}
+                                checked={selectedOrders.includes(
+                                  element.id.toString()
+                                )}
+                              />
+                            </td>
+                            <td
+                              className="order-id-cell"
+                              width="7%"
+                              onClick={() =>
+                                navigate("/orderDetails", {
+                                  state: {
+                                    order: element,
+                                    // redirectedtab: "newOrders",
+                                  },
+                                })
+                              }
+                              style={{ cursor: "pointer" }}
+                            >
+                              {element.order_number}
+                            </td>
+                            <td width="5%">
+                              {getFormattedDate(element.created_at)}
+                            </td>
+                            <td width="15%">
+                              {/* Fast courier refernce Number */}
+
+                              {element?.orderData?.order_id}
+                            </td>
+                            <td width="10%">
+                              {element?.shipping_address != null
+                                ? element?.shipping_address?.first_name +
+                                  " " +
+                                  element?.shipping_address?.last_name
+                                : element?.billing_address?.first_name +
+                                  " " +
+                                  element?.billing_address?.last_name}
+                            </td>
+                            <td width="10%">
+                              {element?.shipping_address != null
+                                ? getAddress(element.shipping_address)
+                                : getAddress(element.billing_address)}
+                            </td>
+
+                            <td width="15%">
+                              {/* Fast courier Order Status */}
+                              {element?.orderData?.order_status}
+                            </td>
+                            <td width={"8%"}>${element.current_total_price}</td>
+                            <td width="4%">
+                              {element.line_items[0].fulfillable_quantity}
+                            </td>
+                            <td width="15%">
+                              {/* Carrier Details */}
+
+                              {`$${element?.orderData?.price}`}
+                              <br />
+                              {`(${element?.orderData?.courierName})`}
+                            </td>
+                            <td width="10%">{element.financial_status}</td>
+                            <td width="8%">{"NA"}</td>
+                          </tr>
+                        );
+                      }
+                    })}
+                </table>
+              </div>
+            </>
+          ) : (
+            <div
+              className="d-flex w-100 justify-content-center align-items-center"
+              style={{
+                fontSize: "15px",
+                marginTop: "5rem",
+                fontWeight: "bold",
+              }}
+            >
+              No New orders to show yet !!
+            </div>
+          )}
         </Tab>
         <Tab eventKey="processedOrders" title="Processed Orders">
-          <div className="pickup-locations-table">
+      {
+      
+      processedOrderList?.map((element, i) => {
+        if (
+          element?.orderData?.order_status !== "Ready to Book" &&
+          element?.orderData?.order_status !== "Fallback" &&
+          element?.orderData?.order_status !== "Flat-Rate" &&
+          element?.orderData?.order_status !== "Rejected"
+        ) {return "true"}})?.length > 0 ?
+      
+      
+      
+      
+      <div className="pickup-locations-table">
             <table width={"100%"}>
               <tr className="table-head">
                 {/* <th className="select-all">
@@ -1087,8 +1118,7 @@ export function NewOrders(props) {
               {processedOrderList?.length > 0 &&
                 processedOrderList?.map((element, i) => {
                   if (
-                    element?.orderData?.order_status !==
-                      "Ready to Book" &&
+                    element?.orderData?.order_status !== "Ready to Book" &&
                     element?.orderData?.order_status !== "Fallback" &&
                     element?.orderData?.order_status !== "Flat-Rate" &&
                     element?.orderData?.order_status !== "Rejected"
@@ -1101,7 +1131,8 @@ export function NewOrders(props) {
                           background: i % 2 != 0 ? "#F5F8FA" : "#FFFFFF",
                         }}
                       >
-                        <td className="order-id-cell"
+                        <td
+                          className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
@@ -1149,17 +1180,15 @@ export function NewOrders(props) {
                         </td>
                         <td width="15% text-center">
                           {/* Carrier Details */}
-                          {
-                            element?.orderData?.price? <>
-                              {`$${element?.orderData?.price}`}<br />
+                          {element?.orderData?.price ? (
+                            <>
+                              {`$${element?.orderData?.price}`}
+                              <br />
                               {`(${element?.orderData?.courierName})`}
-                            
-                            
-                            </>:
-
+                            </>
+                          ) : (
                             "N/A"
-                          }
-                        
+                          )}
                         </td>
                         <td width="10%">
                           {/* {element.financial_status} */}
@@ -1315,8 +1344,37 @@ export function NewOrders(props) {
                 })}
             </table>
           </div>
+          
+        
+        
+        :
+        <div
+              className="d-flex w-100 justify-content-center align-items-center"
+              style={{
+                fontSize: "15px",
+                marginTop: "5rem",
+                fontWeight: "bold",
+              }}
+            >
+              No orders to show yet !!
+            </div>
+        
+        }
         </Tab>
         <Tab eventKey="holdOrders" title="Hold Orders">
+    {
+    
+    
+    orders.map((element, i) => {
+      if (element?.orderData?.order_status === "Hold") {
+        return "true"}})?.length >0
+
+        ?
+    
+    
+    
+    
+    <>
           <div className="order-action-buttons">
             <button
               className="submit-btn"
@@ -1386,7 +1444,7 @@ export function NewOrders(props) {
                           />
                         </td>
                         <td
-                        className="order-id-cell"
+                          className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
@@ -1444,7 +1502,8 @@ export function NewOrders(props) {
                         </td>
                         <td width="15% text-center">
                           {/* Carrier Details */}
-                          {`$${element?.orderData?.price}`}<br />
+                          {`$${element?.orderData?.price}`}
+                          <br />
                           {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%" className="order-actions">
@@ -1460,9 +1519,38 @@ export function NewOrders(props) {
                 })}
             </table>
           </div>
+          </>:
+          
+          <div
+          className="d-flex w-100 justify-content-center align-items-center"
+          style={{
+            fontSize: "15px",
+            marginTop: "5rem",
+            fontWeight: "bold",
+          }}
+        >
+          No hold orders to show yet !!
+        </div>   
+          
+          
+          
+          
+          
+          }
         </Tab>
         <Tab eventKey="rejectedOrders" title="Rejected Orders">
-          <div className="pickup-locations-table">
+      {
+      
+      
+      orders?.map((element, i) => {
+        if (element?.orderData?.order_status === "Rejected") {
+          return "true"}})?.length >0
+
+          ?
+      
+      
+      
+      <div className="pickup-locations-table">
             <table width={"100%"}>
               <tr className="table-head">
                 <th>Order Id</th>
@@ -1490,7 +1578,7 @@ export function NewOrders(props) {
                         }}
                       >
                         <td
-                        className="order-id-cell"
+                          className="order-id-cell"
                           width="7%"
                           onClick={() =>
                             navigate("/orderDetails", {
@@ -1538,7 +1626,8 @@ export function NewOrders(props) {
                         <td width="15% text-center">
                           {/* Carrier Details */}
 
-                          {`$${element?.orderData?.price}`}<br />
+                          {`$${element?.orderData?.price}`}
+                          <br />
                           {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%">
@@ -1619,18 +1708,38 @@ export function NewOrders(props) {
                               </Dropdown.Menu>
                             </Dropdown>
                           )}
-
-                          
                         </td>
                       </tr>
                     );
                   }
                 })}
             </table>
-          </div>
+          </div>:
+           <div
+           className="d-flex w-100 justify-content-center align-items-center"
+           style={{
+             fontSize: "15px",
+             marginTop: "5rem",
+             fontWeight: "bold",
+           }}
+         >
+           No Rejected orders to show yet !!
+         </div>
+          
+          }
         </Tab>
         <Tab eventKey="fallbackOrders" title="Fallback Orders">
-          <div className="pickup-locations-table">
+    {
+    
+    orders?.map((element, i) => {
+      if (element?.orderData?.order_status === "Fallback") {
+        return "true"}})?.length>0 ?
+    
+    
+    
+    
+    
+    <div className="pickup-locations-table">
             <table>
               <tr className="table-head">
                 {/* <th className="select-all">
@@ -1725,13 +1834,36 @@ export function NewOrders(props) {
                   }
                 })}
             </table>
+          </div>:
+            <div
+            className="d-flex w-100 justify-content-center align-items-center"
+            style={{
+              fontSize: "15px",
+              marginTop: "5rem",
+              fontWeight: "bold",
+            }}
+          >
+            No FallBack orders to show yet !!
           </div>
+          }
         </Tab>
         <Tab eventKey="flatRateOrders" title="Flat Rate Orders">
-          <div className="pickup-locations-table">
+     {
+     
+     
+     orders?.map((element, i) => {
+      if (element?.orderData?.order_status === "Flat-Rate") {
+        return "true"}})?.length >0
+
+        ?
+     
+     
+     
+     
+     
+     <div className="pickup-locations-table">
             <table>
               <tr className="table-head">
-                
                 <th>Order Id</th>
                 <th>Date</th>
                 <th>Fastcourier Refrence No.</th>
@@ -1777,10 +1909,7 @@ export function NewOrders(props) {
                         <td width="10%">
                           {getFormattedDate(element.created_at)}
                         </td>
-                        <td width="15%">
-                          
-                          {element?.orderData?.order_id}
-                        </td>
+                        <td width="15%">{element?.orderData?.order_id}</td>
                         <td width="15%">
                           {element?.shipping_address != null
                             ? element?.shipping_address?.first_name +
@@ -1805,8 +1934,9 @@ export function NewOrders(props) {
                           {element.line_items[0].fulfillable_quantity}
                         </td>
                         <td width="15%">
-                        {`$${element?.orderData?.price}`}<br />
-                        {`(${element?.orderData?.courierName})`}
+                          {`$${element?.orderData?.price}`}
+                          <br />
+                          {`(${element?.orderData?.courierName})`}
                         </td>
                         <td width="10%">{element.financial_status}</td>
                         <td width="8%">{"NA"}</td>
@@ -1815,11 +1945,25 @@ export function NewOrders(props) {
                   }
                 })}
             </table>
-          </div>
+          </div>:
+          
+          <div
+              className="d-flex w-100 justify-content-center align-items-center"
+              style={{
+                fontSize: "15px",
+                marginTop: "5rem",
+                fontWeight: "bold",
+              }}
+            >
+              No Flat-rate orders to show yet !!
+            </div> 
+          
+          
+          
+          }
         </Tab>
-       
-        {/* <Tab eventKey="rejectedOrders" title="Rejected Orders">
-        </Tab> */}
+
+      
       </Tabs>
     </div>
   );
