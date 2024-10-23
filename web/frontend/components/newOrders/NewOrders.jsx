@@ -1365,7 +1365,7 @@ export function NewOrders(props) {
     {
     
     
-    orders.map((element, i) => {
+    orders?.map((element, i) => {
       if (element?.orderData?.order_status === "Hold") {
         return "true"}})?.length >0
 
@@ -1423,7 +1423,7 @@ export function NewOrders(props) {
                 <th>Actions</th>
               </tr>
               {orders?.length > 0 &&
-                orders.map((element, i) => {
+                orders?.map((element, i) => {
                   if (element?.orderData?.order_status === "Hold") {
                     return (
                       <tr
