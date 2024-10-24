@@ -277,6 +277,12 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
     collection.insertOne({
       endPoint:"/api/update-order-status",
       data_in_string:JSON.stringify(ordersBodyArray),
+      data_in_Object:ordersBodyArray, 
+      message:"API HIT start"
+    })
+    console.log({
+      endPoint:"/api/update-order-status",
+      data_in_string:JSON.stringify(ordersBodyArray),
       data_in_Object:ordersBodyArray,
       
       message:"API HIT start"
@@ -353,6 +359,13 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
     logger.error("update-order-status-error==", error);
 
     collection.insertOne({
+      endPoint:"/api/update-order-status",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error,
+      
+      message:"update-order-status-error"
+    })
+    console.log({
       endPoint:"/api/update-order-status",
       data_in_string:JSON.stringify(error),
       data_in_Object:error,
@@ -464,163 +477,7 @@ app.get("/api/oauth-callback", async (req, res) => {
   res.status(200).send({ state: JSON.parse(decodedString), code: code });
 });
 
-// app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
-
-//       logger.info(
-//       "order-create-webhook==",
-//       _req.body,
-//     )
-//     const getCarrier = (item) => {
-//       // const item = data.find((obj) => obj.source === "Fast Courier");
-//       const title = item ? item.title : null;
-//       const startIndex = title.indexOf("[");
-//       const endIndex = title.indexOf("]");
-//       // Extract the substring between '[' and ']'
-//       const carrierName = title.substring(startIndex + 1, endIndex);
-//       return carrierName;
-//     };
-
-//     const getCodes = (item) => {
-//       // const item = data.find((obj) => obj.source === "Fast Courier");
-//       return item ? item.code : null;
-//     };
-
-//     function extractQuoteIds(array) {
-//       let quoteIds = array[0]
-//         .split(",")
-//         .map((item) => item?.match(/\(([^-]+)-/)[1])
-//         .join(",");
-//       return quoteIds;
-//     }
-
-//     function extractOrderIds(array) {
-//     let orderIds = array[0]
-//     .split(",")
-//     .map((item) => item?.match(/-([^\)]+)\)/)[1])
-//     .join(",");
-//     return orderIds;
-//     }
-
-
  
-//   try {
-//     const session = await getSession(
-//       `${new URL(_req.body.order_status_url).hostname}`.toLowerCase()
-//     );
-//     let orderDetails = _req.body;
-//     const fast_courier_orders = orderDetails.shipping_lines.filter(
-//       (obj) => obj.source === "Fast Courier"
-//     );
-//     let ordersData = [];
-// for (let orderIndex = 0; orderIndex < fast_courier_orders.length; orderIndex++) {
-//   const codes = getCodes(fast_courier_orders[orderIndex]);
-
-//   if (codes != null) {
-    
-//     const valuesArray = codes.split("~"); // FORMAT = = = = = (WKQLDRPXEQ-WKMVEZBDPO)~[PAID]~[31.98]
-
-//     // Trim the quotes from each value and assign them to variables
-//     const carrierName = getCarrier(fast_courier_orders[orderIndex]);
-//     const quoteIds = extractQuoteIds(valuesArray);
-//     const orderIds = extractOrderIds(valuesArray);
-   
-//     for (let index = 0; index < quoteIds.split(",").length; index++) {
-//       ordersData.push({
-//         quote_id: quoteIds.split(",")[index],
-//         order_id: orderIds.split(",")[index],
-//         price: JSON.parse(valuesArray[2])[index],
-//         courierName: carrierName.split(",")[index],
-//         order_status:
-//           valuesArray[1][index] === "FALLBACK" ? "Fallback" : "Ready to Book",
-
-//         order_type:
-//           valuesArray[1][index] === "FALLBACK"
-//             ? "Fallback"
-//             : valuesArray[1][index] === "FREESHIPPING"
-//             ? "Freeshipping"
-//             : "Paid",
-//       });
-//       try {
-//         await update_shopify_order_id_on_portal(
-//           orderIds.split(",")[index],
-//          parseInt(orderDetails.id),
-//           _req.body?.contact_email,
-//           _req.body?.shipping_address?.phone,
-//           _req.body?.shipping_address?.first_name,
-//           _req.body?.shipping_address?.last_name
-//         );
-//       } catch (error) {
-//         logger.info(`Failed to update Shopify order ID on portal: ${error}`);
-//         // You can decide how to handle errors in updating each order individually.
-//       }
-//     }
-//     const order = new shopify.api.rest.Order({
-//       session: session[0],
-//     });
-//     order.id = parseInt(orderDetails.id);
-//     order.metafields = [
-//       {
-//         key: "quote_id",
-//         value: quoteIds,
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//       {
-//         key: "order_hash_id",
-//         value: orderIds,
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//       {
-//         key: "carrier_name",
-//         value: carrierName,
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//       {
-//         key: "fc_order_status",
-//         value:
-//           valuesArray[1] === "FALLBACK"
-//             ? "Fallback"
-//             : valuesArray[1] === "FREESHIPPING"
-//             ? "Freeshipping"
-//             : "Paid",
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//       {
-//         key: "courier_charges",
-//         value: valuesArray[2],
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//       {
-//         key: "order_data",
-//         value: JSON.stringify(ordersData),
-//         type: "single_line_text_field",
-//         namespace: "Order",
-//       },
-//     ];
-
-//     await order.save({
-//       update: true,
-//     });
-//     res.status(200).send(order);
-//   }
-  
-// }
-
-
-
-
-
-
-   
-//   } catch (error) {
-//     logger.info("order-create-webhook-error==", error);
-//   }
-// });
-
 
 
 
@@ -633,6 +490,14 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
           data_in_Object:_req.body,
       message:"webhook/order-create-hit-successfully"
     }) 
+    console.log(
+      {
+        endPoint:"/api/webhook/order-creates",
+        data_in_string:JSON.stringify(_req.body),
+            data_in_Object:_req.body,
+        message:"webhook/order-create-hit-successfully"
+      }
+    )
     const orderDetails = _req.body; 
     
     // Helper functions
@@ -743,6 +608,12 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
           data_in_Object:error,
       message:"webhook/order-create ERROR"
     })
+    console.log({
+      endPoint:"/api/webhook/order-creates",
+      data_in_string:JSON.stringify(error),
+          data_in_Object:error,
+      message:"webhook/order-create ERROR"
+    })
     res.status(500).send({ error: "An error occurred during processing" });
   }
 });
@@ -752,6 +623,12 @@ app.post("/api/webhook/order-create", bodyParser.json(), async (_req, res) => {
 app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
    
   collection.insertOne({
+    endPoint:"/api/shipping-rates",
+    data_in_string:JSON.stringify(_req.body),
+        data_in_Object:_req.body,
+    message:"shopify-webhook-hit-successfully"
+  })
+  console.log({
     endPoint:"/api/shipping-rates",
     data_in_string:JSON.stringify(_req.body),
         data_in_Object:_req.body,
@@ -773,6 +650,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         data_in_Object:session,
         message:"Merchant not found"
       })
+      console.log({
+        endPoint:"/api/shipping-rates",
+        data_in_string:JSON.stringify(session),
+        data_in_Object:session,
+        message:"Merchant not found"
+      })
       logger.info("Merchant not found", "session =>", session);
       res.status(200).json({ error: "Merchant not found" });
       return;
@@ -782,7 +665,12 @@ app.post("/api/shipping-rates", bodyParser.json(), async (_req, res) => {
         endPoint:"/api/shipping-rates",
         data_in_string:JSON.stringify(session[0]),
         data_in_Object:session[0],
-        
+        message:"merchant_locations not found"
+      })
+      console.log({
+        endPoint:"/api/shipping-rates",
+        data_in_string:JSON.stringify(session[0]),
+        data_in_Object:session[0], 
         message:"merchant_locations not found"
       })
       logger.info("merchant_locations not found");
@@ -1094,12 +982,15 @@ if (items[0]?.is_flat_rate_enabled) {
     data = await quote.json();
 
     collection.insertOne({
-      endPoint:"/api/shipping-rates",
-       
-   
+      endPoint:"/api/shipping-rates", 
         data_in_string:JSON.stringify(data),
-        data_in_Object:data,
-       
+        data_in_Object:data, 
+      message:"with flat rate"
+    })
+    console.log({
+      endPoint:"/api/shipping-rates", 
+        data_in_string:JSON.stringify(data),
+        data_in_Object:data, 
       message:"with flat rate"
     })
 
@@ -1126,10 +1017,15 @@ if (items[0]?.is_flat_rate_enabled) {
   );
     data = await quote.json();
     collection.insertOne({
-      endPoint:"/api/shipping-rates",
-     
+      endPoint:"/api/shipping-rates", 
       data_in_string:JSON.stringify(data),
-        data_in_Object:data,
+      data_in_Object:data,
+      message:"without flat rate"
+    })
+    console.log({
+      endPoint:"/api/shipping-rates", 
+      data_in_string:JSON.stringify(data),
+      data_in_Object:data,
       message:"without flat rate"
     })
     logger.info("without flat rate",data); 
@@ -1229,10 +1125,15 @@ if (items[0]?.is_flat_rate_enabled) {
       ],
     };
     collection.insertOne({
-      endPoint:"/api/shipping-rates",
-  
+      endPoint:"/api/shipping-rates", 
       data_in_string:JSON.stringify(response),
-        data_in_Object:response,
+      data_in_Object:response,
+      message:"response"
+    })
+    console.log({
+      endPoint:"/api/shipping-rates", 
+      data_in_string:JSON.stringify(response),
+      data_in_Object:response,
       message:"response"
     })
     logger.info("response",response); 
@@ -1244,8 +1145,13 @@ if (items[0]?.is_flat_rate_enabled) {
     collection.insertOne({
       endPoint:"/api/shipping-rates",
       data_in_string:JSON.stringify(error),
-      data_in_Object:error,
-      
+      data_in_Object:error, 
+      message:"shipping-rates-error"
+    })
+    console.log({
+      endPoint:"/api/shipping-rates",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error, 
       message:"shipping-rates-error"
     })
     res.status(500).json({ error: "Internal Server Error" });
@@ -1436,6 +1342,12 @@ async function update_shopify_order_id_on_portal(
 
   const data = await response.json()
   collection.insertOne({
+    endPoint:"/api/webhook/order-create",
+    data_in_string:JSON.stringify(data),
+    data_in_Object:data,
+    message:"update order details On Portal"
+  })
+  console.log({
     endPoint:"/api/webhook/order-create",
     data_in_string:JSON.stringify(data),
     data_in_Object:data,
@@ -3009,8 +2921,13 @@ function packItems(_bins, _items, level = 0) {
     collection.insertOne({
       endPoint:"packItems  Function",
       data_in_string:JSON.stringify(error),
-      data_in_Object:error,
-      
+      data_in_Object:error, 
+      message:"packItems  Function-error"
+    })
+    console.log({
+      endPoint:"packItems  Function",
+      data_in_string:JSON.stringify(error),
+      data_in_Object:error, 
       message:"packItems  Function-error"
     })
     return _items
