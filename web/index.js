@@ -1210,107 +1210,7 @@ function getUniqueQuoteData(data) {
   return Array.from(quoteDataMap.values());
 }
 
-// async function getMerchantData(access_token) {
-//   const headers = {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//     "request-type": "shopify_development",
-//     version: "3.1.1",
-//     Authorization: "Bearer " + access_token,
-//   };
-//   const merchant = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/get_merchant`,
-//     {
-//       method: "GET",
-//       credentials: "include",
-//       headers: headers,
-//     }
-//   );
-
-//   let merchant_details = await merchant.json();
-//   return merchant_details;
-// }
-// async function getMerchantDefaultLocation(access_token, merchant_id) {
-//   const headers = {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//     "request-type": "shopify_development",
-//     version: "3.1.1",
-//     Authorization: "Bearer " + access_token,
-//   };
-
-//   const pickupLocations = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/locations/${merchant_id}`,
-//     {
-//       method: "GET",
-//       credentials: "include",
-//       headers: headers,
-//     }
-//   );
-
-//   const locations = await pickupLocations.json();
-
-//   const defaultPickupLocation = locations?.data?.find(
-//     (element) => element.is_default == 1
-//   );
-
-//   return defaultPickupLocation;
-// }
-// async function getMerchantLocationDataFromTagId(
-//   access_token,
-//   merchant_id,
-//   tagId
-// ) {
-//   const headers = {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//     "request-type": "shopify_development",
-//     version: "3.1.1",
-//     Authorization: "Bearer " + access_token,
-//   };
-//   const merchant_location = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_locations/` +
-//       merchant_id +
-//       "/" +
-//       tagId,
-//     {
-//       method: "GET",
-//       credentials: "include",
-//       headers: headers,
-//     }
-//   );
-
-//   let merchant_location_details = await merchant_location.json();
-//   return merchant_location_details;
-// }
-// async function getMerchantLocationDataFromLocationId(
-//   access_token,
-//   merchant_id,
-//   locationId
-// ) {
-//   const headers = {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//     "request-type": "shopify_development",
-//     version: "3.1.1",
-//     Authorization: "Bearer " + access_token,
-//   };
-//   const merchant_location = await fetch(
-//     `https://portal.fastcourier.com.au/api/wp/merchant_domain/location/` +
-//       // merchant_id +
-//       // "/" +
-//       locationId,
-//     {
-//       method: "GET",
-//       credentials: "include",
-//       headers: headers,
-//     }
-//   );
-
-//   let merchant_location_details = await merchant_location.json();
-//   console.log(merchant_location_details, "merchant_location_details");
-//   return merchant_location_details;
-// }
+ 
 
 async function update_shopify_order_id_on_portal(
   fastcourier_hash_id,
@@ -2454,7 +2354,7 @@ app.get("/api/products", async (_req, res) => {
                 }
               }
             }
-            variants(first: 10) {
+            variants(first: 20) {
               edges {
                 node {
                   id
