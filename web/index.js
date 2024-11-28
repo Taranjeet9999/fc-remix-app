@@ -152,7 +152,7 @@ const url = "mongodb://fcmstuser:SweVFp75Rw@13.238.136.132:27017/fc-staging";
 const MongoDatabase = "fc-staging";
 const collectionName = 'shopify_frontend_logs';
 const mongoBDClient = new MongoClient(url);
-let mongoDB, collection;
+let mongoDB, collection={insertOne:()=>{}};
  
 mongoBDClient.connect()
     .then(() => {
@@ -322,9 +322,26 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
       if (orderIndex === -1) {
         throw new Error("Order ID not found in order data");
       }
-
+      // Ordeer Status in Order Meta
       orderData[orderIndex].order_status =
         AllOrderStatuses[order["status_for_merchant"]];
+
+      // Courier Name in Order Meta
+      orderData[orderIndex].courierName =
+        AllOrderStatuses[order["courierName"]];
+        
+        // Price in Order Meta
+        orderData[orderIndex].price =
+          AllOrderStatuses[order["price"]] ?? 0;
+          
+          // Type in Order Meta
+          orderData[orderIndex].order_type =
+            "Paid";
+            
+            // Order Id in Order Meta
+            orderData[orderIndex].order_id =
+            AllOrderStatuses[order["order_id"]];
+          
       if (order["status_for_merchant"] === "order_rejected") {
         orderData[orderIndex].errors = typeof order.reason === 'object' ? Object.values(order.reason)
           .map((_value) => _value.join(","))
@@ -414,7 +431,7 @@ const urlParams = new URLSearchParams(new URL(decodedURI).search);
 // Get the value of the 'isProduction' parameter
 const _isProduction = urlParams.get('isProduction');
        return res.redirect(
-        `${_isProduction?.toString()?.includes("1")? "https://portal.fastcourier.com.au"  :  "https://portal.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
+        `${_isProduction?.toString()?.includes("1")? "https://portal-staging.fastcourier.com.au"  :  "https://portal-staging.fastcourier.com.au"}/oauth/callback?code=${code}&state=${state}&redirect_uri=${redirectURI}`
       );
     }
 
@@ -963,7 +980,7 @@ if (items[0]?.is_flat_rate_enabled) {
   // IF FLAT RATE ENABLED
   // IF FLAT RATE ENABLED
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/create-flate-order`,
+    `${ session[0].is_production?.includes("1")?  "https://portal-staging.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/create-flate-order`,
     {
       method: "POST",
       credentials: "include",
@@ -999,7 +1016,7 @@ if (items[0]?.is_flat_rate_enabled) {
 }else{
  
   const quote = await fetch(
-    `${ session[0].is_production?.includes("1")?  "https://portal.fastcourier.com.au"   : "https://portal.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
+    `${ session[0].is_production?.includes("1")?  "https://portal-staging.fastcourier.com.au"   : "https://portal-staging.fastcourier.com.au"}/api/wp/quote?${new URLSearchParams(
       payload
     )}`,
     {
@@ -1220,7 +1237,7 @@ async function update_shopify_order_id_on_portal(
   destination_first_name,
   destination_last_name
 ) {
- const response=  await fetch("https://portal.fastcourier.com.au/api/update-order-id", {
+ const response=  await fetch("https://portal-staging.fastcourier.com.au/api/update-order-id", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -2088,7 +2105,7 @@ app.post("/api/carrier-service/create", async (_req, res) => {
     carrier_service.name = "Fast Courier";
 
     carrier_service.callback_url =
-      "https://shop.fastcourier.com.au/api/shipping-rates";
+      "https://reflects-familiar-kansas-boost.trycloudflare.com/api/shipping-rates";
     carrier_service.service_discovery = true;
     await carrier_service.save({
       update: true,
@@ -2116,14 +2133,14 @@ app.post(
       carrier_service.id = id ?? 68618911963;
       carrier_service.name = "Fast Courier"; // Update the name if needed
       carrier_service.callback_url =
-        "https://shop.fastcourier.com.au/api/shipping-rates";
+        "https://reflects-familiar-kansas-boost.trycloudflare.com/api/shipping-rates";
       await carrier_service.save({
         update: true,
       });
 
       // Get All Webhooks List
       const webhook_URL =
-        "https://shop.fastcourier.com.au/api/webhook/order-create";
+        "https://reflects-familiar-kansas-boost.trycloudflare.com/api/webhook/order-create";
       const webhooks = await shopify.api.rest.Webhook.all({
         session: res.locals.shopify.session,
       });
