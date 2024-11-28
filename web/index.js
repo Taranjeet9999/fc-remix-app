@@ -322,9 +322,26 @@ app.post("/api/update-order-status", bodyParser.json(), async (_req, res) => {
       if (orderIndex === -1) {
         throw new Error("Order ID not found in order data");
       }
-
+      // Ordeer Status in Order Meta
       orderData[orderIndex].order_status =
         AllOrderStatuses[order["status_for_merchant"]];
+
+      // Courier Name in Order Meta
+      orderData[orderIndex].courierName =
+        AllOrderStatuses[order["courierName"]];
+        
+        // Price in Order Meta
+        orderData[orderIndex].price =
+          AllOrderStatuses[order["price"]] ?? 0;
+          
+          // Type in Order Meta
+          orderData[orderIndex].order_type =
+            "Paid";
+            
+            // Order Id in Order Meta
+            orderData[orderIndex].order_id =
+            AllOrderStatuses[order["order_id"]];
+          
       if (order["status_for_merchant"] === "order_rejected") {
         orderData[orderIndex].errors = typeof order.reason === 'object' ? Object.values(order.reason)
           .map((_value) => _value.join(","))
